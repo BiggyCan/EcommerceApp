@@ -1,0 +1,25 @@
+# Archivos generados por .NET
+bin/
+obj/
+
+# Visual Studio
+.vs/
+
+# Visual Studio Code
+.vscode/
+
+# Archivos de usuario
+*.user
+*.suo
+
+# Logs
+*.log
+
+# Variables y secretos
+.env
+.env.*
+secrets.json
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
