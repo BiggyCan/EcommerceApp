@@ -1,28 +1,706 @@
 @model EcommerceApp.Models.Product
 
-<h2>@Model.Name</h2>
+@{
+    ViewData["Title"] = Model.Name;
+}
 
-<img src="@(Model.ImageUrl ?? "/images/default-product.jpg")"
-     style="max-width:300px"
-     class="mb-3" />
+<style>
 
-<p>@Model.Description</p>
+    .details-page {
+        min-height: 700px;
 
-<p>
-    <strong>Precio:</strong>
-    @Model.Price.ToString("C")
-</p>
+        padding: 42px 0 75px;
 
-<p>
-    <strong>Stock:</strong>
-    @Model.Stock
-</p>
+        background: #f4f6f9;
+    }
 
-<p>
-    <strong>Categoría:</strong>
-    @Model.Category
-</p>
+    .details-container {
+        width: calc(100% - 40px);
+        max-width: 1160px;
 
-<a href="@Url.Action("Index")" class="btn btn-secondary">
-    Volver
-</a>
+        margin: auto;
+    }
+
+    .details-breadcrumb {
+        margin-bottom: 18px;
+
+        color: #64748b;
+
+        font-size: 11px;
+    }
+
+    .details-breadcrumb a {
+        color: #2563eb;
+
+        text-decoration: none;
+
+        font-weight: 700;
+    }
+
+    .details-breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .details-card {
+        display: grid;
+
+        grid-template-columns:
+            minmax(360px, 1fr)
+            minmax(360px, 1fr);
+
+        gap: 35px;
+
+        padding: 30px;
+
+        background: white;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+
+        box-shadow:
+            0 8px 24px rgba(15,23,42,.07);
+    }
+
+
+    /* IMAGEN */
+
+    .details-image-wrapper {
+        min-height: 440px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        overflow: hidden;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+
+        background: #f8fafc;
+    }
+
+    .details-image-wrapper img {
+        width: 100%;
+        height: 100%;
+
+        max-height: 440px;
+
+        object-fit: contain;
+
+        padding: 18px;
+    }
+
+
+    /* INFORMACIÓN */
+
+    .details-info {
+        display: flex;
+        flex-direction: column;
+
+        justify-content: center;
+    }
+
+    .details-category {
+        margin-bottom: 10px;
+
+        color: #2563eb;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        text-transform: uppercase;
+
+        letter-spacing: .5px;
+    }
+
+    .details-name {
+        margin: 0 0 13px;
+
+        color: #111827;
+
+        font-size: 36px;
+        line-height: 1.1;
+
+        font-weight: 900;
+    }
+
+    .details-description {
+        margin-bottom: 25px;
+
+        color: #64748b;
+
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .details-price {
+        margin-bottom: 8px;
+
+        color: #111827;
+
+        font-size: 30px;
+        font-weight: 900;
+    }
+
+    .details-stock {
+        margin-bottom: 24px;
+
+        display: inline-flex;
+
+        width: fit-content;
+
+        padding: 7px 11px;
+
+        border-radius: 20px;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .details-stock.available {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .details-stock.low {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .details-stock.out {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+
+    /* ACCIONES */
+
+    .details-actions {
+        display: flex;
+        flex-direction: column;
+
+        gap: 10px;
+    }
+
+    .add-cart-form {
+        width: 100%;
+    }
+
+    .add-cart-button {
+        width: 100%;
+        min-height: 50px;
+
+        border: none;
+        border-radius: 7px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #06bfff,
+                #2563eb
+            );
+
+        color: white;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        cursor: pointer;
+
+        transition: .2s;
+    }
+
+    .add-cart-button:hover {
+        transform: translateY(-1px);
+
+        filter: brightness(1.08);
+    }
+
+    .add-cart-button:disabled {
+        opacity: .5;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+    .back-store-button {
+        width: 100%;
+        min-height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        background: #111827;
+
+        color: white;
+
+        font-size: 11px;
+        font-weight: 800;
+
+        text-decoration: none;
+
+        transition: .2s;
+    }
+
+    .back-store-button:hover {
+        background: #1e293b;
+        color: white;
+    }
+
+
+    /* ADMIN */
+
+    .admin-product-actions {
+        margin-top: 18px;
+
+        padding-top: 18px;
+
+        border-top: 1px solid #e2e8f0;
+
+        display: flex;
+        gap: 8px;
+
+        flex-wrap: wrap;
+    }
+
+    .admin-product-button {
+        min-height: 38px;
+
+        padding: 0 14px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 6px;
+
+        color: white;
+
+        font-size: 10px;
+        font-weight: 800;
+
+        text-decoration: none;
+
+        transition: .2s;
+    }
+
+    .admin-product-button.edit {
+        background: #d97706;
+    }
+
+    .admin-product-button.delete {
+        background: #dc2626;
+    }
+
+    .admin-product-button.admin {
+        background: #4f46e5;
+    }
+
+    .admin-product-button:hover {
+        color: white;
+
+        transform: translateY(-1px);
+
+        filter: brightness(1.08);
+    }
+
+
+    /* INFORMACIÓN SECUNDARIA */
+
+    .details-extra {
+        margin-top: 25px;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 14px;
+    }
+
+    .extra-card {
+        padding: 17px;
+
+        background: white;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+
+        box-shadow:
+            0 4px 14px rgba(15,23,42,.04);
+    }
+
+    .extra-icon {
+        margin-bottom: 8px;
+
+        font-size: 24px;
+    }
+
+    .extra-title {
+        margin-bottom: 4px;
+
+        color: #111827;
+
+        font-size: 12px;
+        font-weight: 900;
+    }
+
+    .extra-text {
+        color: #64748b;
+
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+
+    /* RESPONSIVE */
+
+    @@media (max-width: 850px) {
+
+        .details-card {
+            grid-template-columns: 1fr;
+        }
+
+        .details-image-wrapper {
+            min-height: 350px;
+        }
+
+        .details-extra {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+    @@media (max-width: 600px) {
+
+        .details-container {
+            width: calc(100% - 24px);
+        }
+
+        .details-card {
+            padding: 20px;
+        }
+
+        .details-name {
+            font-size: 30px;
+        }
+
+    }
+
+</style>
+
+
+<div class="details-page">
+
+    <div class="details-container">
+
+
+        <div class="details-breadcrumb">
+
+            <a asp-controller="Products"
+               asp-action="Index">
+
+                Tienda
+
+            </a>
+
+            &nbsp;/&nbsp;
+
+            @(string.IsNullOrWhiteSpace(Model.Category)
+                ? "Producto"
+                : Model.Category)
+
+            &nbsp;/&nbsp;
+
+            @Model.Name
+
+        </div>
+
+
+
+        <div class="details-card">
+
+
+            <div class="details-image-wrapper">
+
+                <img
+                    src="@(string.IsNullOrWhiteSpace(Model.ImageUrl)
+                        ? "/images/login-bg.png"
+                        : Model.ImageUrl)"
+                    alt="@Model.Name"
+                    onerror="this.onerror=null;this.src='/images/login-bg.png';" />
+
+            </div>
+
+
+
+            <div class="details-info">
+
+
+                <div class="details-category">
+
+                    @(string.IsNullOrWhiteSpace(Model.Category)
+                        ? "BigGame"
+                        : Model.Category)
+
+                </div>
+
+
+                <h1 class="details-name">
+
+                    @Model.Name
+
+                </h1>
+
+
+                <div class="details-description">
+
+                    @Model.Description
+
+                </div>
+
+
+                <div class="details-price">
+
+                    Bs @Model.Price.ToString("N2")
+
+                </div>
+
+
+
+                @if (Model.Stock == 0)
+                {
+
+                    <div class="details-stock out">
+
+                        Agotado
+
+                    </div>
+
+                }
+                else if (Model.Stock <= 5)
+                {
+
+                    <div class="details-stock low">
+
+                        Solo @Model.Stock disponibles
+
+                    </div>
+
+                }
+                else
+                {
+
+                    <div class="details-stock available">
+
+                        @Model.Stock disponibles
+
+                    </div>
+
+                }
+
+
+
+                <div class="details-actions">
+
+
+                    @if (Model.Stock > 0)
+                    {
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+
+                            <form asp-controller="Cart"
+                                  asp-action="Add"
+                                  method="post"
+                                  class="add-cart-form">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@Model.Id" />
+
+                                <button type="submit"
+                                        class="add-cart-button">
+
+                                    🛒 Agregar al carrito
+
+                                </button>
+
+                            </form>
+
+                        }
+                        else
+                        {
+
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               class="add-cart-button"
+                               style="
+                                   display:flex;
+                                   align-items:center;
+                                   justify-content:center;
+                                   text-decoration:none;
+                               ">
+
+                                Inicia sesión para comprar
+
+                            </a>
+
+                        }
+
+                    }
+                    else
+                    {
+
+                        <button type="button"
+                                class="add-cart-button"
+                                disabled>
+
+                            Producto agotado
+
+                        </button>
+
+                    }
+
+
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       class="back-store-button">
+
+                        ← Volver a la tienda
+
+                    </a>
+
+
+                </div>
+
+
+
+                @if (User.IsInRole("Admin"))
+                {
+
+                    <div class="admin-product-actions">
+
+
+                        <a asp-controller="Products"
+                           asp-action="Edit"
+                           asp-route-id="@Model.Id"
+                           class="admin-product-button edit">
+
+                            Editar producto
+
+                        </a>
+
+
+                        <a asp-controller="Products"
+                           asp-action="Delete"
+                           asp-route-id="@Model.Id"
+                           class="admin-product-button delete">
+
+                            Eliminar producto
+
+                        </a>
+
+
+                        <a asp-controller="Admin"
+                           asp-action="Products"
+                           class="admin-product-button admin">
+
+                            Administrar catálogo
+
+                        </a>
+
+
+                    </div>
+
+                }
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="details-extra">
+
+
+            <div class="extra-card">
+
+                <div class="extra-icon">
+                    📦
+                </div>
+
+                <div class="extra-title">
+                    Stock disponible
+                </div>
+
+                <div class="extra-text">
+
+                    Actualmente existen
+                    @Model.Stock unidades disponibles
+                    de este producto.
+
+                </div>
+
+            </div>
+
+
+
+            <div class="extra-card">
+
+                <div class="extra-icon">
+                    🔒
+                </div>
+
+                <div class="extra-title">
+                    Compra segura
+                </div>
+
+                <div class="extra-text">
+
+                    Tu carrito permanece asociado
+                    a tu sesión mientras navegas
+                    por BigGame.
+
+                </div>
+
+            </div>
+
+
+
+            <div class="extra-card">
+
+                <div class="extra-icon">
+                    🎮
+                </div>
+
+                <div class="extra-title">
+                    BigGame
+                </div>
+
+                <div class="extra-text">
+
+                    Videojuegos, consolas,
+                    accesorios y tecnología
+                    para jugadores.
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>

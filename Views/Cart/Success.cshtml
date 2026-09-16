@@ -1,0 +1,716 @@
+@model EcommerceApp.Models.Order
+
+@{
+    ViewData["Title"] = "Compra realizada";
+}
+
+<style>
+
+    .success-page {
+        min-height: 720px;
+
+        padding: 50px 0 80px;
+
+        background: #f4f6f9;
+    }
+
+    .success-container {
+        width: calc(100% - 40px);
+        max-width: 980px;
+
+        margin: auto;
+    }
+
+    .success-card {
+        overflow: hidden;
+
+        background: white;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+
+        box-shadow:
+            0 10px 30px rgba(15,23,42,.08);
+    }
+
+
+    /* CABECERA */
+
+    .success-header {
+        padding: 42px 30px;
+
+        text-align: center;
+
+        background:
+            linear-gradient(
+                135deg,
+                #172554,
+                #1e3a8a,
+                #312e81
+            );
+
+        color: white;
+    }
+
+    .success-icon {
+        width: 72px;
+        height: 72px;
+
+        margin: 0 auto 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background:
+            linear-gradient(
+                135deg,
+                #22c55e,
+                #16a34a
+            );
+
+        box-shadow:
+            0 0 0 8px rgba(255,255,255,.08);
+
+        color: white;
+
+        font-size: 36px;
+        font-weight: 900;
+    }
+
+    .success-header h1 {
+        margin: 0 0 9px;
+
+        font-size: 32px;
+        font-weight: 900;
+    }
+
+    .success-header p {
+        margin: 0;
+
+        color: #dbeafe;
+
+        font-size: 13px;
+    }
+
+    .order-number {
+        margin-top: 17px;
+
+        display: inline-flex;
+
+        padding: 8px 14px;
+
+        border-radius: 20px;
+
+        background: rgba(255,255,255,.12);
+
+        color: #67e8f9;
+
+        font-size: 11px;
+        font-weight: 900;
+    }
+
+
+    /* CONTENIDO */
+
+    .success-content {
+        padding: 30px;
+    }
+
+    .success-section {
+        margin-bottom: 28px;
+    }
+
+    .success-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        margin: 0 0 14px;
+
+        color: #111827;
+
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+
+    /* DATOS DEL PEDIDO */
+
+    .order-info-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 13px;
+    }
+
+    .info-card {
+        padding: 15px;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+
+        background: #f8fafc;
+    }
+
+    .info-label {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #64748b;
+
+        font-size: 9px;
+        font-weight: 800;
+
+        text-transform: uppercase;
+    }
+
+    .info-value {
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 800;
+
+        word-break: break-word;
+    }
+
+    .status-confirmed {
+        display: inline-flex;
+
+        padding: 5px 10px;
+
+        border-radius: 20px;
+
+        background: #dcfce7;
+        color: #15803d;
+
+        font-size: 10px;
+        font-weight: 900;
+    }
+
+
+    /* PRODUCTOS */
+
+    .order-products {
+        overflow: hidden;
+
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+    }
+
+    .order-product {
+        display: grid;
+
+        grid-template-columns:
+            1fr auto auto;
+
+        gap: 20px;
+
+        padding: 16px 18px;
+
+        align-items: center;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .order-product:last-child {
+        border-bottom: none;
+    }
+
+    .product-name {
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 900;
+    }
+
+    .product-unit-price {
+        margin-top: 4px;
+
+        color: #64748b;
+
+        font-size: 10px;
+    }
+
+    .product-quantity {
+        min-width: 80px;
+
+        color: #475569;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        text-align: center;
+    }
+
+    .product-subtotal {
+        min-width: 110px;
+
+        color: #111827;
+
+        font-size: 14px;
+        font-weight: 900;
+
+        text-align: right;
+    }
+
+
+    /* TOTAL */
+
+    .order-total-box {
+        margin-top: 20px;
+
+        padding: 20px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: space-between;
+
+        border-radius: 10px;
+
+        background: #111827;
+
+        color: white;
+    }
+
+    .order-total-label {
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .order-total-price {
+        font-size: 27px;
+        font-weight: 900;
+    }
+
+
+    /* MENSAJE */
+
+    .success-message {
+        padding: 17px;
+
+        border-radius: 9px;
+
+        background: #eff6ff;
+
+        color: #1e40af;
+
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    .success-message strong {
+        display: block;
+
+        margin-bottom: 4px;
+
+        font-size: 12px;
+    }
+
+
+    /* BOTONES */
+
+    .success-actions {
+        margin-top: 28px;
+
+        display: flex;
+        gap: 10px;
+
+        justify-content: center;
+
+        flex-wrap: wrap;
+    }
+
+    .success-button {
+        min-height: 44px;
+
+        padding: 0 22px;
+
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 6px;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        text-decoration: none;
+
+        transition: .2s;
+    }
+
+    .success-button.primary {
+        background:
+            linear-gradient(
+                135deg,
+                #06bfff,
+                #2563eb
+            );
+
+        color: white;
+    }
+
+    .success-button.secondary {
+        background: #111827;
+
+        color: white;
+    }
+
+    .success-button:hover {
+        color: white;
+
+        transform: translateY(-1px);
+
+        filter: brightness(1.08);
+    }
+
+
+    /* RESPONSIVE */
+
+    @@media (max-width: 700px) {
+
+        .success-container {
+            width: calc(100% - 24px);
+        }
+
+        .success-content {
+            padding: 20px;
+        }
+
+        .order-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .order-product {
+            grid-template-columns: 1fr;
+        }
+
+        .product-quantity,
+        .product-subtotal {
+            text-align: left;
+        }
+
+        .order-total-box {
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 7px;
+        }
+
+    }
+
+</style>
+
+
+<div class="success-page">
+
+    <div class="success-container">
+
+
+        <div class="success-card">
+
+
+            <div class="success-header">
+
+
+                <div class="success-icon">
+
+                    ✓
+
+                </div>
+
+
+                <h1>
+
+                    ¡Compra realizada!
+
+                </h1>
+
+
+                <p>
+
+                    Tu pedido fue registrado correctamente en BigGame.
+
+                </p>
+
+
+                <div class="order-number">
+
+                    Pedido #@Model.Id
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="success-content">
+
+
+                <section class="success-section">
+
+
+                    <h2 class="section-title">
+
+                        Información del pedido
+
+                    </h2>
+
+
+                    <div class="order-info-grid">
+
+
+                        <div class="info-card">
+
+                            <span class="info-label">
+                                Cliente
+                            </span>
+
+                            <span class="info-value">
+
+                                @Model.CustomerName
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="info-card">
+
+                            <span class="info-label">
+                                Correo
+                            </span>
+
+                            <span class="info-value">
+
+                                @Model.CustomerEmail
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="info-card">
+
+                            <span class="info-label">
+                                Dirección
+                            </span>
+
+                            <span class="info-value">
+
+                                @(string.IsNullOrWhiteSpace(Model.ShippingAddress)
+                                    ? "No especificada"
+                                    : Model.ShippingAddress)
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="info-card">
+
+                            <span class="info-label">
+                                Estado
+                            </span>
+
+                            <span class="status-confirmed">
+
+                                @Model.Status
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="info-card">
+
+                            <span class="info-label">
+                                Fecha
+                            </span>
+
+                            <span class="info-value">
+
+                                @Model.CreatedAt
+                                    .ToLocalTime()
+                                    .ToString("dd/MM/yyyy")
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="info-card">
+
+                            <span class="info-label">
+                                Hora
+                            </span>
+
+                            <span class="info-value">
+
+                                @Model.CreatedAt
+                                    .ToLocalTime()
+                                    .ToString("HH:mm")
+
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <section class="success-section">
+
+
+                    <h2 class="section-title">
+
+                        Productos comprados
+
+                    </h2>
+
+
+                    <div class="order-products">
+
+
+                        @foreach (var item in Model.Items)
+                        {
+
+                            <div class="order-product">
+
+
+                                <div>
+
+                                    <div class="product-name">
+
+                                        @item.ProductName
+
+                                    </div>
+
+
+                                    <div class="product-unit-price">
+
+                                        Precio unitario:
+                                        Bs @item.UnitPrice.ToString("N2")
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="product-quantity">
+
+                                    Cantidad:
+                                    <strong>
+                                        @item.Quantity
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="product-subtotal">
+
+                                    Bs @item.Subtotal.ToString("N2")
+
+                                </div>
+
+
+                            </div>
+
+                        }
+
+
+                    </div>
+
+
+
+                    <div class="order-total-box">
+
+
+                        <span class="order-total-label">
+
+                            TOTAL DEL PEDIDO
+
+                        </span>
+
+
+                        <span class="order-total-price">
+
+                            Bs @Model.TotalAmount.ToString("N2")
+
+                        </span>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <section class="success-section">
+
+
+                    <div class="success-message">
+
+                        <strong>
+                            🎮 Pedido registrado en BigGame
+                        </strong>
+
+                        La compra quedó almacenada en la base de datos
+                        y las unidades compradas fueron descontadas
+                        automáticamente del inventario.
+
+                    </div>
+
+
+                </section>
+
+
+
+                <div class="success-actions">
+
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       class="success-button primary">
+
+                        Seguir comprando
+
+                    </a>
+
+
+                    <a asp-controller="Cart"
+                       asp-action="Index"
+                       class="success-button secondary">
+
+                        Ver carrito
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>

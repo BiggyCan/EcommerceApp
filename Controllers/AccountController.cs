@@ -1,80 +1,274 @@
+using EcommerceApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using EcommerceApp.Models;
 
 namespace EcommerceApp.Controllers
 {
-    public class AccountController(
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager) : Controller
+    public class AccountController : Controller
     {
-        [HttpGet]
-        public IActionResult Login() => View();
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public AccountController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
-            if (!ModelState.IsValid)
-                return View(model);
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
 
-            var result = await signInManager.PasswordSignInAsync(
-                model.Email,
-                model.Password,
-                model.RememberMe,
-                lockoutOnFailure: false
+
+        // ==========================================
+        // LOGIN
+        // ==========================================
+
+        [HttpGet]
+        public IActionResult Login(
+            string? returnUrl = null)
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Products"
+                );
+            }
+
+            ViewBag.ReturnUrl =
+                returnUrl;
+
+            return View(
+                new LoginViewModel()
             );
-
-            if (result.Succeeded)
-                return RedirectToAction("Index", "Products");
-
-            ModelState.AddModelError(string.Empty, "Credenciales inválidas");
-
-            return View(model);
         }
 
-        [HttpGet]
-        public IActionResult Register() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Login(
+            LoginViewModel model,
+            string? returnUrl = null)
         {
             if (!ModelState.IsValid)
+            {
                 return View(model);
-
-            var user = new ApplicationUser
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                FullName = model.FullName,
-                Address = model.Address
-            };
-
-            var result = await userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                await signInManager.SignInAsync(user, isPersistent: false);
-
-                return RedirectToAction("Index", "Products");
             }
 
-            foreach (var error in result.Errors)
+
+            var user =
+                await _userManager
+                    .FindByEmailAsync(
+                        model.Email
+                    );
+
+
+            if (user == null)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Correo o contraseña incorrectos."
+                );
+
+                return View(model);
             }
 
-            return View(model);
+
+            var result =
+                await _signInManager
+                    .PasswordSignInAsync(
+                        user,
+                        model.Password,
+                        model.RememberMe,
+                        lockoutOnFailure: false
+                    );
+
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Correo o contraseña incorrectos."
+                );
+
+                return View(model);
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(returnUrl)
+                &&
+                Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+
+            if (await _userManager
+                .IsInRoleAsync(
+                    user,
+                    "Admin"
+                ))
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Admin"
+                );
+            }
+
+
+            return RedirectToAction(
+                "Index",
+                "Products"
+            );
         }
+
+
+        // ==========================================
+        // REGISTRO
+        // ==========================================
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Products"
+                );
+            }
+
+            return View(
+                new RegisterViewModel()
+            );
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(
+            RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+
+            var existingUser =
+                await _userManager
+                    .FindByEmailAsync(
+                        model.Email
+                    );
+
+
+            if (existingUser != null)
+            {
+                ModelState.AddModelError(
+                    nameof(model.Email),
+                    "Ya existe una cuenta registrada con este correo."
+                );
+
+                return View(model);
+            }
+
+
+            var user =
+                new ApplicationUser
+                {
+                    UserName =
+                        model.Email,
+
+                    Email =
+                        model.Email,
+
+                    FullName =
+                        model.FullName,
+
+                    Address =
+                        model.Address,
+
+                    EmailConfirmed =
+                        true,
+
+                    CreatedAt =
+                        DateTime.UtcNow
+                };
+
+
+            var result =
+                await _userManager
+                    .CreateAsync(
+                        user,
+                        model.Password
+                    );
+
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(
+                        string.Empty,
+                        error.Description
+                    );
+                }
+
+                return View(model);
+            }
+
+
+            var roleResult =
+                await _userManager
+                    .AddToRoleAsync(
+                        user,
+                        "User"
+                    );
+
+
+            if (!roleResult.Succeeded)
+            {
+                await _userManager
+                    .DeleteAsync(user);
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    "No se pudo completar el registro. Intenta nuevamente."
+                );
+
+                return View(model);
+            }
+
+
+            await _signInManager
+                .SignInAsync(
+                    user,
+                    isPersistent: false
+                );
+
+
+            return RedirectToAction(
+                "Index",
+                "Products"
+            );
+        }
+
+
+        // ==========================================
+        // CERRAR SESIÓN
+        // ==========================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
+            await _signInManager
+                .SignOutAsync();
 
-            return RedirectToAction("Index", "Home");
+
+            return RedirectToAction(
+                "Index",
+                "Products"
+            );
         }
     }
 }

@@ -1,59 +1,3135 @@
 @model List<EcommerceApp.Models.Product>
 
-<h2>Productos</h2>
+@{
+    ViewData["Title"] = "Tienda";
 
-@if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
-{
-    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">
-        Crear Producto
-    </a>
+    var products = Model ?? new List<EcommerceApp.Models.Product>();
+
+    var search = Context.Request.Query["search"].ToString();
+    var category = Context.Request.Query["category"].ToString();
+
+    var isSearch =
+        !string.IsNullOrWhiteSpace(search) ||
+        !string.IsNullOrWhiteSpace(category);
+
+
+    List<EcommerceApp.Models.Product> Pick(params string[] names)
+    {
+        var result = new List<EcommerceApp.Models.Product>();
+
+        foreach (var name in names)
+        {
+            var product =
+                products.FirstOrDefault(
+                    p => p.Name.Contains(
+                        name,
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                );
+
+            if (
+                product != null &&
+                !result.Any(p => p.Id == product.Id)
+            )
+            {
+                result.Add(product);
+            }
+        }
+
+        return result;
+    }
+
+
+    string TrustedImage(EcommerceApp.Models.Product product)
+    {
+        var name = product.Name;
+
+        if (name.Contains("30th Celebration", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-30th.jpg";
+
+        if (name.Contains("Delta Reign", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-delta-reign.jpg";
+
+        if (name.Contains("Pitch Black", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-pitch-black.jpg";
+
+        if (name.Contains("Chaos Rising", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-chaos-rising.jpg";
+
+        if (name.Contains("Perfect Order", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-perfect-order.jpg";
+
+        if (name.Contains("Onimusha", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/onimusha-ps5.jpg";
+
+        if (name.Contains("Dawnwalker", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/blood-of-dawnwalker.jpg";
+
+        if (name.Contains("Wolverine", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/wolverine-ps5.jpg";
+
+        if (name.Contains("NBA 2K27", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/nba2k27-xbox.jpg";
+
+        if (
+            name.Contains("Switch 2 Pro Controller",
+            StringComparison.OrdinalIgnoreCase)
+        )
+            return "/images/products/switch2-pro-controller.jpg";
+
+        return "";
+    }
+
+
+    string ProductIcon(EcommerceApp.Models.Product product)
+    {
+        var name = product.Name.ToLowerInvariant();
+        var productCategory = product.Category?.ToLowerInvariant() ?? "";
+
+        if (name.Contains("controller") || name.Contains("dualsense"))
+            return "🎮";
+
+        if (name.Contains("headset"))
+            return "🎧";
+
+        if (name.Contains("keyboard"))
+            return "⌨️";
+
+        if (name.Contains("ssd"))
+            return "💾";
+
+        if (name.Contains("gift card"))
+            return "💳";
+
+        if (
+            name.Contains("figure") ||
+            name.Contains("funko") ||
+            name.Contains("plush")
+        )
+            return "🧸";
+
+        if (productCategory.Contains("trading"))
+            return "🃏";
+
+        if (productCategory.Contains("consol"))
+            return "🕹️";
+
+        if (productCategory.Contains("video"))
+            return "🎮";
+
+        if (productCategory.Contains("pc"))
+            return "🖥️";
+
+        if (productCategory.Contains("coleccion"))
+            return "⭐";
+
+        if (productCategory.Contains("digital"))
+            return "💳";
+
+        return "🎮";
+    }
+
+
+    var pokemonProducts =
+        Pick(
+            "30th Celebration",
+            "Delta Reign",
+            "Pitch Black",
+            "Chaos Rising",
+            "Perfect Order"
+        );
+
+
+    var featuredProducts =
+        Pick(
+            "Onimusha",
+            "Blood of Dawnwalker",
+            "NBA 2K27",
+            "Wolverine",
+            "30th Celebration",
+            "Delta Reign",
+            "Chaos Rising",
+            "Perfect Order"
+        );
+
+
+    var videoGames =
+        products
+            .Where(p => p.Category == "Videojuegos")
+            .ToList();
+
+
+    var accessories =
+        products
+            .Where(
+                p =>
+                    p.Category == "Accesorios" ||
+                    p.Category == "PC Gaming"
+            )
+            .ToList();
+
+
+    var collectibles =
+        products
+            .Where(p => p.Category == "Coleccionables")
+            .ToList();
+
+
+    var tradingCards =
+        products
+            .Where(p => p.Category == "Trading Cards")
+            .ToList();
+
+
+    var consoles =
+        products
+            .Where(p => p.Category == "Consolas")
+            .ToList();
+
+
+    var digitalProducts =
+        products
+            .Where(
+                p =>
+                    p.Category == "Tienda digital" ||
+                    p.Category == "Digital"
+            )
+            .ToList();
 }
 
-<div class="row">
-    @foreach (var product in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card">
 
-                <img src="@(product.ImageUrl ?? "/images/default-product.jpg")"
-                     class="card-img-top"
-                     alt="@product.Name" />
+<style>
 
-                <div class="card-body">
-                    <h5 class="card-title">@product.Name</h5>
+    * {
+        box-sizing: border-box;
+    }
 
-                    <p class="card-text">@product.Description</p>
+    .bg-store {
+        width: 100%;
+        background: #ffffff;
+        color: #0f172a;
+    }
 
-                    <p class="card-text">
-                        <strong>Precio:</strong>
-                        @product.Price.ToString("C")
+    .bg-container {
+        width: calc(100% - 40px);
+        max-width: 1180px;
+        margin: auto;
+    }
+
+    .bg-section {
+        padding: 40px 0;
+    }
+
+    .bg-soft {
+        background: #f4f6f9;
+    }
+
+    .bg-heading-row {
+        margin-bottom: 20px;
+
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .bg-title {
+        margin: 0;
+
+        font-size: 29px;
+        line-height: 1.08;
+
+        font-weight: 900;
+
+        color: #111827;
+    }
+
+    .bg-subtitle {
+        margin: 5px 0 0;
+
+        color: #64748b;
+
+        font-size: 11px;
+    }
+
+    .bg-link {
+        color: #2563eb;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+    }
+
+
+    /* ================================
+       HERO
+    ================================= */
+
+    .hero {
+        margin-top: 24px;
+
+        min-height: 385px;
+
+        overflow: hidden;
+
+        position: relative;
+
+        border-radius: 11px;
+
+        background:
+            linear-gradient(
+                90deg,
+                rgba(3,8,25,.97) 0%,
+                rgba(9,17,55,.84) 46%,
+                rgba(20,20,90,.18) 100%
+            ),
+            url('/images/login-bg.png');
+
+        background-position: center;
+        background-size: cover;
+
+        box-shadow:
+            0 14px 35px rgba(15,23,42,.12);
+    }
+
+    .hero-inner {
+        width: 58%;
+        min-height: 385px;
+
+        padding: 55px 50px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        color: white;
+    }
+
+    .hero-label {
+        margin-bottom: 10px;
+
+        color: #5ee7ff;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+    }
+
+    .hero h1 {
+        margin: 0;
+
+        max-width: 570px;
+
+        font-size: 47px;
+        line-height: 1;
+
+        font-weight: 900;
+    }
+
+    .hero h1 span {
+        color: #20c7f7;
+    }
+
+    .hero p {
+        max-width: 540px;
+
+        margin: 17px 0 24px;
+
+        color: #e2e8f0;
+
+        font-size: 14px;
+        line-height: 1.55;
+    }
+
+    .primary-button {
+        width: fit-content;
+
+        min-height: 46px;
+
+        padding: 0 24px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 5px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #05bff2,
+                #2563eb
+            );
+
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition: .2s;
+    }
+
+    .primary-button:hover {
+        color: white;
+
+        transform: translateY(-1px);
+
+        filter: brightness(1.08);
+    }
+
+
+    /* ================================
+       TABS
+    ================================= */
+
+    .tabs {
+        margin: 17px 0 20px;
+
+        display: flex;
+
+        gap: 8px;
+
+        overflow-x: auto;
+
+        scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tab {
+        min-height: 34px;
+
+        padding: 0 15px;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+
+        background: #ffffff;
+        color: #111827;
+
+        white-space: nowrap;
+
+        font-size: 9px;
+        font-weight: 900;
+    }
+
+    .tab.active {
+        border-color: #111827;
+
+        background: #111827;
+        color: white;
+    }
+
+
+    /* ================================
+       PRODUCT CARD
+    ================================= */
+
+    .products-row {
+        display: flex;
+
+        gap: 12px;
+
+        overflow-x: auto;
+
+        padding: 3px 2px 14px;
+
+        scroll-behavior: smooth;
+
+        scrollbar-width: none;
+    }
+
+    .products-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .product-card {
+        flex: 0 0 188px;
+
+        min-height: 376px;
+
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column;
+
+        border: 1px solid #dce2ea;
+        border-radius: 7px;
+
+        background: white;
+
+        transition: .2s;
+    }
+
+    .product-card:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 10px 25px rgba(15,23,42,.10);
+    }
+
+    .product-visual {
+        width: 100%;
+        height: 215px;
+
+        padding: 10px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #f8fafc;
+    }
+
+    .product-visual img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+    }
+
+    .product-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 5px;
+
+        background:
+            radial-gradient(
+                circle at 50% 30%,
+                #2559c5,
+                #172554 55%,
+                #0f172a
+            );
+
+        font-size: 57px;
+    }
+
+    .product-info {
+        flex: 1;
+
+        padding: 11px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-category {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 7px;
+        font-weight: 900;
+
+        text-transform: uppercase;
+    }
+
+    .product-name {
+        min-height: 42px;
+
+        margin-bottom: 8px;
+
+        color: #111827;
+
+        font-size: 11px;
+        line-height: 1.28;
+
+        font-weight: 900;
+    }
+
+    .product-price {
+        margin-top: auto;
+
+        color: #111827;
+
+        font-size: 17px;
+        font-weight: 900;
+    }
+
+    .product-stock {
+        margin: 3px 0 10px;
+
+        color: #16a34a;
+
+        font-size: 8px;
+        font-weight: 800;
+    }
+
+    .product-stock.out {
+        color: #dc2626;
+    }
+
+    .product-button {
+        min-height: 34px;
+
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 8px;
+        font-weight: 900;
+
+        transition: .2s;
+    }
+
+    .product-button:hover {
+        background: #1d4ed8;
+        color: white;
+    }
+
+
+    /* ================================
+       CAROUSEL
+    ================================= */
+
+    .carousel-shell {
+        position: relative;
+    }
+
+    .arrow {
+        width: 38px;
+        height: 49px;
+
+        position: absolute;
+
+        top: 135px;
+
+        z-index: 4;
+
+        border: none;
+        border-radius: 4px;
+
+        background: rgba(15,23,42,.96);
+
+        color: white;
+
+        font-size: 22px;
+
+        cursor: pointer;
+
+        box-shadow:
+            0 5px 18px rgba(15,23,42,.20);
+    }
+
+    .arrow.left {
+        left: -15px;
+    }
+
+    .arrow.right {
+        right: -15px;
+    }
+
+
+    /* ================================
+       POKEMON
+    ================================= */
+
+    .pokemon-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(5, 1fr);
+
+        gap: 13px;
+    }
+
+    .pokemon-card {
+        padding: 13px;
+
+        display: block;
+
+        border: 1px solid #dce2ea;
+        border-radius: 7px;
+
+        background: white;
+
+        color: #111827;
+
+        text-align: center;
+        text-decoration: none;
+
+        transition: .2s;
+    }
+
+    .pokemon-card:hover {
+        color: #2563eb;
+
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 10px 24px rgba(15,23,42,.08);
+    }
+
+    .pokemon-card img {
+        width: 100%;
+        height: 225px;
+
+        object-fit: contain;
+    }
+
+    .pokemon-card strong {
+        display: block;
+
+        margin-top: 10px;
+
+        font-size: 10px;
+    }
+
+
+    /* ================================
+       BIGGAME PRO
+    ================================= */
+
+    .pro-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3,1fr);
+
+        gap: 15px;
+    }
+
+    .pro-card {
+        min-height: 175px;
+
+        padding: 25px;
+
+        position: relative;
+
+        overflow: hidden;
+
+        border-radius: 8px;
+
+        color: white;
+    }
+
+    .pro-card.one {
+        background:
+            linear-gradient(
+                135deg,
+                #172554,
+                #3046b9
+            );
+    }
+
+    .pro-card.two {
+        background:
+            linear-gradient(
+                135deg,
+                #312e81,
+                #7c3aed
+            );
+    }
+
+    .pro-card.three {
+        background:
+            linear-gradient(
+                135deg,
+                #075985,
+                #2563eb
+            );
+    }
+
+    .pro-label {
+        margin-bottom: 10px;
+
+        color: #67e8f9;
+
+        font-size: 8px;
+        font-weight: 900;
+    }
+
+    .pro-title {
+        margin-bottom: 8px;
+
+        font-size: 22px;
+        line-height: 1.05;
+
+        font-weight: 900;
+    }
+
+    .pro-text {
+        color: #dbeafe;
+
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .pro-link {
+        margin-top: 17px;
+
+        display: inline-block;
+
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 9px;
+        font-weight: 900;
+    }
+
+
+    /* ================================
+       CATEGORY TILES
+    ================================= */
+
+    .category-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(6,1fr);
+
+        gap: 12px;
+    }
+
+    .category-tile {
+        min-height: 155px;
+
+        padding: 15px;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #dce2ea;
+        border-radius: 7px;
+
+        background: white;
+
+        color: #111827;
+
+        text-decoration: none;
+
+        text-align: center;
+
+        transition: .2s;
+    }
+
+    .category-tile:hover {
+        color: #2563eb;
+
+        transform: translateY(-2px);
+
+        border-color: #93c5fd;
+    }
+
+    .category-circle {
+        width: 66px;
+        height: 66px;
+
+        margin-bottom: 13px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background:
+            linear-gradient(
+                135deg,
+                #eff6ff,
+                #e0e7ff
+            );
+
+        font-size: 31px;
+    }
+
+    .category-tile strong {
+        font-size: 10px;
+    }
+
+
+    /* ================================
+       PLATFORM PROMOS
+    ================================= */
+
+    .platform-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3,1fr);
+
+        gap: 15px;
+    }
+
+    .platform {
+        min-height: 235px;
+
+        padding: 28px;
+
+        position: relative;
+
+        overflow: hidden;
+
+        border-radius: 9px;
+
+        color: white;
+    }
+
+    .platform.playstation {
+        background:
+            linear-gradient(
+                135deg,
+                #001c66,
+                #006fcd
+            );
+    }
+
+    .platform.xbox {
+        background:
+            linear-gradient(
+                135deg,
+                #052e16,
+                #107c10
+            );
+    }
+
+    .platform.nintendo {
+        background:
+            linear-gradient(
+                135deg,
+                #7f1d1d,
+                #e60012
+            );
+    }
+
+    .platform-name {
+        margin-bottom: 10px;
+
+        font-size: 26px;
+        font-weight: 900;
+    }
+
+    .platform-text {
+        max-width: 290px;
+
+        color: rgba(255,255,255,.85);
+
+        font-size: 11px;
+        line-height: 1.55;
+    }
+
+    .platform-icon {
+        position: absolute;
+
+        right: 23px;
+        bottom: 13px;
+
+        opacity: .25;
+
+        font-size: 90px;
+    }
+
+    .platform-link {
+        margin-top: 21px;
+
+        min-height: 37px;
+
+        padding: 0 15px;
+
+        display: inline-flex;
+        align-items: center;
+
+        border-radius: 4px;
+
+        background: white;
+
+        color: #111827;
+
+        text-decoration: none;
+
+        font-size: 9px;
+        font-weight: 900;
+    }
+
+
+    /* ================================
+       DIGITAL
+    ================================= */
+
+    .digital-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3,1fr);
+
+        gap: 14px;
+    }
+
+    .digital-card {
+        min-height: 185px;
+
+        padding: 23px;
+
+        position: relative;
+
+        overflow: hidden;
+
+        border-radius: 8px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #0f172a,
+                #172554
+            );
+
+        color: white;
+    }
+
+    .digital-icon {
+        margin-bottom: 14px;
+
+        font-size: 33px;
+    }
+
+    .digital-title {
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .digital-text {
+        margin-top: 6px;
+
+        color: #cbd5e1;
+
+        font-size: 10px;
+    }
+
+    .digital-price {
+        margin-top: 18px;
+
+        color: #67e8f9;
+
+        font-size: 17px;
+        font-weight: 900;
+    }
+
+
+    /* ================================
+       RELEASE BANNERS
+    ================================= */
+
+    .release-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3,1fr);
+
+        gap: 15px;
+    }
+
+    .release {
+        height: 255px;
+
+        position: relative;
+
+        overflow: hidden;
+
+        border-radius: 8px;
+
+        background: #0f172a;
+    }
+
+    .release img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+    .release-overlay {
+        position: absolute;
+
+        inset: 0;
+
+        padding: 22px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+
+        background:
+            linear-gradient(
+                transparent,
+                rgba(2,6,23,.96)
+            );
+
+        color: white;
+    }
+
+    .release-title {
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .release-text {
+        margin-top: 4px;
+
+        color: #cbd5e1;
+
+        font-size: 9px;
+    }
+
+
+    /* ================================
+       BRANDS
+    ================================= */
+
+    .brands {
+        display: grid;
+
+        grid-template-columns:
+            repeat(5,1fr);
+
+        gap: 12px;
+    }
+
+    .brand {
+        min-height: 105px;
+
+        padding: 14px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #dce2ea;
+        border-radius: 7px;
+
+        background: white;
+
+        text-align: center;
+
+        color: #111827;
+
+        font-size: 17px;
+        font-weight: 900;
+
+        transition: .2s;
+    }
+
+    .brand:hover {
+        color: #2563eb;
+
+        transform: translateY(-2px);
+
+        border-color: #93c5fd;
+    }
+
+
+    /* ================================
+       BROWSE
+    ================================= */
+
+    .browse-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(8,1fr);
+
+        gap: 11px;
+    }
+
+    .browse {
+        min-height: 115px;
+
+        padding: 10px;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        border: 1px solid #dce2ea;
+        border-radius: 7px;
+
+        background: white;
+
+        color: #111827;
+
+        text-align: center;
+        text-decoration: none;
+
+        transition: .2s;
+    }
+
+    .browse:hover {
+        color: #2563eb;
+
+        border-color: #93c5fd;
+    }
+
+    .browse-icon {
+        margin-bottom: 8px;
+
+        font-size: 27px;
+    }
+
+    .browse strong {
+        font-size: 9px;
+    }
+
+
+    /* ================================
+       SEARCH
+    ================================= */
+
+    .search-page {
+        min-height: 650px;
+
+        padding: 35px 0 70px;
+
+        background: #f4f6f9;
+    }
+
+    .search-info {
+        margin-bottom: 20px;
+
+        padding: 23px;
+
+        border: 1px solid #dce2ea;
+        border-radius: 9px;
+
+        background: white;
+    }
+
+    .search-info h1 {
+        margin: 0 0 6px;
+
+        font-size: 28px;
+        font-weight: 900;
+    }
+
+    .search-info p {
+        margin: 3px 0;
+
+        color: #64748b;
+
+        font-size: 11px;
+    }
+
+    .search-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(5,1fr);
+
+        gap: 13px;
+    }
+
+    .back-store {
+        margin-top: 20px;
+
+        min-height: 40px;
+
+        padding: 0 17px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 5px;
+
+        background: #111827;
+
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 9px;
+        font-weight: 900;
+    }
+
+
+    /* ================================
+       RESPONSIVE
+    ================================= */
+
+    @@media(max-width:1000px) {
+
+        .pokemon-grid {
+            grid-template-columns:
+                repeat(3,1fr);
+        }
+
+        .category-grid {
+            grid-template-columns:
+                repeat(3,1fr);
+        }
+
+        .brands {
+            grid-template-columns:
+                repeat(3,1fr);
+        }
+
+        .browse-grid {
+            grid-template-columns:
+                repeat(4,1fr);
+        }
+
+        .search-grid {
+            grid-template-columns:
+                repeat(3,1fr);
+        }
+
+    }
+
+
+    @@media(max-width:700px) {
+
+        .bg-container {
+            width: calc(100% - 24px);
+        }
+
+        .hero-inner {
+            width: 100%;
+
+            padding: 40px 25px;
+        }
+
+        .hero h1 {
+            font-size: 35px;
+        }
+
+        .pro-grid,
+        .platform-grid,
+        .digital-grid,
+        .release-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .pokemon-grid,
+        .category-grid,
+        .brands,
+        .search-grid {
+            grid-template-columns:
+                repeat(2,1fr);
+        }
+
+        .browse-grid {
+            grid-template-columns:
+                repeat(3,1fr);
+        }
+
+    }
+
+</style>
+
+
+@if (isSearch)
+{
+    <section class="search-page">
+
+        <div class="bg-container">
+
+
+            <div class="search-info">
+
+                <h1>
+                    Resultados de búsqueda
+                </h1>
+
+
+                @if (!string.IsNullOrWhiteSpace(search))
+                {
+                    <p>
+                        Buscando:
+                        <strong>"@search"</strong>
                     </p>
+                }
 
-                    <p class="card-text">
-                        <strong>Stock:</strong>
-                        @product.Stock
+
+                @if (!string.IsNullOrWhiteSpace(category))
+                {
+                    <p>
+                        Categoría:
+                        <strong>@category</strong>
                     </p>
+                }
 
-                    <a href="@Url.Action("Details", new { id = product.Id })"
-                       class="btn btn-info">
-                        Ver
-                    </a>
 
-                    @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+                <p style="
+                    margin-top:8px;
+                    color:#2563eb;
+                    font-weight:900;
+                ">
+
+                    @products.Count resultado@(products.Count == 1 ? "" : "s")
+
+                </p>
+
+            </div>
+
+
+            @if (products.Any())
+            {
+                <div class="search-grid">
+
+
+                    @foreach (var product in products)
                     {
-                        <a href="@Url.Action("Edit", new { id = product.Id })"
-                           class="btn btn-warning">
-                            Editar
-                        </a>
+                        var image = TrustedImage(product);
 
-                        <a href="@Url.Action("Delete", new { id = product.Id })"
-                           class="btn btn-danger">
-                            Eliminar
-                        </a>
+
+                        <article class="product-card">
+
+                            <div class="product-visual">
+
+
+                                @if (!string.IsNullOrWhiteSpace(image))
+                                {
+                                    <img
+                                        src="@image"
+                                        alt="@product.Name"
+                                    />
+                                }
+                                else
+                                {
+                                    <div class="product-placeholder">
+
+                                        @ProductIcon(product)
+
+                                    </div>
+                                }
+
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <div class="product-category">
+                                    @product.Category
+                                </div>
+
+                                <div class="product-name">
+                                    @product.Name
+                                </div>
+
+                                <div class="product-price">
+
+                                    Bs @product.Price.ToString("N2")
+
+                                </div>
+
+
+                                @if (product.Stock > 0)
+                                {
+                                    <div class="product-stock">
+
+                                        @product.Stock disponibles
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="product-stock out">
+
+                                        Agotado
+
+                                    </div>
+                                }
+
+
+                                <a asp-controller="Products"
+                                   asp-action="Details"
+                                   asp-route-id="@product.Id"
+                                   class="product-button">
+
+                                    Ver producto
+
+                                </a>
+
+                            </div>
+
+                        </article>
                     }
+
+
+                </div>
+            }
+            else
+            {
+                <div style="
+                    padding:70px 20px;
+                    border:1px solid #dce2ea;
+                    border-radius:9px;
+                    background:white;
+                    text-align:center;
+                ">
+
+                    <div style="font-size:45px;">
+                        🔍
+                    </div>
+
+                    <h2 style="font-weight:900;">
+                        No encontramos productos
+                    </h2>
+
+                    <p style="color:#64748b;">
+                        Prueba con otro nombre.
+                    </p>
+
+                </div>
+            }
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="back-store">
+
+                ← Volver a toda la tienda
+
+            </a>
+
+
+        </div>
+
+    </section>
+}
+else
+{
+
+<div class="bg-store">
+
+
+    <!-- HERO -->
+
+    <div class="bg-container">
+
+        <section class="hero">
+
+            <div class="hero-inner">
+
+                <div class="hero-label">
+                    BIGGAME
+                </div>
+
+                <h1>
+
+                    Power to the
+                    <span>players.</span>
+
+                </h1>
+
+                <p>
+
+                    Discover video games, consoles,
+                    collectibles, trading cards,
+                    accessories and everything you need
+                    to keep playing.
+
+                </p>
+
+                <a href="#featured"
+                   class="primary-button">
+
+                    Shop Now
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+    <!-- POKEMON -->
+
+    <section class="bg-section bg-soft">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <div>
+
+                    <h2 class="bg-title">
+                        Shop Pokémon TCG By Set
+                    </h2>
+
                 </div>
 
             </div>
+
+
+            <div class="tabs">
+
+                <button class="tab active">
+                    30th Celebration
+                </button>
+
+                <button class="tab">
+                    Delta Reign
+                </button>
+
+                <button class="tab">
+                    Pitch Black
+                </button>
+
+                <button class="tab">
+                    Chaos Rising
+                </button>
+
+                <button class="tab">
+                    Perfect Order
+                </button>
+
+            </div>
+
+
+            <div class="pokemon-grid">
+
+
+                @foreach (var pokemon in pokemonProducts)
+                {
+                    var image = TrustedImage(pokemon);
+
+                    <a asp-controller="Products"
+                       asp-action="Details"
+                       asp-route-id="@pokemon.Id"
+                       class="pokemon-card">
+
+                        <img src="@image"
+                             alt="@pokemon.Name" />
+
+                        <strong>
+                            @{
+                                var shortName =
+                                    pokemon.Name
+                                        .Replace("Pokémon TCG ", "")
+                                        .Replace("Mega Evolution ", "")
+                                        .Replace(" Pack", "");
+                            }
+
+                            @shortName
+                        </strong>
+
+                    </a>
+                }
+
+
+            </div>
+
+
         </div>
-    }
+
+    </section>
+
+
+
+    <!-- FEATURED -->
+
+    <section class="bg-section"
+             id="featured">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <div>
+
+                    <h2 class="bg-title">
+                        Featured Products
+                    </h2>
+
+                    <p class="bg-subtitle">
+                        Check Out What's Trending Now
+                    </p>
+
+                </div>
+
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Products"
+                       asp-action="Create"
+                       class="back-store"
+                       style="margin:0;">
+
+                        + Nuevo producto
+
+                    </a>
+                }
+
+            </div>
+
+
+            <div class="tabs">
+
+                <button class="tab active">
+                    New Releases
+                </button>
+
+                <button class="tab">
+                    Pre-Orders
+                </button>
+
+                <button class="tab">
+                    Best Sellers
+                </button>
+
+                <button class="tab">
+                    Reduced Prices
+                </button>
+
+                <button class="tab">
+                    Only At BigGame
+                </button>
+
+            </div>
+
+
+            <div class="carousel-shell">
+
+                <button class="arrow left"
+                        onclick="moveRow('featuredRow', -600)">
+                    ‹
+                </button>
+
+
+                <div class="products-row"
+                     id="featuredRow">
+
+
+                    @foreach (var product in featuredProducts)
+                    {
+                        var image = TrustedImage(product);
+
+
+                        <article class="product-card">
+
+
+                            <div class="product-visual">
+
+
+                                @if (!string.IsNullOrWhiteSpace(image))
+                                {
+                                    <img
+                                        src="@image"
+                                        alt="@product.Name"
+                                    />
+                                }
+                                else
+                                {
+                                    <div class="product-placeholder">
+
+                                        @ProductIcon(product)
+
+                                    </div>
+                                }
+
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <div class="product-category">
+                                    @product.Category
+                                </div>
+
+                                <div class="product-name">
+                                    @product.Name
+                                </div>
+
+                                <div class="product-price">
+
+                                    Bs @product.Price.ToString("N2")
+
+                                </div>
+
+                                <div class="product-stock">
+
+                                    @product.Stock disponibles
+
+                                </div>
+
+                                <a asp-controller="Products"
+                                   asp-action="Details"
+                                   asp-route-id="@product.Id"
+                                   class="product-button">
+
+                                    Ver producto
+
+                                </a>
+
+                            </div>
+
+
+                        </article>
+                    }
+
+
+                </div>
+
+
+                <button class="arrow right"
+                        onclick="moveRow('featuredRow', 600)">
+                    ›
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- BIGGAME PRO -->
+
+    <section class="bg-section"
+             style="padding-top:0;">
+
+        <div class="bg-container">
+
+
+            <div class="pro-grid">
+
+
+                <div class="pro-card one">
+
+                    <div class="pro-label">
+                        BIGGAME PRO EXCLUSIVE
+                    </div>
+
+                    <div class="pro-title">
+                        Buy 1, Get 1 50% Off
+                    </div>
+
+                    <div class="pro-text">
+                        Fashion accessories and selected products.
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Accesorios"
+                       class="pro-link">
+
+                        Shop All →
+
+                    </a>
+
+                </div>
+
+
+
+                <div class="pro-card two">
+
+                    <div class="pro-label">
+                        BIGGAME PRO EXCLUSIVE
+                    </div>
+
+                    <div class="pro-title">
+                        Get 2 For $25
+                    </div>
+
+                    <div class="pro-text">
+                        Selected collectibles and promotional products.
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Coleccionables"
+                       class="pro-link">
+
+                        Shop All →
+
+                    </a>
+
+                </div>
+
+
+
+                <div class="pro-card three">
+
+                    <div class="pro-label">
+                        BIGGAME PRO EXCLUSIVE
+                    </div>
+
+                    <div class="pro-title">
+                        Get Up To 25% Off
+                    </div>
+
+                    <div class="pro-text">
+                        Selected controllers and gaming headsets.
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Controller"
+                       class="pro-link">
+
+                        Shop All →
+
+                    </a>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- COLLECTORS -->
+
+    <section class="bg-section">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <div>
+
+                    <h2 class="bg-title">
+                        Power to the Collectors
+                    </h2>
+
+                    <p class="bg-subtitle">
+                        Collectibles, toys, games, clothing & more
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="category-grid">
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Figure"
+                   class="category-tile">
+
+                    <div class="category-circle">
+                        🦸
+                    </div>
+
+                    <strong>Figures</strong>
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Funko"
+                   class="category-tile">
+
+                    <div class="category-circle">
+                        👾
+                    </div>
+
+                    <strong>Funko</strong>
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Plush"
+                   class="category-tile">
+
+                    <div class="category-circle">
+                        🧸
+                    </div>
+
+                    <strong>Plush</strong>
+
+                </a>
+
+
+                <div class="category-tile">
+
+                    <div class="category-circle">
+                        🎲
+                    </div>
+
+                    <strong>Board Games</strong>
+
+                </div>
+
+
+                <div class="category-tile">
+
+                    <div class="category-circle">
+                        👕
+                    </div>
+
+                    <strong>Graphic T-Shirts</strong>
+
+                </div>
+
+
+                <div class="category-tile">
+
+                    <div class="category-circle">
+                        💡
+                    </div>
+
+                    <strong>Lighting</strong>
+
+                </div>
+
+
+            </div>
+
+
+            @if (collectibles.Any())
+            {
+                <div class="products-row"
+                     style="margin-top:20px;">
+
+
+                    @foreach (var product in collectibles)
+                    {
+                        <article class="product-card">
+
+
+                            <div class="product-visual">
+
+                                <div class="product-placeholder">
+
+                                    @ProductIcon(product)
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <div class="product-category">
+                                    @product.Category
+                                </div>
+
+                                <div class="product-name">
+                                    @product.Name
+                                </div>
+
+                                <div class="product-price">
+
+                                    Bs @product.Price.ToString("N2")
+
+                                </div>
+
+                                <div class="product-stock">
+
+                                    @product.Stock disponibles
+
+                                </div>
+
+                                <a asp-controller="Products"
+                                   asp-action="Details"
+                                   asp-route-id="@product.Id"
+                                   class="product-button">
+
+                                    Ver producto
+
+                                </a>
+
+                            </div>
+
+                        </article>
+                    }
+
+
+                </div>
+            }
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- TRADING CARDS -->
+
+    <section class="bg-section bg-soft">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <div>
+
+                    <h2 class="bg-title">
+                        Chasing Hits, One Pull at a Time
+                    </h2>
+
+                    <p class="bg-subtitle">
+                        New & Sealed Trading Cards Available Now
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="tabs">
+
+                <button class="tab active">
+                    Pokémon
+                </button>
+
+                <button class="tab">
+                    One Piece
+                </button>
+
+                <button class="tab">
+                    Magic: The Gathering
+                </button>
+
+                <button class="tab">
+                    Yu-Gi-Oh!
+                </button>
+
+                <button class="tab">
+                    Disney Lorcana
+                </button>
+
+            </div>
+
+
+            <div class="products-row">
+
+
+                @foreach (var product in tradingCards)
+                {
+                    var image = TrustedImage(product);
+
+
+                    <article class="product-card">
+
+
+                        <div class="product-visual">
+
+                            @if (!string.IsNullOrWhiteSpace(image))
+                            {
+                                <img src="@image"
+                                     alt="@product.Name" />
+                            }
+                            else
+                            {
+                                <div class="product-placeholder">
+                                    🃏
+                                </div>
+                            }
+
+                        </div>
+
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                @product.Category
+                            </div>
+
+                            <div class="product-name">
+                                @product.Name
+                            </div>
+
+                            <div class="product-price">
+
+                                Bs @product.Price.ToString("N2")
+
+                            </div>
+
+                            <div class="product-stock">
+
+                                @product.Stock disponibles
+
+                            </div>
+
+                            <a asp-controller="Products"
+                               asp-action="Details"
+                               asp-route-id="@product.Id"
+                               class="product-button">
+
+                                Ver producto
+
+                            </a>
+
+                        </div>
+
+
+                    </article>
+                }
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- SPORTS -->
+
+    <section class="bg-section">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <div>
+
+                    <h2 class="bg-title">
+                        Score A Touchdown, Basket, or Homerun!
+                    </h2>
+
+                    <p class="bg-subtitle">
+                        New Sports Card Boxes & Packs
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="category-grid"
+                 style="grid-template-columns:repeat(5,1fr);">
+
+
+                <div class="category-tile">
+                    <div class="category-circle">🏆</div>
+                    <strong>All Sports</strong>
+                </div>
+
+                <div class="category-tile">
+                    <div class="category-circle">⚾</div>
+                    <strong>Baseball</strong>
+                </div>
+
+                <div class="category-tile">
+                    <div class="category-circle">🏀</div>
+                    <strong>Basketball</strong>
+                </div>
+
+                <div class="category-tile">
+                    <div class="category-circle">🏈</div>
+                    <strong>Football</strong>
+                </div>
+
+                <div class="category-tile">
+                    <div class="category-circle">⚽</div>
+                    <strong>Soccer</strong>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- VIDEOGAMES -->
+
+    <section class="bg-section bg-soft">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <div>
+
+                    <h2 class="bg-title">
+                        What Everyone's Playing
+                    </h2>
+
+                    <p class="bg-subtitle">
+                        Best-Selling Video Games Across All Platforms
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="tabs">
+
+                <button class="tab active">
+                    All Platforms
+                </button>
+
+                <button class="tab">
+                    Nintendo Switch
+                </button>
+
+                <button class="tab">
+                    Nintendo Switch 2
+                </button>
+
+                <button class="tab">
+                    PlayStation 5
+                </button>
+
+                <button class="tab">
+                    Xbox Series X|S
+                </button>
+
+                <button class="tab">
+                    PC Gaming
+                </button>
+
+                <button class="tab">
+                    Retro Consoles
+                </button>
+
+            </div>
+
+
+            <div class="carousel-shell">
+
+
+                <button class="arrow left"
+                        onclick="moveRow('gamesRow', -600)">
+                    ‹
+                </button>
+
+
+                <div class="products-row"
+                     id="gamesRow">
+
+
+                    @foreach (var product in videoGames)
+                    {
+                        var image = TrustedImage(product);
+
+
+                        <article class="product-card">
+
+
+                            <div class="product-visual">
+
+
+                                @if (!string.IsNullOrWhiteSpace(image))
+                                {
+                                    <img
+                                        src="@image"
+                                        alt="@product.Name"
+                                    />
+                                }
+                                else
+                                {
+                                    <div class="product-placeholder">
+
+                                        🎮
+
+                                    </div>
+                                }
+
+
+                            </div>
+
+
+                            <div class="product-info">
+
+                                <div class="product-category">
+                                    @product.Category
+                                </div>
+
+                                <div class="product-name">
+                                    @product.Name
+                                </div>
+
+                                <div class="product-price">
+
+                                    Bs @product.Price.ToString("N2")
+
+                                </div>
+
+                                <div class="product-stock">
+
+                                    @product.Stock disponibles
+
+                                </div>
+
+                                <a asp-controller="Products"
+                                   asp-action="Details"
+                                   asp-route-id="@product.Id"
+                                   class="product-button">
+
+                                    Ver producto
+
+                                </a>
+
+                            </div>
+
+
+                        </article>
+                    }
+
+
+                </div>
+
+
+                <button class="arrow right"
+                        onclick="moveRow('gamesRow', 600)">
+                    ›
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- PLATFORMS -->
+
+    <section class="bg-section">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <h2 class="bg-title">
+                    Shop By Platform
+                </h2>
+
+            </div>
+
+
+            <div class="platform-grid">
+
+
+                <div class="platform playstation">
+
+                    <div class="platform-name">
+                        PlayStation
+                    </div>
+
+                    <div class="platform-text">
+
+                        Explore PlayStation 5 games,
+                        controllers and accessories.
+
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="PlayStation"
+                       class="platform-link">
+
+                        Shop PlayStation
+
+                    </a>
+
+                    <div class="platform-icon">
+                        △
+                    </div>
+
+                </div>
+
+
+
+                <div class="platform nintendo">
+
+                    <div class="platform-name">
+                        Nintendo
+                    </div>
+
+                    <div class="platform-text">
+
+                        Nintendo Switch,
+                        Nintendo Switch 2,
+                        games and accessories.
+
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Nintendo"
+                       class="platform-link">
+
+                        Shop Nintendo
+
+                    </a>
+
+                    <div class="platform-icon">
+                        ◉
+                    </div>
+
+                </div>
+
+
+
+                <div class="platform xbox">
+
+                    <div class="platform-name">
+                        Xbox
+                    </div>
+
+                    <div class="platform-text">
+
+                        Xbox Series X|S,
+                        controllers, games
+                        and accessories.
+
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Xbox"
+                       class="platform-link">
+
+                        Shop Xbox
+
+                    </a>
+
+                    <div class="platform-icon">
+                        X
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ACCESSORIES -->
+
+    <section class="bg-section bg-soft">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <div>
+
+                    <h2 class="bg-title">
+                        When Gear Fails, Get Back in the Game
+                    </h2>
+
+                    <p class="bg-subtitle">
+
+                        Replacement controllers,
+                        headsets, storage & console accessories
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="tabs">
+
+                <button class="tab active">
+                    Out of Control?
+                </button>
+
+                <button class="tab">
+                    Can't Communicate?
+                </button>
+
+                <button class="tab">
+                    Losing Your Grip?
+                </button>
+
+                <button class="tab">
+                    Need More Space?
+                </button>
+
+                <button class="tab">
+                    Low on Power?
+                </button>
+
+            </div>
+
+
+            <div class="products-row">
+
+
+                @foreach (var product in accessories)
+                {
+                    var image = TrustedImage(product);
+
+
+                    <article class="product-card">
+
+
+                        <div class="product-visual">
+
+
+                            @if (!string.IsNullOrWhiteSpace(image))
+                            {
+                                <img
+                                    src="@image"
+                                    alt="@product.Name"
+                                />
+                            }
+                            else
+                            {
+                                <div class="product-placeholder">
+
+                                    @ProductIcon(product)
+
+                                </div>
+                            }
+
+
+                        </div>
+
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                @product.Category
+                            </div>
+
+                            <div class="product-name">
+                                @product.Name
+                            </div>
+
+                            <div class="product-price">
+
+                                Bs @product.Price.ToString("N2")
+
+                            </div>
+
+                            <div class="product-stock">
+
+                                @product.Stock disponibles
+
+                            </div>
+
+                            <a asp-controller="Products"
+                               asp-action="Details"
+                               asp-route-id="@product.Id"
+                               class="product-button">
+
+                                Ver producto
+
+                            </a>
+
+                        </div>
+
+
+                    </article>
+                }
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- DIGITAL STORE -->
+
+    <section class="bg-section">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <div>
+
+                    <h2 class="bg-title">
+                        Digital Store
+                    </h2>
+
+                    <p class="bg-subtitle">
+                        Games, gift cards and digital content
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="tabs">
+
+                <button class="tab active">
+                    Top Downloads
+                </button>
+
+                <button class="tab">
+                    Xbox
+                </button>
+
+                <button class="tab">
+                    Nintendo Switch
+                </button>
+
+                <button class="tab">
+                    PC Games
+                </button>
+
+                <button class="tab">
+                    Virtual Currency
+                </button>
+
+            </div>
+
+
+            <div class="digital-grid">
+
+
+                @foreach (var product in digitalProducts.Take(3))
+                {
+                    <a asp-controller="Products"
+                       asp-action="Details"
+                       asp-route-id="@product.Id"
+                       class="digital-card"
+                       style="text-decoration:none;">
+
+
+                        <div class="digital-icon">
+                            💳
+                        </div>
+
+                        <div class="digital-title">
+                            @product.Name
+                        </div>
+
+                        <div class="digital-text">
+                            @product.Description
+                        </div>
+
+                        <div class="digital-price">
+
+                            Bs @product.Price.ToString("N2")
+
+                        </div>
+
+
+                    </a>
+                }
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- RELEASES -->
+
+    <section class="bg-section bg-soft">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <h2 class="bg-title">
+                    New & Upcoming
+                </h2>
+
+            </div>
+
+
+            <div class="release-grid">
+
+
+                <div class="release">
+
+                    <img src="/images/products/onimusha-ps5.jpg"
+                         alt="Onimusha" />
+
+                    <div class="release-overlay">
+
+                        <div class="release-title">
+                            Onimusha Way of the Sword
+                        </div>
+
+                        <div class="release-text">
+                            Shop Now
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="release">
+
+                    <img src="/images/products/wolverine-ps5.jpg"
+                         alt="Marvel Wolverine" />
+
+                    <div class="release-overlay">
+
+                        <div class="release-title">
+                            Marvel's Wolverine
+                        </div>
+
+                        <div class="release-text">
+                            PlayStation 5
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="release">
+
+                    <img src="/images/products/nba2k27-xbox.jpg"
+                         alt="NBA 2K27" />
+
+                    <div class="release-overlay">
+
+                        <div class="release-title">
+                            NBA 2K27
+                        </div>
+
+                        <div class="release-text">
+                            Xbox Series X
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="release">
+
+                    <img src="/images/products/blood-of-dawnwalker.jpg"
+                         alt="Blood of Dawnwalker" />
+
+                    <div class="release-overlay">
+
+                        <div class="release-title">
+                            The Blood of Dawnwalker
+                        </div>
+
+                        <div class="release-text">
+                            Discover the adventure
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="release">
+
+                    <img src="/images/products/switch2-pro-controller.jpg"
+                         alt="Nintendo Switch 2" />
+
+                    <div class="release-overlay">
+
+                        <div class="release-title">
+                            Nintendo Switch 2
+                        </div>
+
+                        <div class="release-text">
+                            Accessories available now
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="release">
+
+                    <img src="/images/login-bg.png"
+                         alt="BigGame" />
+
+                    <div class="release-overlay">
+
+                        <div class="release-title">
+                            Discover What's Next
+                        </div>
+
+                        <div class="release-text">
+                            Only at BigGame
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- BRANDS -->
+
+    <section class="bg-section">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <h2 class="bg-title">
+                    Top Brands For Every Fan
+                </h2>
+
+            </div>
+
+
+            <div class="brands">
+
+                <div class="brand">PlayStation</div>
+                <div class="brand">Nintendo</div>
+                <div class="brand">Xbox</div>
+                <div class="brand">Pokémon</div>
+                <div class="brand">Funko</div>
+
+                <div class="brand">Marvel</div>
+                <div class="brand">Capcom</div>
+                <div class="brand">Turtle Beach</div>
+                <div class="brand">Microsoft</div>
+                <div class="brand">Sony</div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- BROWSE -->
+
+    <section class="bg-section bg-soft">
+
+        <div class="bg-container">
+
+
+            <div class="bg-heading-row">
+
+                <h2 class="bg-title">
+                    Browse By Category
+                </h2>
+
+            </div>
+
+
+            <div class="browse-grid">
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Pokémon"
+                   class="browse">
+
+                    <div class="browse-icon">🃏</div>
+                    <strong>Trading Cards</strong>
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="PlayStation"
+                   class="browse">
+
+                    <div class="browse-icon">🎮</div>
+                    <strong>Video Games</strong>
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Consola"
+                   class="browse">
+
+                    <div class="browse-icon">🕹️</div>
+                    <strong>Consoles</strong>
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Controller"
+                   class="browse">
+
+                    <div class="browse-icon">🎮</div>
+                    <strong>Controllers</strong>
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="PC"
+                   class="browse">
+
+                    <div class="browse-icon">🖥️</div>
+                    <strong>PC Gaming</strong>
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Headset"
+                   class="browse">
+
+                    <div class="browse-icon">🎧</div>
+                    <strong>Headsets</strong>
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Coleccionables"
+                   class="browse">
+
+                    <div class="browse-icon">🧸</div>
+                    <strong>Collectibles</strong>
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Gift Card"
+                   class="browse">
+
+                    <div class="browse-icon">🎁</div>
+                    <strong>Gift Cards</strong>
+
+                </a>
+
+
+                <div class="browse">
+                    <div class="browse-icon">🧩</div>
+                    <strong>Toys & Games</strong>
+                </div>
+
+
+                <div class="browse">
+                    <div class="browse-icon">👕</div>
+                    <strong>Clothing</strong>
+                </div>
+
+
+                <div class="browse">
+                    <div class="browse-icon">⭐</div>
+                    <strong>BigGame Pro</strong>
+                </div>
+
+
+                <div class="browse">
+                    <div class="browse-icon">🏷️</div>
+                    <strong>Deals</strong>
+                </div>
+
+
+                <div class="browse">
+                    <div class="browse-icon">♻️</div>
+                    <strong>Trade-In</strong>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
 </div>
+
+}
+
+
+<script>
+
+    function moveRow(id, amount) {
+
+        const row =
+            document.getElementById(id);
+
+        if (!row) {
+            return;
+        }
+
+        row.scrollBy({
+            left: amount,
+            behavior: "smooth"
+        });
+
+    }
+
+</script>

@@ -1,50 +1,1308 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using System.Text.Json
+
+@{
+    var cartCount = 0;
+
+    var cartJson =
+        Context.Session.GetString("BigGameCart");
+
+    if (!string.IsNullOrWhiteSpace(cartJson))
+    {
+        try
+        {
+            var cart =
+                JsonSerializer.Deserialize<
+                    List<EcommerceApp.Models.CartItem>
+                >(cartJson)
+                ?? new List<EcommerceApp.Models.CartItem>();
+
+            cartCount =
+                cart.Sum(item => item.Quantity);
+        }
+        catch
+        {
+            cartCount = 0;
+        }
+    }
+}
+
+<!DOCTYPE html>
+
+<html lang="es">
+
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EcommerceApp</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - BigGame
+    </title>
+
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/EcommerceApp.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/EcommerceApp.styles.css"
+          asp-append-version="true" />
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        body {
+            background: #ffffff;
+            color: #111827;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .biggame-header {
+            width: 100%;
+
+            background: #101b2d;
+
+            color: white;
+        }
+
+        .biggame-header-container {
+            width: calc(100% - 40px);
+            max-width: 1030px;
+
+            margin: auto;
+
+            min-height: 72px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 17px;
+        }
+
+        .biggame-menu {
+            flex: 0 0 45px;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .biggame-menu-icon {
+            margin-bottom: 3px;
+
+            font-size: 24px;
+            line-height: 24px;
+        }
+
+        .biggame-logo {
+            flex: 0 0 auto;
+
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            color: white;
+        }
+
+        .biggame-logo:hover {
+            color: white;
+        }
+
+        .biggame-logo-icon {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #06bfff,
+                    #4f46e5
+                );
+
+            box-shadow:
+                0 0 18px rgba(37,99,235,.25);
+
+            font-size: 18px;
+        }
+
+        .biggame-logo-text {
+            display: flex;
+            align-items: center;
+
+            font-size: 26px;
+            font-weight: 900;
+
+            letter-spacing: -.7px;
+        }
+
+        .biggame-logo-text .big {
+            color: #ffffff;
+        }
+
+        .biggame-logo-text .game {
+            color: #22bdf5;
+        }
+
+
+        /* BUSCADOR */
+
+        .biggame-search {
+            flex: 1;
+
+            min-width: 200px;
+
+            display: flex;
+
+            height: 40px;
+        }
+
+        .biggame-search-input {
+            flex: 1;
+
+            min-width: 0;
+            height: 40px;
+
+            border: none;
+
+            border-radius:
+                4px 0 0 4px;
+
+            outline: none;
+
+            padding: 0 15px;
+
+            background: #f4f6f8;
+
+            color: #111827;
+
+            font-size: 12px;
+        }
+
+        .biggame-search-input::placeholder {
+            color: #6b7280;
+        }
+
+        .biggame-search-input:focus {
+            background: white;
+
+            box-shadow:
+                inset 0 0 0 2px #0ea5e9;
+        }
+
+        .biggame-search-button {
+            flex: 0 0 48px;
+
+            height: 40px;
+
+            border: none;
+
+            border-radius:
+                0 4px 4px 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0cc4f5,
+                    #1677f2
+                );
+
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 17px;
+
+            transition: .2s;
+        }
+
+        .biggame-search-button:hover {
+            filter: brightness(1.08);
+        }
+
+
+        /* ACCIONES */
+
+        .biggame-actions {
+            flex: 0 0 auto;
+
+            display: flex;
+            align-items: center;
+
+            gap: 13px;
+        }
+
+        .biggame-action {
+            position: relative;
+
+            min-width: 45px;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            font-size: 8px;
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            transition: .2s;
+        }
+
+        .biggame-action:hover {
+            color: #38bdf8;
+
+            transform: translateY(-1px);
+        }
+
+        .biggame-action-icon {
+            height: 20px;
+
+            margin-bottom: 3px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 18px;
+            line-height: 18px;
+        }
+
+
+        /* CONTADOR DEL CARRITO */
+
+        .biggame-cart-count {
+            position: absolute;
+
+            top: -8px;
+            right: 0;
+
+            min-width: 17px;
+            height: 17px;
+
+            padding: 0 4px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 2px solid #101b2d;
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #06bfff,
+                    #2563eb
+                );
+
+            color: white;
+
+            font-size: 8px;
+            font-weight: 900;
+
+            line-height: 1;
+        }
+
+
+        /* SALIR */
+
+        .biggame-logout-form {
+            margin: 0;
+            padding: 0;
+        }
+
+        .biggame-logout-button {
+            min-width: 45px;
+
+            padding: 0;
+
+            border: none;
+
+            background: transparent;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            font-family: inherit;
+
+            font-size: 8px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+
+            transition: .2s;
+        }
+
+        .biggame-logout-button:hover {
+            color: #38bdf8;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* NAVEGACIÓN */
+
+        .biggame-nav {
+            width: 100%;
+
+            min-height: 36px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #17387b,
+                    #31319c
+                );
+        }
+
+        .biggame-nav-container {
+            width: calc(100% - 40px);
+            max-width: 1030px;
+
+            margin: auto;
+
+            min-height: 36px;
+
+            display: flex;
+            align-items: center;
+
+            overflow-x: auto;
+
+            scrollbar-width: none;
+        }
+
+        .biggame-nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .biggame-nav-link {
+            min-height: 36px;
+
+            padding: 0 14px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            transition: .2s;
+        }
+
+        .biggame-nav-link:hover {
+            color: #67e8f9;
+
+            background:
+                rgba(255,255,255,.06);
+        }
+
+        .biggame-nav-link.special {
+            color: #55dcff;
+        }
+
+
+        /* PROMOCIÓN */
+
+        .biggame-promo {
+            width: 100%;
+
+            min-height: 29px;
+
+            padding: 5px 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #050b18;
+
+            color: white;
+
+            text-align: center;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .biggame-promo span {
+            color: #22d3ee;
+        }
+
+
+        /* CONTENIDO */
+
+        .biggame-main {
+            width: 100%;
+
+            min-height: 500px;
+        }
+
+
+        /* FOOTER */
+
+        .biggame-footer {
+            margin-top: 0;
+
+            padding:
+                48px 20px 30px;
+
+            background: #0b1322;
+
+            color: #cbd5e1;
+        }
+
+        .biggame-footer-container {
+            width: 100%;
+            max-width: 1100px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                1.3fr
+                1fr
+                1fr
+                1fr;
+
+            gap: 35px;
+        }
+
+        .biggame-footer-logo {
+            margin-bottom: 12px;
+
+            color: white;
+
+            font-size: 25px;
+            font-weight: 900;
+        }
+
+        .biggame-footer-logo span {
+            color: #22bdf5;
+        }
+
+        .biggame-footer-description {
+            max-width: 300px;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+        .biggame-footer-title {
+            margin-bottom: 14px;
+
+            color: white;
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .biggame-footer-link {
+            display: block;
+
+            margin-bottom: 9px;
+
+            color: #94a3b8;
+
+            font-size: 11px;
+        }
+
+        .biggame-footer-link:hover {
+            color: #38bdf8;
+        }
+
+        .biggame-footer-bottom {
+            width: 100%;
+            max-width: 1100px;
+
+            margin: 35px auto 0;
+
+            padding-top: 22px;
+
+            border-top:
+                1px solid rgba(255,255,255,.10);
+
+            display: flex;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            color: #64748b;
+
+            font-size: 10px;
+        }
+
+
+        /* RESPONSIVE */
+
+        @@media (max-width: 1050px) {
+
+            .biggame-header-container {
+                max-width: none;
+            }
+
+            .biggame-nav-container {
+                max-width: none;
+            }
+
+            .biggame-actions {
+                gap: 8px;
+            }
+
+            .biggame-action {
+                min-width: 40px;
+            }
+
+        }
+
+
+        @@media (max-width: 850px) {
+
+            .biggame-header-container {
+                flex-wrap: wrap;
+
+                padding: 12px 0;
+
+                gap: 10px;
+            }
+
+            .biggame-menu {
+                order: 1;
+            }
+
+            .biggame-logo {
+                order: 2;
+            }
+
+            .biggame-actions {
+                order: 3;
+
+                margin-left: auto;
+            }
+
+            .biggame-search {
+                order: 4;
+
+                flex: 0 0 100%;
+            }
+
+            .biggame-footer-container {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @@media (max-width: 600px) {
+
+            .biggame-header-container {
+                width: calc(100% - 24px);
+            }
+
+            .biggame-logo-text {
+                font-size: 22px;
+            }
+
+            .biggame-logo-icon {
+                width: 34px;
+                height: 34px;
+            }
+
+            .biggame-actions {
+                gap: 5px;
+            }
+
+            .biggame-action {
+                min-width: 35px;
+
+                font-size: 7px;
+            }
+
+            .biggame-action-icon {
+                font-size: 16px;
+            }
+
+            .biggame-nav-container {
+                width: 100%;
+            }
+
+            .biggame-nav-link {
+                padding: 0 11px;
+            }
+
+            .biggame-footer-container {
+                grid-template-columns: 1fr;
+            }
+
+            .biggame-footer-bottom {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EcommerceApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+
+
+<header>
+
+
+    <div class="biggame-header">
+
+
+        <div class="biggame-header-container">
+
+
+            <div class="biggame-menu">
+
+                <div class="biggame-menu-icon">
+                    ☰
                 </div>
+
+                Menú
+
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="biggame-logo">
+
+
+                <div class="biggame-logo-icon">
+                    🎮
+                </div>
+
+
+                <div class="biggame-logo-text">
+
+                    <span class="big">
+                        BIG
+                    </span>
+
+                    <span class="game">
+                        GAME
+                    </span>
+
+                </div>
+
+
+            </a>
+
+
+
+            <form asp-controller="Products"
+                  asp-action="Index"
+                  method="get"
+                  class="biggame-search">
+
+
+                <input type="text"
+                       name="search"
+                       value="@Context.Request.Query["search"]"
+                       class="biggame-search-input"
+                       placeholder="Buscar juegos, consolas y más..."
+                       autocomplete="off" />
+
+
+                <button type="submit"
+                        class="biggame-search-button"
+                        aria-label="Buscar">
+
+                    🔍
+
+                </button>
+
+
+            </form>
+
+
+
+            <div class="biggame-actions">
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="canje"
+                   class="biggame-action">
+
+                    <span class="biggame-action-icon">
+                        ⇄
+                    </span>
+
+                    Canje
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   class="biggame-action">
+
+                    <span class="biggame-action-icon">
+                        ✦
+                    </span>
+
+                    BigGame Pro
+
+                </a>
+
+
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+
+                    @if (User.IsInRole("Admin"))
+                    {
+
+                        <a asp-controller="Admin"
+                           asp-action="Index"
+                           class="biggame-action">
+
+                            <span class="biggame-action-icon">
+                                ♟
+                            </span>
+
+                            Mi cuenta
+
+                        </a>
+
+                    }
+                    else
+                    {
+
+                        <a asp-controller="Orders"
+                           asp-action="MyOrders"
+                           class="biggame-action">
+
+                            <span class="biggame-action-icon">
+                                ♟
+                            </span>
+
+                            Mi cuenta
+
+                        </a>
+
+                    }
+
+
+
+                    <form asp-controller="Account"
+                          asp-action="Logout"
+                          method="post"
+                          class="biggame-logout-form">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <button type="submit"
+                                class="biggame-logout-button">
+
+                            <span class="biggame-action-icon">
+                                ↪
+                            </span>
+
+                            Salir
+
+                        </button>
+
+
+                    </form>
+
+                }
+                else
+                {
+
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       class="biggame-action">
+
+                        <span class="biggame-action-icon">
+                            ♟
+                        </span>
+
+                        Ingresar
+
+                    </a>
+
+                }
+
+
+
+                <a asp-controller="Cart"
+                   asp-action="Index"
+                   class="biggame-action">
+
+
+                    <span class="biggame-action-icon">
+                        🛒
+                    </span>
+
+
+                    @if (cartCount > 0)
+                    {
+
+                        <span class="biggame-cart-count">
+
+                            @(cartCount > 99
+                                ? "99+"
+                                : cartCount.ToString())
+
+                        </span>
+
+                    }
+
+
+                    Carrito
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - EcommerceApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+
+    <nav class="biggame-nav">
+
+
+        <div class="biggame-nav-container">
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="biggame-nav-link">
+
+                Categorías⌄
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="oferta"
+               class="biggame-nav-link special">
+
+                Ofertas
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="biggame-nav-link">
+
+                Mi tienda
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="coleccionable"
+               class="biggame-nav-link">
+
+                Coleccionables y más⌄
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="PlayStation"
+               class="biggame-nav-link">
+
+                PlayStation⌄
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Nintendo"
+               class="biggame-nav-link">
+
+                Nintendo Switch⌄
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Xbox"
+               class="biggame-nav-link">
+
+                Xbox⌄
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Seminuevo"
+               class="biggame-nav-link">
+
+                Seminuevos⌄
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="biggame-nav-link">
+
+                Nuevos y próximos
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="biggame-nav-link">
+
+                Solo en BigGame
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="digital"
+               class="biggame-nav-link">
+
+                Tienda digital
+
+            </a>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="retro"
+               class="biggame-nav-link">
+
+                Retro Gaming
+
+            </a>
+
+
+            <span class="biggame-nav-link">
+
+                🚚 Seguir
+
+            </span>
+
+
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+
+    </nav>
+
+
+
+    <div class="biggame-promo">
+
+        Descubre nuevos lanzamientos,
+        preventas y ofertas.&nbsp;
+
+        <span>
+            Todo en un solo lugar.
+        </span>
+
+    </div>
+
+
+</header>
+
+
+
+<main class="biggame-main"
+      role="main">
+
+    @RenderBody()
+
+</main>
+
+
+
+<footer class="biggame-footer">
+
+
+    <div class="biggame-footer-container">
+
+
+        <div>
+
+            <div class="biggame-footer-logo">
+
+                BIG<span>GAME</span>
+
+            </div>
+
+            <div class="biggame-footer-description">
+
+                Videojuegos, consolas, accesorios
+                y tecnología para todos los jugadores.
+
+            </div>
+
+        </div>
+
+
+
+        <div>
+
+            <div class="biggame-footer-title">
+                AYUDA
+            </div>
+
+            <a href="#"
+               class="biggame-footer-link">
+
+                Centro de ayuda
+
+            </a>
+
+            <a href="#"
+               class="biggame-footer-link">
+
+                Estado del pedido
+
+            </a>
+
+            <a href="#"
+               class="biggame-footer-link">
+
+                Cambios y devoluciones
+
+            </a>
+
+        </div>
+
+
+
+        <div>
+
+            <div class="biggame-footer-title">
+                BIGGAME
+            </div>
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="biggame-footer-link">
+
+                Tienda
+
+            </a>
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="oferta"
+               class="biggame-footer-link">
+
+                Ofertas
+
+            </a>
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="videojuego"
+               class="biggame-footer-link">
+
+                Videojuegos
+
+            </a>
+
+        </div>
+
+
+
+        <div>
+
+            <div class="biggame-footer-title">
+                CUENTA
+            </div>
+
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+
+                @if (User.IsInRole("Admin"))
+                {
+
+                    <a asp-controller="Admin"
+                       asp-action="Index"
+                       class="biggame-footer-link">
+
+                        Panel de administración
+
+                    </a>
+
+
+                    <a asp-controller="Orders"
+                       asp-action="Index"
+                       class="biggame-footer-link">
+
+                        Ventas
+
+                    </a>
+
+                }
+                else
+                {
+
+                    <a asp-controller="Orders"
+                       asp-action="MyOrders"
+                       class="biggame-footer-link">
+
+                        Mis pedidos
+
+                    </a>
+
+
+                    <a asp-controller="Cart"
+                       asp-action="Index"
+                       class="biggame-footer-link">
+
+                        Mi carrito
+
+                    </a>
+
+                }
+
+            }
+            else
+            {
+
+                <a asp-controller="Account"
+                   asp-action="Login"
+                   class="biggame-footer-link">
+
+                    Iniciar sesión
+
+                </a>
+
+
+                <a asp-controller="Account"
+                   asp-action="Register"
+                   class="biggame-footer-link">
+
+                    Crear cuenta
+
+                </a>
+
+            }
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="biggame-footer-bottom">
+
+
+        <span>
+            © 2026 BigGame
+        </span>
+
+
+        <span>
+            Tienda de videojuegos, consolas y accesorios
+        </span>
+
+
+    </div>
+
+
+</footer>
+
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="~/js/site.js"
+        asp-append-version="true"></script>
+
+
+@await RenderSectionAsync(
+    "Scripts",
+    required: false
+)
+
+
 </body>
+
 </html>

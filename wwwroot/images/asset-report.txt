@@ -1,0 +1,24 @@
+﻿
+BIGGAME
+LOTE FINAL DE RECURSOS
+
+PRODUCTOS
+Correctos: 11
+Errores: 14
+
+BANNERS
+Correctos: 1
+Errores: 5
+
+CATEGORIAS
+Preparadas: 5
+
+Productos:
+C:\Users\jaica\OneDrive\Escritorio\Actividad 2\EcommerceApp\wwwroot\images\products
+
+Banners:
+C:\Users\jaica\OneDrive\Escritorio\Actividad 2\EcommerceApp\wwwroot\images\banners
+
+Categorias:
+C:\Users\jaica\OneDrive\Escritorio\Actividad 2\EcommerceApp\wwwroot\images\categories
+
