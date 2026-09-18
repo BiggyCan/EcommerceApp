@@ -1,0 +1,1290 @@
+<style>
+    /* =========================================================
+       BIGGAME HOME HERO
+    ========================================================= */
+
+    .bg-hero {
+        width: 100%;
+
+        background: #ffffff;
+
+        padding:
+            18px
+            0
+            28px;
+    }
+
+    .bg-hero-container {
+        position: relative;
+
+        width: calc(100% - 32px);
+        max-width: 1500px;
+
+        height: 430px;
+
+        margin: 0 auto;
+
+        overflow: hidden;
+
+        border-radius: 10px;
+
+        background: #111111;
+    }
+
+
+    /* =========================================================
+       SLIDES
+    ========================================================= */
+
+    .bg-hero-slide {
+        position: absolute;
+
+        inset: 0;
+
+        display: flex;
+
+        align-items: center;
+
+        opacity: 0;
+
+        visibility: hidden;
+
+        transform: scale(1.015);
+
+        transition:
+            opacity 0.55s ease,
+            transform 0.75s ease,
+            visibility 0.55s ease;
+    }
+
+    .bg-hero-slide.active {
+        opacity: 1;
+
+        visibility: visible;
+
+        transform: scale(1);
+    }
+
+
+    /* =========================================================
+       SLIDE 1 - BIGGAME
+    ========================================================= */
+
+    .bg-hero-slide-biggame {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(3, 7, 20, 0.96) 0%,
+                rgba(5, 12, 35, 0.89) 42%,
+                rgba(4, 10, 30, 0.42) 70%,
+                rgba(4, 10, 30, 0.32) 100%
+            ),
+            url('/images/login-bg.png');
+
+        background-size: cover;
+
+        background-position:
+            center 46%;
+    }
+
+
+    /* =========================================================
+       SLIDE 2 - PLAYSTATION
+    ========================================================= */
+
+    .bg-hero-slide-playstation {
+        background:
+            radial-gradient(
+                circle at 78% 50%,
+                rgba(65, 145, 255, 0.82),
+                transparent 28%
+            ),
+            linear-gradient(
+                115deg,
+                #061c53 0%,
+                #073e9f 48%,
+                #0378ea 100%
+            );
+    }
+
+
+    /* =========================================================
+       SLIDE 3 - NINTENDO
+    ========================================================= */
+
+    .bg-hero-slide-nintendo {
+        background:
+            radial-gradient(
+                circle at 76% 40%,
+                rgba(255, 255, 255, 0.22),
+                transparent 28%
+            ),
+            linear-gradient(
+                115deg,
+                #8d0000 0%,
+                #d10000 45%,
+                #ff2020 100%
+            );
+    }
+
+
+    /* =========================================================
+       SLIDE 4 - XBOX
+    ========================================================= */
+
+    .bg-hero-slide-xbox {
+        background:
+            radial-gradient(
+                circle at 77% 48%,
+                rgba(155, 255, 110, 0.26),
+                transparent 27%
+            ),
+            linear-gradient(
+                115deg,
+                #05250d 0%,
+                #08751d 50%,
+                #13a530 100%
+            );
+    }
+
+
+    /* =========================================================
+       DECORACIÓN
+    ========================================================= */
+
+    .bg-hero-decoration {
+        position: absolute;
+
+        right: 6%;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        width: 430px;
+        height: 300px;
+
+        pointer-events: none;
+    }
+
+    .bg-hero-circle {
+        position: absolute;
+
+        border-radius: 50%;
+
+        border:
+            2px solid rgba(255, 255, 255, 0.20);
+    }
+
+    .bg-hero-circle-one {
+        width: 280px;
+        height: 280px;
+
+        right: 30px;
+        top: 10px;
+    }
+
+    .bg-hero-circle-two {
+        width: 190px;
+        height: 190px;
+
+        right: 75px;
+        top: 55px;
+    }
+
+    .bg-hero-circle-three {
+        width: 100px;
+        height: 100px;
+
+        right: 120px;
+        top: 100px;
+
+        background:
+            rgba(255, 255, 255, 0.08);
+    }
+
+    .bg-hero-controller {
+        position: absolute;
+
+        right: 103px;
+        top: 87px;
+
+        width: 138px;
+        height: 110px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 92px;
+
+        filter:
+            drop-shadow(
+                0 14px 20px
+                rgba(0, 0, 0, 0.28)
+            );
+    }
+
+
+    /* =========================================================
+       CONTENIDO
+    ========================================================= */
+
+    .bg-hero-content {
+        position: relative;
+
+        z-index: 4;
+
+        width: 57%;
+
+        padding-left: 74px;
+    }
+
+    .bg-hero-eyebrow {
+        display: inline-flex;
+
+        align-items: center;
+
+        min-height: 28px;
+
+        margin-bottom: 16px;
+
+        padding:
+            6px
+            11px;
+
+        border-radius: 4px;
+
+        background:
+            rgba(0, 0, 0, 0.30);
+
+        color: #ffffff;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1.1px;
+
+        text-transform: uppercase;
+    }
+
+    .bg-hero-title {
+        max-width: 690px;
+
+        margin:
+            0
+            0
+            15px;
+
+        color: #ffffff;
+
+        font-size: clamp(
+            42px,
+            5vw,
+            72px
+        );
+
+        line-height: 0.97;
+
+        font-weight: 900;
+
+        letter-spacing: -2.3px;
+
+        text-shadow:
+            0 4px 22px
+            rgba(0, 0, 0, 0.28);
+    }
+
+    .bg-hero-title-accent {
+        color: #31b5ff;
+    }
+
+    .bg-hero-description {
+        max-width: 590px;
+
+        margin:
+            0
+            0
+            25px;
+
+        color:
+            rgba(255, 255, 255, 0.88);
+
+        font-size: 16px;
+
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       BOTONES
+    ========================================================= */
+
+    .bg-hero-actions {
+        display: flex;
+
+        flex-wrap: wrap;
+
+        align-items: center;
+
+        gap: 12px;
+    }
+
+    .bg-hero-button {
+        min-height: 48px;
+
+        display: inline-flex;
+
+        align-items: center;
+        justify-content: center;
+
+        padding:
+            0
+            24px;
+
+        border-radius: 5px;
+
+        text-decoration: none;
+
+        font-size: 13px;
+
+        font-weight: 900;
+
+        transition:
+            transform 0.18s ease,
+            background 0.18s ease,
+            color 0.18s ease,
+            border-color 0.18s ease;
+    }
+
+    .bg-hero-button:hover {
+        transform:
+            translateY(-2px);
+    }
+
+    .bg-hero-button-primary {
+        border:
+            2px solid #ffffff;
+
+        background: #ffffff;
+
+        color: #111111;
+    }
+
+    .bg-hero-button-primary:hover {
+        background: #eeeeee;
+
+        color: #111111;
+    }
+
+    .bg-hero-button-secondary {
+        border:
+            2px solid rgba(255, 255, 255, 0.78);
+
+        background:
+            rgba(0, 0, 0, 0.16);
+
+        color: #ffffff;
+    }
+
+    .bg-hero-button-secondary:hover {
+        background: #ffffff;
+
+        color: #111111;
+    }
+
+
+    /* =========================================================
+       FLECHAS
+    ========================================================= */
+
+    .bg-hero-arrow {
+        position: absolute;
+
+        z-index: 15;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        width: 48px;
+        height: 68px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        border: none;
+
+        background:
+            rgba(0, 0, 0, 0.34);
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 36px;
+
+        transition:
+            background 0.2s ease;
+    }
+
+    .bg-hero-arrow:hover {
+        background:
+            rgba(0, 0, 0, 0.65);
+    }
+
+    .bg-hero-arrow-left {
+        left: 0;
+
+        border-radius:
+            0 5px 5px 0;
+    }
+
+    .bg-hero-arrow-right {
+        right: 0;
+
+        border-radius:
+            5px 0 0 5px;
+    }
+
+
+    /* =========================================================
+       INDICADORES
+    ========================================================= */
+
+    .bg-hero-dots {
+        position: absolute;
+
+        z-index: 16;
+
+        left: 50%;
+        bottom: 18px;
+
+        transform:
+            translateX(-50%);
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+    }
+
+    .bg-hero-dot {
+        width: 34px;
+        height: 5px;
+
+        padding: 0;
+
+        border: none;
+        border-radius: 10px;
+
+        background:
+            rgba(255, 255, 255, 0.38);
+
+        cursor: pointer;
+
+        transition:
+            width 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .bg-hero-dot.active {
+        width: 50px;
+
+        background: #ffffff;
+    }
+
+
+    /* =========================================================
+       BADGE DE PLATAFORMA
+    ========================================================= */
+
+    .bg-hero-platform {
+        position: absolute;
+
+        z-index: 5;
+
+        right: 7%;
+        bottom: 35px;
+
+        color:
+            rgba(255, 255, 255, 0.17);
+
+        font-size: 54px;
+
+        font-weight: 900;
+
+        letter-spacing: -2px;
+
+        text-transform: uppercase;
+
+        pointer-events: none;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 1050px) {
+
+        .bg-hero-container {
+            height: 390px;
+        }
+
+        .bg-hero-content {
+            width: 66%;
+
+            padding-left: 62px;
+        }
+
+        .bg-hero-decoration {
+            right: 2%;
+
+            transform:
+                translateY(-50%)
+                scale(0.85);
+        }
+
+        .bg-hero-platform {
+            font-size: 40px;
+        }
+    }
+
+
+    @@media (max-width: 780px) {
+
+        .bg-hero {
+            padding-top: 12px;
+        }
+
+        .bg-hero-container {
+            width: calc(100% - 20px);
+
+            height: 430px;
+        }
+
+        .bg-hero-slide {
+            align-items: flex-end;
+        }
+
+        .bg-hero-content {
+            width: 100%;
+
+            padding:
+                40px
+                52px
+                62px;
+        }
+
+        .bg-hero-title {
+            font-size: 44px;
+
+            max-width: 520px;
+        }
+
+        .bg-hero-description {
+            max-width: 500px;
+        }
+
+        .bg-hero-decoration {
+            top: 15%;
+            right: 0;
+
+            transform:
+                scale(0.56);
+
+            transform-origin:
+                top right;
+
+            opacity: 0.70;
+        }
+
+        .bg-hero-platform {
+            display: none;
+        }
+
+        .bg-hero-arrow {
+            width: 40px;
+            height: 58px;
+
+            font-size: 30px;
+        }
+    }
+
+
+    @@media (max-width: 540px) {
+
+        .bg-hero-container {
+            width: calc(100% - 14px);
+
+            min-height: 450px;
+
+            border-radius: 7px;
+        }
+
+        .bg-hero-content {
+            padding:
+                38px
+                38px
+                62px;
+        }
+
+        .bg-hero-title {
+            font-size: 38px;
+
+            letter-spacing: -1.2px;
+        }
+
+        .bg-hero-description {
+            font-size: 14px;
+        }
+
+        .bg-hero-actions {
+            flex-direction: column;
+
+            align-items: stretch;
+
+            max-width: 260px;
+        }
+
+        .bg-hero-button {
+            width: 100%;
+        }
+
+        .bg-hero-decoration {
+            opacity: 0.45;
+        }
+
+        .bg-hero-dot {
+            width: 22px;
+        }
+
+        .bg-hero-dot.active {
+            width: 35px;
+        }
+    }
+</style>
+
+
+<section class="bg-hero"
+         aria-label="Promociones destacadas de BigGame">
+
+    <div class="bg-hero-container"
+         id="bigGameHero">
+
+
+        <!-- =====================================================
+             SLIDE 1
+        ====================================================== -->
+
+        <article class="bg-hero-slide bg-hero-slide-biggame active">
+
+            <div class="bg-hero-content">
+
+                <span class="bg-hero-eyebrow">
+                    BIGGAME
+                </span>
+
+                <h1 class="bg-hero-title">
+
+                    Tu próxima aventura
+                    <span class="bg-hero-title-accent">
+                        comienza aquí.
+                    </span>
+
+                </h1>
+
+                <p class="bg-hero-description">
+
+                    Videojuegos, consolas, accesorios,
+                    cartas y coleccionables reunidos en
+                    un solo lugar.
+
+                </p>
+
+                <div class="bg-hero-actions">
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       class="bg-hero-button bg-hero-button-primary">
+
+                        Comprar ahora
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="oferta"
+                       class="bg-hero-button bg-hero-button-secondary">
+
+                        Ver ofertas
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- =====================================================
+             SLIDE 2 - PLAYSTATION
+        ====================================================== -->
+
+        <article class="bg-hero-slide bg-hero-slide-playstation">
+
+            <div class="bg-hero-content">
+
+                <span class="bg-hero-eyebrow">
+                    PLAYSTATION
+                </span>
+
+                <h2 class="bg-hero-title">
+
+                    Juega sin
+                    <span style="color:#b9dcff;">
+                        límites.
+                    </span>
+
+                </h2>
+
+                <p class="bg-hero-description">
+
+                    Descubre juegos, consolas, controles
+                    y accesorios para PlayStation.
+
+                </p>
+
+                <div class="bg-hero-actions">
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="PlayStation"
+                       class="bg-hero-button bg-hero-button-primary">
+
+                        Ver PlayStation
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="PS5"
+                       class="bg-hero-button bg-hero-button-secondary">
+
+                        Explorar PS5
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="bg-hero-decoration">
+
+                <span class="bg-hero-circle bg-hero-circle-one">
+                </span>
+
+                <span class="bg-hero-circle bg-hero-circle-two">
+                </span>
+
+                <span class="bg-hero-circle bg-hero-circle-three">
+                </span>
+
+                <div class="bg-hero-controller">
+                    🎮
+                </div>
+
+            </div>
+
+            <div class="bg-hero-platform">
+                PLAYSTATION
+            </div>
+
+        </article>
+
+
+        <!-- =====================================================
+             SLIDE 3 - NINTENDO
+        ====================================================== -->
+
+        <article class="bg-hero-slide bg-hero-slide-nintendo">
+
+            <div class="bg-hero-content">
+
+                <span class="bg-hero-eyebrow">
+                    NINTENDO
+                </span>
+
+                <h2 class="bg-hero-title">
+
+                    Juega donde
+                    <span style="color:#ffffff;">
+                        quieras.
+                    </span>
+
+                </h2>
+
+                <p class="bg-hero-description">
+
+                    Explora Nintendo Switch, Nintendo Switch 2,
+                    videojuegos y accesorios.
+
+                </p>
+
+                <div class="bg-hero-actions">
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Nintendo"
+                       class="bg-hero-button bg-hero-button-primary">
+
+                        Comprar Nintendo
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Nintendo Switch 2"
+                       class="bg-hero-button bg-hero-button-secondary">
+
+                        Ver Switch 2
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="bg-hero-decoration">
+
+                <span class="bg-hero-circle bg-hero-circle-one">
+                </span>
+
+                <span class="bg-hero-circle bg-hero-circle-two">
+                </span>
+
+                <span class="bg-hero-circle bg-hero-circle-three">
+                </span>
+
+                <div class="bg-hero-controller">
+                    🕹️
+                </div>
+
+            </div>
+
+            <div class="bg-hero-platform">
+                NINTENDO
+            </div>
+
+        </article>
+
+
+        <!-- =====================================================
+             SLIDE 4 - XBOX
+        ====================================================== -->
+
+        <article class="bg-hero-slide bg-hero-slide-xbox">
+
+            <div class="bg-hero-content">
+
+                <span class="bg-hero-eyebrow">
+                    XBOX
+                </span>
+
+                <h2 class="bg-hero-title">
+
+                    Entra al
+                    <span style="color:#c8ffb4;">
+                        juego.
+                    </span>
+
+                </h2>
+
+                <p class="bg-hero-description">
+
+                    Consolas Xbox Series, videojuegos,
+                    controles y accesorios para completar
+                    tu setup.
+
+                </p>
+
+                <div class="bg-hero-actions">
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Xbox"
+                       class="bg-hero-button bg-hero-button-primary">
+
+                        Ver Xbox
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Xbox control"
+                       class="bg-hero-button bg-hero-button-secondary">
+
+                        Ver controles
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="bg-hero-decoration">
+
+                <span class="bg-hero-circle bg-hero-circle-one">
+                </span>
+
+                <span class="bg-hero-circle bg-hero-circle-two">
+                </span>
+
+                <span class="bg-hero-circle bg-hero-circle-three">
+                </span>
+
+                <div class="bg-hero-controller">
+                    🎮
+                </div>
+
+            </div>
+
+            <div class="bg-hero-platform">
+                XBOX
+            </div>
+
+        </article>
+
+
+        <!-- =====================================================
+             FLECHA IZQUIERDA
+        ====================================================== -->
+
+        <button type="button"
+                class="bg-hero-arrow bg-hero-arrow-left"
+                id="bgHeroPrevious"
+                aria-label="Banner anterior">
+
+            ‹
+
+        </button>
+
+
+        <!-- =====================================================
+             FLECHA DERECHA
+        ====================================================== -->
+
+        <button type="button"
+                class="bg-hero-arrow bg-hero-arrow-right"
+                id="bgHeroNext"
+                aria-label="Siguiente banner">
+
+            ›
+
+        </button>
+
+
+        <!-- =====================================================
+             INDICADORES
+        ====================================================== -->
+
+        <div class="bg-hero-dots"
+             aria-label="Seleccionar banner">
+
+            <button type="button"
+                    class="bg-hero-dot active"
+                    data-hero-index="0"
+                    aria-label="Mostrar banner 1">
+            </button>
+
+            <button type="button"
+                    class="bg-hero-dot"
+                    data-hero-index="1"
+                    aria-label="Mostrar banner 2">
+            </button>
+
+            <button type="button"
+                    class="bg-hero-dot"
+                    data-hero-index="2"
+                    aria-label="Mostrar banner 3">
+            </button>
+
+            <button type="button"
+                    class="bg-hero-dot"
+                    data-hero-index="3"
+                    aria-label="Mostrar banner 4">
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+    (function () {
+
+        const hero =
+            document.getElementById(
+                "bigGameHero"
+            );
+
+        if (!hero) {
+            return;
+        }
+
+
+        const slides =
+            Array.from(
+                hero.querySelectorAll(
+                    ".bg-hero-slide"
+                )
+            );
+
+
+        const dots =
+            Array.from(
+                hero.querySelectorAll(
+                    ".bg-hero-dot"
+                )
+            );
+
+
+        const previousButton =
+            document.getElementById(
+                "bgHeroPrevious"
+            );
+
+
+        const nextButton =
+            document.getElementById(
+                "bgHeroNext"
+            );
+
+
+        let currentIndex = 0;
+
+        let heroTimer = null;
+
+
+        /* =====================================================
+           MOSTRAR SLIDE
+        ====================================================== */
+
+        function showSlide(index) {
+
+            if (slides.length === 0) {
+                return;
+            }
+
+
+            if (index < 0) {
+                index =
+                    slides.length - 1;
+            }
+
+
+            if (index >= slides.length) {
+                index = 0;
+            }
+
+
+            slides.forEach(
+                function (slide) {
+
+                    slide.classList.remove(
+                        "active"
+                    );
+                }
+            );
+
+
+            dots.forEach(
+                function (dot) {
+
+                    dot.classList.remove(
+                        "active"
+                    );
+                }
+            );
+
+
+            slides[index].classList.add(
+                "active"
+            );
+
+
+            if (dots[index]) {
+
+                dots[index].classList.add(
+                    "active"
+                );
+            }
+
+
+            currentIndex = index;
+        }
+
+
+        /* =====================================================
+           SIGUIENTE
+        ====================================================== */
+
+        function nextSlide() {
+
+            showSlide(
+                currentIndex + 1
+            );
+        }
+
+
+        /* =====================================================
+           ANTERIOR
+        ====================================================== */
+
+        function previousSlide() {
+
+            showSlide(
+                currentIndex - 1
+            );
+        }
+
+
+        /* =====================================================
+           TIMER
+        ====================================================== */
+
+        function stopTimer() {
+
+            if (heroTimer) {
+
+                window.clearInterval(
+                    heroTimer
+                );
+
+                heroTimer = null;
+            }
+        }
+
+
+        function startTimer() {
+
+            stopTimer();
+
+
+            if (
+                window.matchMedia(
+                    "(prefers-reduced-motion: reduce)"
+                ).matches
+            ) {
+                return;
+            }
+
+
+            heroTimer =
+                window.setInterval(
+                    nextSlide,
+                    5500
+                );
+        }
+
+
+        /* =====================================================
+           FLECHAS
+        ====================================================== */
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    previousSlide();
+
+                    startTimer();
+                }
+            );
+        }
+
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    nextSlide();
+
+                    startTimer();
+                }
+            );
+        }
+
+
+        /* =====================================================
+           INDICADORES
+        ====================================================== */
+
+        dots.forEach(
+            function (dot) {
+
+                dot.addEventListener(
+                    "click",
+                    function () {
+
+                        const index =
+                            Number(
+                                dot.dataset.heroIndex
+                            );
+
+
+                        if (
+                            Number.isNaN(index)
+                        ) {
+                            return;
+                        }
+
+
+                        showSlide(index);
+
+                        startTimer();
+                    }
+                );
+            }
+        );
+
+
+        /* =====================================================
+           PAUSA CON MOUSE
+        ====================================================== */
+
+        hero.addEventListener(
+            "mouseenter",
+            stopTimer
+        );
+
+
+        hero.addEventListener(
+            "mouseleave",
+            startTimer
+        );
+
+
+        /* =====================================================
+           INICIO
+        ====================================================== */
+
+        showSlide(0);
+
+        startTimer();
+
+    })();
+</script>

@@ -1,0 +1,1357 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var allProducts =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+
+    var pokemonProducts =
+        allProducts
+            .Where(
+                p =>
+                    p.Name.Contains(
+                        "Pokémon",
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                    ||
+                    p.Name.Contains(
+                        "Pokemon",
+                        StringComparison.OrdinalIgnoreCase
+                    )
+            )
+            .ToList();
+
+
+    var preferredNames = new[]
+    {
+        "30th Celebration",
+        "Delta Reign",
+        "Pitch Black",
+        "Chaos Rising",
+        "Perfect Order"
+    };
+
+
+    var orderedPokemon =
+        new List<EcommerceApp.Models.Product>();
+
+
+    foreach (var preferredName in preferredNames)
+    {
+        var product =
+            pokemonProducts.FirstOrDefault(
+                p =>
+                    p.Name.Contains(
+                        preferredName,
+                        StringComparison.OrdinalIgnoreCase
+                    )
+            );
+
+
+        if (
+            product != null
+            &&
+            !orderedPokemon.Any(
+                p => p.Id == product.Id
+            )
+        )
+        {
+            orderedPokemon.Add(product);
+        }
+    }
+
+
+    foreach (var product in pokemonProducts)
+    {
+        if (
+            !orderedPokemon.Any(
+                p => p.Id == product.Id
+            )
+        )
+        {
+            orderedPokemon.Add(product);
+        }
+    }
+
+
+    string PokemonImage(
+        EcommerceApp.Models.Product product
+    )
+    {
+        var name =
+            product.Name ?? string.Empty;
+
+
+        if (
+            name.Contains(
+                "30th Celebration",
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
+        {
+            return "/images/products/pokemon-30th.jpg";
+        }
+
+
+        if (
+            name.Contains(
+                "Delta Reign",
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
+        {
+            return "/images/products/pokemon-delta-reign.jpg";
+        }
+
+
+        if (
+            name.Contains(
+                "Pitch Black",
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
+        {
+            return "/images/products/pokemon-pitch-black.jpg";
+        }
+
+
+        if (
+            name.Contains(
+                "Chaos Rising",
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
+        {
+            return "/images/products/pokemon-chaos-rising.jpg";
+        }
+
+
+        if (
+            name.Contains(
+                "Perfect Order",
+                StringComparison.OrdinalIgnoreCase
+            )
+        )
+        {
+            return "/images/products/pokemon-perfect-order.jpg";
+        }
+
+
+        if (
+            !string.IsNullOrWhiteSpace(
+                product.ImageUrl
+            )
+        )
+        {
+            return product.ImageUrl;
+        }
+
+
+        return "";
+    }
+
+
+    string CollectionName(
+        EcommerceApp.Models.Product product
+    )
+    {
+        var name =
+            product.Name ?? string.Empty;
+
+
+        name =
+            name.Replace(
+                "Pokémon TCG ",
+                "",
+                StringComparison.OrdinalIgnoreCase
+            );
+
+
+        name =
+            name.Replace(
+                "Pokemon TCG ",
+                "",
+                StringComparison.OrdinalIgnoreCase
+            );
+
+
+        name =
+            name.Replace(
+                "Mega Evolution ",
+                "",
+                StringComparison.OrdinalIgnoreCase
+            );
+
+
+        name =
+            name.Replace(
+                " Pack",
+                "",
+                StringComparison.OrdinalIgnoreCase
+            );
+
+
+        return name.Trim();
+    }
+}
+
+
+<style>
+
+    /* =========================================================
+       SECCIÓN POKÉMON
+    ========================================================= */
+
+    .pokemon-home {
+        width: 100%;
+
+        padding:
+            48px
+            0
+            56px;
+
+        background: #f5f6f8;
+
+        color: #111111;
+    }
+
+
+    .pokemon-home-container {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       CABECERA
+    ========================================================= */
+
+    .pokemon-home-heading {
+        margin-bottom: 22px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+
+    .pokemon-home-heading-left {
+        min-width: 0;
+    }
+
+
+    .pokemon-home-kicker {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+
+    .pokemon-home-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.08;
+
+        font-weight: 900;
+
+        letter-spacing: -0.8px;
+    }
+
+
+    .pokemon-home-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color: #64748b;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+
+    .pokemon-home-view-all {
+        flex: 0 0 auto;
+
+        color: #111111;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        text-decoration: underline;
+
+        text-underline-offset: 4px;
+    }
+
+
+    .pokemon-home-view-all:hover {
+        color: #2563eb;
+    }
+
+
+    /* =========================================================
+       PESTAÑAS
+    ========================================================= */
+
+    .pokemon-tabs {
+        margin-bottom: 22px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        overflow-x: auto;
+
+        scrollbar-width: none;
+    }
+
+
+    .pokemon-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    .pokemon-tab {
+        flex: 0 0 auto;
+
+        min-height: 38px;
+
+        padding:
+            0
+            17px;
+
+        border:
+            1px solid #cbd5e1;
+
+        border-radius: 5px;
+
+        background: #ffffff;
+
+        color: #111827;
+
+        cursor: pointer;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        white-space: nowrap;
+
+        transition:
+            background 0.18s ease,
+            color 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease;
+    }
+
+
+    .pokemon-tab:hover {
+        border-color: #111827;
+
+        transform:
+            translateY(-1px);
+    }
+
+
+    .pokemon-tab.active {
+        border-color: #111827;
+
+        background: #111827;
+
+        color: #ffffff;
+    }
+
+
+    /* =========================================================
+       CARRUSEL
+    ========================================================= */
+
+    .pokemon-carousel {
+        position: relative;
+    }
+
+
+    .pokemon-products {
+        display: flex;
+
+        gap: 15px;
+
+        overflow-x: auto;
+
+        padding:
+            3px
+            4px
+            18px;
+
+        scroll-behavior: smooth;
+
+        scroll-snap-type:
+            x proximity;
+
+        scrollbar-width: none;
+    }
+
+
+    .pokemon-products::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =========================================================
+       CARD
+    ========================================================= */
+
+    .pokemon-product-card {
+        flex:
+            0
+            0
+            230px;
+
+        min-height: 470px;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        scroll-snap-align: start;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+
+    .pokemon-product-card:hover {
+        transform:
+            translateY(-4px);
+
+        border-color: #b7c2d0;
+
+        box-shadow:
+            0
+            12px
+            28px
+            rgba(15, 23, 42, 0.11);
+    }
+
+
+    /* =========================================================
+       IMAGEN
+    ========================================================= */
+
+    .pokemon-product-image {
+        position: relative;
+
+        width: 100%;
+        height: 270px;
+
+        padding: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #ffffff;
+    }
+
+
+    .pokemon-product-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+
+    .pokemon-product-card:hover
+    .pokemon-product-image img {
+        transform:
+            scale(1.035);
+    }
+
+
+    .pokemon-product-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #10244d,
+                #071127
+            );
+
+        font-size: 58px;
+    }
+
+
+    .pokemon-badge {
+        position: absolute;
+
+        top: 10px;
+        left: 10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.5px;
+
+        text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       INFORMACIÓN
+    ========================================================= */
+
+    .pokemon-product-info {
+        flex: 1;
+
+        padding:
+            14px
+            15px
+            15px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    .pokemon-product-category {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.55px;
+
+        text-transform: uppercase;
+    }
+
+
+    .pokemon-product-name {
+        min-height: 42px;
+
+        margin-bottom: 9px;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+
+    .pokemon-product-price {
+        margin-top: auto;
+
+        color: #111827;
+
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+
+    .pokemon-product-stock {
+        min-height: 18px;
+
+        margin-top: 4px;
+
+        color: #16a34a;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+
+    .pokemon-product-stock.out {
+        color: #dc2626;
+    }
+
+
+    /* =========================================================
+       BOTONES CARD
+    ========================================================= */
+
+    .pokemon-card-actions {
+        margin-top: 12px;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            44px;
+
+        gap: 7px;
+    }
+
+
+    .pokemon-details-button {
+        min-height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding:
+            0
+            12px;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition:
+            background 0.18s ease;
+    }
+
+
+    .pokemon-details-button:hover {
+        background: #174fc7;
+
+        color: #ffffff;
+    }
+
+
+    .pokemon-cart-form {
+        margin: 0;
+    }
+
+
+    .pokemon-cart-button {
+        width: 44px;
+        height: 42px;
+
+        border: none;
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 17px;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+
+    .pokemon-cart-button:hover {
+        background: #2563eb;
+
+        transform:
+            translateY(-1px);
+    }
+
+
+    .pokemon-cart-button:disabled {
+        background: #cbd5e1;
+
+        color: #64748b;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =========================================================
+       FLECHAS
+    ========================================================= */
+
+    .pokemon-arrow {
+        position: absolute;
+
+        z-index: 10;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        width: 46px;
+        height: 64px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        background:
+            rgba(17, 24, 39, 0.94);
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 31px;
+
+        box-shadow:
+            0
+            6px
+            20px
+            rgba(15, 23, 42, 0.20);
+
+        transition:
+            background 0.18s ease,
+            opacity 0.18s ease;
+    }
+
+
+    .pokemon-arrow:hover {
+        background: #2563eb;
+    }
+
+
+    .pokemon-arrow-left {
+        left: -15px;
+    }
+
+
+    .pokemon-arrow-right {
+        right: -15px;
+    }
+
+
+    /* =========================================================
+       VACÍO
+    ========================================================= */
+
+    .pokemon-empty {
+        width: 100%;
+
+        padding:
+            55px
+            20px;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        text-align: center;
+
+        color: #64748b;
+    }
+
+
+    .pokemon-empty-icon {
+        margin-bottom: 12px;
+
+        font-size: 42px;
+    }
+
+
+    .pokemon-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 18px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 900px) {
+
+        .pokemon-home-title {
+            font-size: 27px;
+        }
+
+
+        .pokemon-product-card {
+            flex-basis: 215px;
+        }
+
+
+        .pokemon-arrow-left {
+            left: 2px;
+        }
+
+
+        .pokemon-arrow-right {
+            right: 2px;
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .pokemon-home {
+            padding:
+                38px
+                0
+                45px;
+        }
+
+
+        .pokemon-home-container {
+            width:
+                calc(100% - 22px);
+        }
+
+
+        .pokemon-home-heading {
+            align-items: flex-start;
+
+            flex-direction: column;
+        }
+
+
+        .pokemon-home-title {
+            font-size: 25px;
+        }
+
+
+        .pokemon-home-view-all {
+            font-size: 12px;
+        }
+
+
+        .pokemon-product-card {
+            flex-basis: 195px;
+
+            min-height: 435px;
+        }
+
+
+        .pokemon-product-image {
+            height: 230px;
+        }
+
+
+        .pokemon-arrow {
+            width: 38px;
+            height: 54px;
+
+            font-size: 26px;
+        }
+    }
+
+</style>
+
+
+<section class="pokemon-home"
+         id="pokemon-tcg">
+
+    <div class="pokemon-home-container">
+
+
+        <!-- =====================================================
+             CABECERA
+        ====================================================== -->
+
+        <div class="pokemon-home-heading">
+
+            <div class="pokemon-home-heading-left">
+
+                <div class="pokemon-home-kicker">
+                    Pokémon TCG
+                </div>
+
+                <h2 class="pokemon-home-title">
+                    Compra Pokémon TCG por colección
+                </h2>
+
+                <p class="pokemon-home-subtitle">
+                    Descubre sobres, colecciones y productos Pokémon
+                    disponibles en BigGame.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Pokémon"
+               class="pokemon-home-view-all">
+
+                Ver todos →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             TABS
+        ====================================================== -->
+
+        <div class="pokemon-tabs"
+             id="pokemonTabs">
+
+            <button type="button"
+                    class="pokemon-tab active"
+                    data-pokemon-target="all">
+
+                Todos
+
+            </button>
+
+
+            <button type="button"
+                    class="pokemon-tab"
+                    data-pokemon-target="30th Celebration">
+
+                30th Celebration
+
+            </button>
+
+
+            <button type="button"
+                    class="pokemon-tab"
+                    data-pokemon-target="Delta Reign">
+
+                Delta Reign
+
+            </button>
+
+
+            <button type="button"
+                    class="pokemon-tab"
+                    data-pokemon-target="Pitch Black">
+
+                Pitch Black
+
+            </button>
+
+
+            <button type="button"
+                    class="pokemon-tab"
+                    data-pokemon-target="Chaos Rising">
+
+                Chaos Rising
+
+            </button>
+
+
+            <button type="button"
+                    class="pokemon-tab"
+                    data-pokemon-target="Perfect Order">
+
+                Perfect Order
+
+            </button>
+
+        </div>
+
+
+        @if (orderedPokemon.Any())
+        {
+            <div class="pokemon-carousel">
+
+
+                <!-- FLECHA IZQUIERDA -->
+
+                <button type="button"
+                        class="pokemon-arrow pokemon-arrow-left"
+                        id="pokemonPrevious"
+                        aria-label="Productos anteriores">
+
+                    ‹
+
+                </button>
+
+
+                <!-- PRODUCTOS -->
+
+                <div class="pokemon-products"
+                     id="pokemonProducts">
+
+
+                    @foreach (var product in orderedPokemon)
+                    {
+                        var image =
+                            PokemonImage(product);
+
+                        var collection =
+                            CollectionName(product);
+
+
+                        <article class="pokemon-product-card"
+                                 data-pokemon-name="@product.Name">
+
+
+                            <!-- IMAGEN -->
+
+                            <div class="pokemon-product-image">
+
+                                <span class="pokemon-badge">
+                                    Pokémon TCG
+                                </span>
+
+
+                                @if (
+                                    !string.IsNullOrWhiteSpace(
+                                        image
+                                    )
+                                )
+                                {
+                                    <img src="@image"
+                                         alt="@product.Name"
+                                         loading="lazy" />
+                                }
+                                else
+                                {
+                                    <div class="pokemon-product-placeholder">
+                                        🃏
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <!-- INFO -->
+
+                            <div class="pokemon-product-info">
+
+                                <div class="pokemon-product-category">
+                                    @product.Category
+                                </div>
+
+
+                                <div class="pokemon-product-name">
+                                    @product.Name
+                                </div>
+
+
+                                <div class="pokemon-product-price">
+
+                                    Bs @product.Price.ToString("N2")
+
+                                </div>
+
+
+                                @if (product.Stock > 0)
+                                {
+                                    <div class="pokemon-product-stock">
+
+                                        @product.Stock disponibles
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="pokemon-product-stock out">
+
+                                        Agotado
+
+                                    </div>
+                                }
+
+
+                                <!-- BOTONES -->
+
+                                <div class="pokemon-card-actions">
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="pokemon-details-button">
+
+                                        Ver producto
+
+                                    </a>
+
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-controller="Cart"
+                                              asp-action="Add"
+                                              method="post"
+                                              class="pokemon-cart-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@product.Id" />
+
+                                            <button type="submit"
+                                                    class="pokemon-cart-button"
+                                                    title="Agregar al carrito"
+                                                    aria-label="Agregar @product.Name al carrito">
+
+                                                🛒
+
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="pokemon-cart-button"
+                                                disabled
+                                                title="Producto agotado">
+
+                                            🛒
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
+
+
+                <!-- FLECHA DERECHA -->
+
+                <button type="button"
+                        class="pokemon-arrow pokemon-arrow-right"
+                        id="pokemonNext"
+                        aria-label="Más productos">
+
+                    ›
+
+                </button>
+
+            </div>
+        }
+        else
+        {
+            <div class="pokemon-empty">
+
+                <div class="pokemon-empty-icon">
+                    🃏
+                </div>
+
+                <strong>
+                    Próximamente más Pokémon TCG
+                </strong>
+
+                <span>
+                    Estamos preparando esta sección.
+                </span>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const row =
+            document.getElementById(
+                "pokemonProducts"
+            );
+
+
+        const previousButton =
+            document.getElementById(
+                "pokemonPrevious"
+            );
+
+
+        const nextButton =
+            document.getElementById(
+                "pokemonNext"
+            );
+
+
+        const tabs =
+            Array.from(
+                document.querySelectorAll(
+                    ".pokemon-tab"
+                )
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        /* =====================================================
+           FLECHAS
+        ====================================================== */
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: -735,
+                        behavior: "smooth"
+                    });
+                }
+            );
+        }
+
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: 735,
+                        behavior: "smooth"
+                    });
+                }
+            );
+        }
+
+
+        /* =====================================================
+           TABS
+        ====================================================== */
+
+        tabs.forEach(
+            function (tab) {
+
+                tab.addEventListener(
+                    "click",
+                    function () {
+
+                        tabs.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+                            }
+                        );
+
+
+                        tab.classList.add(
+                            "active"
+                        );
+
+
+                        const target =
+                            tab.dataset.pokemonTarget;
+
+
+                        if (
+                            !target
+                            ||
+                            target === "all"
+                        )
+                        {
+                            row.scrollTo({
+                                left: 0,
+                                behavior: "smooth"
+                            });
+
+                            return;
+                        }
+
+
+                        const cards =
+                            Array.from(
+                                row.querySelectorAll(
+                                    ".pokemon-product-card"
+                                )
+                            );
+
+
+                        const targetCard =
+                            cards.find(
+                                function (card) {
+
+                                    const name =
+                                        card.dataset.pokemonName
+                                        || "";
+
+
+                                    return name
+                                        .toLowerCase()
+                                        .includes(
+                                            target.toLowerCase()
+                                        );
+                                }
+                            );
+
+
+                        if (targetCard) {
+
+                            targetCard.scrollIntoView({
+                                behavior: "smooth",
+                                inline: "start",
+                                block: "nearest"
+                            });
+                        }
+                    }
+                );
+            }
+        );
+
+    })();
+
+</script>

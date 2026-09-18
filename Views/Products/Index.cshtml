@@ -1519,135 +1519,15 @@ else
 <div class="bg-store">
 
 
-    <!-- HERO -->
+    <!-- HERO NUEVO BIGGAME -->
 
-    <div class="bg-container">
+<partial name="_HomeHero" />
 
-        <section class="hero">
+<!-- POKEMON NUEVO BIGGAME -->
 
-            <div class="hero-inner">
+<partial name="_HomePokemon" model="Model" />
 
-                <div class="hero-label">
-                    BIGGAME
-                </div>
-
-                <h1>
-
-                    Power to the
-                    <span>players.</span>
-
-                </h1>
-
-                <p>
-
-                    Discover video games, consoles,
-                    collectibles, trading cards,
-                    accessories and everything you need
-                    to keep playing.
-
-                </p>
-
-                <a href="#featured"
-                   class="primary-button">
-
-                    Shop Now
-
-                </a>
-
-            </div>
-
-        </section>
-
-    </div>
-
-
-
-    <!-- POKEMON -->
-
-    <section class="bg-section bg-soft">
-
-        <div class="bg-container">
-
-
-            <div class="bg-heading-row">
-
-                <div>
-
-                    <h2 class="bg-title">
-                        Shop Pokémon TCG By Set
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <div class="tabs">
-
-                <button class="tab active">
-                    30th Celebration
-                </button>
-
-                <button class="tab">
-                    Delta Reign
-                </button>
-
-                <button class="tab">
-                    Pitch Black
-                </button>
-
-                <button class="tab">
-                    Chaos Rising
-                </button>
-
-                <button class="tab">
-                    Perfect Order
-                </button>
-
-            </div>
-
-
-            <div class="pokemon-grid">
-
-
-                @foreach (var pokemon in pokemonProducts)
-                {
-                    var image = TrustedImage(pokemon);
-
-                    <a asp-controller="Products"
-                       asp-action="Details"
-                       asp-route-id="@pokemon.Id"
-                       class="pokemon-card">
-
-                        <img src="@image"
-                             alt="@pokemon.Name" />
-
-                        <strong>
-                            @{
-                                var shortName =
-                                    pokemon.Name
-                                        .Replace("Pokémon TCG ", "")
-                                        .Replace("Mega Evolution ", "")
-                                        .Replace(" Pack", "");
-                            }
-
-                            @shortName
-                        </strong>
-
-                    </a>
-                }
-
-
-            </div>
-
-
-        </div>
-
-    </section>
-
-
-
-    <!-- FEATURED -->
+<!-- FEATURED -->
 
     <section class="bg-section"
              id="featured">

@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Crear cuenta - BigGame</title>
+    <title>Crear cuenta | BigGame</title>
 
     <style>
         * {
@@ -19,15 +19,19 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             min-height: 100vh;
             font-family: Arial, Helvetica, sans-serif;
-            color: white;
+            color: #ffffff;
 
             background:
                 linear-gradient(
-                    rgba(5, 10, 20, 0.78),
-                    rgba(5, 10, 20, 0.92)
+                    rgba(5, 10, 20, 0.76),
+                    rgba(5, 10, 20, 0.94)
                 ),
                 url('/images/login-bg.png');
 
@@ -37,44 +41,70 @@
             background-attachment: fixed;
         }
 
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
         .header {
-            background: rgba(18, 22, 31, 0.96);
-            box-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
+            width: 100%;
+            background: rgba(14, 18, 27, 0.97);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.38);
+            position: relative;
+            z-index: 20;
         }
 
         .header-main {
-            max-width: 980px;
-            margin: auto;
-            padding: 18px 20px;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 18px 28px;
+
             display: flex;
             align-items: center;
-            gap: 25px;
+            gap: 30px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 11px;
+            min-width: 205px;
+            color: #ffffff;
             text-decoration: none;
-            color: white;
-            min-width: 190px;
         }
 
         .logo-icon {
-            width: 42px;
-            height: 42px;
+            width: 46px;
+            height: 46px;
+
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+
             border-radius: 50%;
-            background: linear-gradient(135deg, #1a9fff, #0066aa);
-            font-size: 22px;
-            box-shadow: 0 0 18px rgba(26, 159, 255, 0.35);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1a9fff,
+                    #0066aa
+                );
+
+            box-shadow:
+                0 0 22px rgba(26, 159, 255, 0.40);
+
+            font-size: 24px;
         }
 
         .logo-text {
-            font-size: 27px;
-            font-weight: bold;
+            font-size: 29px;
+            font-weight: 900;
             letter-spacing: 1px;
         }
 
@@ -84,257 +114,527 @@
 
         .search-container {
             flex: 1;
+
             display: flex;
+            align-items: stretch;
+
+            max-width: 760px;
+            margin-left: auto;
         }
 
         .search-input {
             width: 100%;
-            height: 40px;
-            border: 1px solid #314966;
+            min-width: 0;
+            height: 46px;
+
+            border: 1px solid #3e5573;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+
             background: #263b55;
-            color: white;
-            padding: 0 14px;
+            color: #ffffff;
+
+            padding: 0 16px;
             outline: none;
-            font-style: italic;
+
+            font-size: 15px;
         }
 
         .search-input::placeholder {
-            color: #c6d4df;
+            color: #aebccc;
+        }
+
+        .search-input:focus {
+            border-color: #1a9fff;
+            background: #2b4563;
         }
 
         .search-button {
-            width: 48px;
+            width: 55px;
+            height: 46px;
+
             border: none;
+            border-radius: 0 4px 4px 0;
+
             background: #1a9fff;
-            color: white;
-            font-size: 20px;
+            color: #ffffff;
+
             cursor: pointer;
+            font-size: 20px;
+        }
+
+        .search-button:hover {
+            background: #32afff;
         }
 
         .navigation {
-            background: linear-gradient(
-                90deg,
-                rgba(27, 77, 128, 0.96),
-                rgba(36, 61, 104, 0.96),
-                rgba(28, 53, 88, 0.96)
-            );
+            width: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(22, 70, 119, 0.98),
+                    rgba(30, 56, 96, 0.98),
+                    rgba(24, 47, 80, 0.98)
+                );
         }
 
         .navigation-content {
-            max-width: 980px;
-            margin: auto;
-            padding: 0 20px;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 28px;
+
             display: flex;
+            align-items: center;
         }
 
         .navigation a {
-            padding: 15px 22px;
-            color: #d6e4f0;
+            padding: 16px 25px;
+
+            color: #dce7f2;
             text-decoration: none;
+
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .navigation a:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
+            background: rgba(255, 255, 255, 0.07);
+            color: #ffffff;
         }
 
         .main {
             width: 100%;
-            max-width: 760px;
-            margin: auto;
-            padding: 55px 25px 60px;
+            max-width: 900px;
+
+            margin: 0 auto;
+
+            padding: 60px 25px 70px;
+        }
+
+        .title-area {
+            text-align: center;
+            margin-bottom: 38px;
         }
 
         .title {
-            text-align: center;
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 40px;
-            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+            margin-bottom: 12px;
+
+            font-size: 40px;
+            line-height: 1.1;
+
+            font-weight: 800;
+
+            text-shadow:
+                0 3px 18px rgba(0, 0, 0, 0.85);
         }
 
         .subtitle {
-            text-align: center;
-            color: #c6d4df;
-            margin-top: -22px;
-            margin-bottom: 35px;
+            max-width: 620px;
+            margin: 0 auto;
+
+            color: #bdcbd9;
+
             font-size: 15px;
+            line-height: 1.6;
         }
 
         .register-panel {
-            max-width: 540px;
-            margin: auto;
-            padding: 32px;
-            border-radius: 6px;
+            width: 100%;
+            max-width: 600px;
 
-            background: rgba(14, 22, 35, 0.88);
-            backdrop-filter: blur(5px);
+            margin: 0 auto;
+
+            padding: 36px;
+
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+
+            background: rgba(12, 20, 33, 0.91);
+
+            backdrop-filter: blur(8px);
 
             box-shadow:
-                0 15px 45px rgba(0, 0, 0, 0.45),
-                0 0 0 1px rgba(255, 255, 255, 0.04);
+                0 18px 55px rgba(0, 0, 0, 0.52);
+        }
+
+        .panel-title {
+            margin-bottom: 8px;
+
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .panel-subtitle {
+            margin-bottom: 28px;
+
+            color: #aebdcc;
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .validation-summary {
+            margin-bottom: 22px;
+        }
+
+        .validation-summary-valid {
+            display: none;
+        }
+
+        .validation-summary-errors {
+            padding: 14px 16px;
+
+            border: 1px solid rgba(255, 86, 86, 0.55);
+            border-radius: 5px;
+
+            background: rgba(136, 21, 21, 0.25);
+
+            color: #ffb0b0;
+
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding: 0;
+
+            list-style: none;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
-            color: #d6d7d8;
-            font-size: 13px;
-            font-weight: bold;
+
+            margin-bottom: 9px;
+
+            color: #dce4ec;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: 0.8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
         .email-label {
-            color: #1a9fff;
+            color: #37adff;
+        }
+
+        .optional {
+            margin-left: 6px;
+
+            color: #8395a7;
+
+            font-size: 10px;
+            font-weight: 600;
         }
 
         .form-control {
             width: 100%;
-            height: 50px;
-            border: 1px solid transparent;
-            border-radius: 2px;
+            height: 55px;
 
-            background: rgba(53, 70, 95, 0.94);
-            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
 
-            padding: 0 15px;
-            font-size: 16px;
+            background: rgba(50, 69, 95, 0.96);
+
+            color: #ffffff;
+
+            padding: 0 16px;
+
             outline: none;
 
-            transition: 0.2s;
+            font-size: 16px;
+
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .form-control::placeholder {
+            color: #9eb0c2;
         }
 
         .form-control:focus {
-            background: rgba(61, 81, 110, 0.98);
+            background: rgba(59, 81, 111, 1);
+
             border-color: #1a9fff;
+
+            box-shadow:
+                0 0 0 3px rgba(26, 159, 255, 0.13);
+        }
+
+        .input-validation-error {
+            border-color: #ff6464 !important;
+
+            box-shadow:
+                0 0 0 3px rgba(255, 74, 74, 0.10) !important;
         }
 
         .validation {
             display: block;
-            color: #ff7777;
-            margin-top: 5px;
+
+            min-height: 17px;
+
+            margin-top: 6px;
+
+            color: #ff8585;
+
             font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .field-validation-valid {
+            display: block;
+        }
+
+        .field-validation-error {
+            display: block;
+            color: #ff8585;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper .form-control {
+            padding-right: 100px;
+        }
+
+        .password-toggle {
+            position: absolute;
+
+            top: 50%;
+            right: 10px;
+
+            transform: translateY(-50%);
+
+            min-width: 78px;
+            height: 36px;
+
+            border: none;
+            border-radius: 4px;
+
+            background: rgba(18, 32, 50, 0.82);
+
+            color: #c7d8e8;
+
+            cursor: pointer;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 0.4px;
+        }
+
+        .password-toggle:hover {
+            background: #1a9fff;
+            color: #ffffff;
+        }
+
+        .password-rules {
+            margin-top: -5px;
+            margin-bottom: 23px;
+
+            padding: 14px 16px;
+
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 5px;
+
+            background: rgba(23, 35, 51, 0.65);
+
+            color: #aebdcc;
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .password-rules strong {
+            color: #dce8f3;
         }
 
         .register-button {
             width: 100%;
-            height: 56px;
-            border: none;
-            border-radius: 2px;
+            min-height: 58px;
 
-            margin-top: 10px;
+            border: none;
+            border-radius: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #06bfff,
+                    #1a9fff
+                );
+
+            color: #ffffff;
 
             cursor: pointer;
 
-            background: linear-gradient(
-                90deg,
-                #06bfff,
-                #1a9fff
-            );
+            font-size: 18px;
+            font-weight: 700;
 
-            color: white;
-            font-size: 19px;
-            transition: 0.2s;
+            box-shadow:
+                0 8px 24px rgba(26, 159, 255, 0.20);
         }
 
         .register-button:hover {
-            filter: brightness(1.12);
+            filter: brightness(1.10);
+        }
+
+        .register-button:disabled {
+            opacity: 0.75;
+            cursor: wait;
         }
 
         .login-section {
             margin-top: 30px;
             padding-top: 25px;
+
             border-top: 1px solid rgba(255, 255, 255, 0.08);
+
             text-align: center;
         }
 
         .login-section p {
-            color: #c6d4df;
             margin-bottom: 16px;
+
+            color: #c1cfdb;
+
             font-size: 14px;
         }
 
         .login-link {
-            display: inline-block;
-            min-width: 220px;
-            padding: 12px 25px;
+            display: flex;
 
-            border: 1px solid #8f98a0;
-            border-radius: 2px;
+            width: 100%;
+            min-height: 52px;
 
-            color: white;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid #1a9fff;
+            border-radius: 4px;
+
+            color: #ffffff;
+
             text-decoration: none;
-            font-size: 15px;
 
-            transition: 0.2s;
+            font-size: 15px;
+            font-weight: 700;
         }
 
         .login-link:hover {
-            border-color: white;
-            background: rgba(255, 255, 255, 0.08);
+            background: #1a9fff;
         }
 
-        .footer {
-            background: rgba(23, 26, 33, 0.96);
-            margin-top: 60px;
-            padding: 35px 20px;
+        .benefits {
+            width: 100%;
+            max-width: 780px;
+
+            margin: 36px auto 0;
+
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 12px;
+        }
+
+        .benefit {
+            padding: 18px 14px;
+
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 6px;
+
+            background: rgba(10, 17, 29, 0.69);
+
             text-align: center;
-            color: #7f98aa;
+        }
+
+        .benefit-icon {
+            margin-bottom: 7px;
+
+            font-size: 22px;
+        }
+
+        .benefit strong {
+            display: block;
+
+            margin-bottom: 5px;
+
             font-size: 13px;
         }
 
-        .footer strong {
-            color: white;
+        .benefit span {
+            color: #aebdcc;
+
+            font-size: 12px;
         }
 
-        @@media (max-width: 700px) {
+        .footer {
+            padding: 35px 20px;
+
+            background: rgba(13, 17, 25, 0.97);
+
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+            text-align: center;
+
+            color: #8094a6;
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .footer strong {
+            color: #ffffff;
+        }
+
+        @@media (max-width: 650px) {
+            body {
+                background-attachment: scroll;
+            }
 
             .header-main {
-                padding: 14px 15px;
-                gap: 12px;
+                flex-direction: column;
+                align-items: stretch;
             }
 
             .logo {
+                justify-content: center;
                 min-width: auto;
             }
 
-            .logo-text {
-                font-size: 20px;
-            }
-
-            .logo-icon {
-                width: 36px;
-                height: 36px;
-                font-size: 18px;
+            .search-container {
+                width: 100%;
+                max-width: none;
             }
 
             .navigation-content {
-                justify-content: center;
-                padding: 0;
-            }
-
-            .navigation a {
-                padding: 14px 12px;
-                font-size: 13px;
+                overflow-x: auto;
             }
 
             .main {
-                padding: 45px 18px 40px;
+                padding: 45px 15px;
             }
 
             .title {
-                font-size: 31px;
+                font-size: 32px;
             }
 
             .register-panel {
-                padding: 25px 20px;
+                padding: 28px 20px;
+            }
+
+            .benefits {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -346,7 +646,9 @@
 
         <div class="header-main">
 
-            <a href="/Products" class="logo">
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="logo">
 
                 <div class="logo-icon">
                     🎮
@@ -358,17 +660,22 @@
 
             </a>
 
-            <div class="search-container">
+            <form asp-controller="Products"
+                  asp-action="Index"
+                  method="get"
+                  class="search-container">
 
-                <input type="text"
+                <input type="search"
+                       name="q"
                        class="search-input"
-                       placeholder="Buscar en la tienda" />
+                       placeholder="Buscar videojuegos, consolas, accesorios..." />
 
-                <button class="search-button">
+                <button type="submit"
+                        class="search-button">
                     🔍
                 </button>
 
-            </div>
+            </form>
 
         </div>
 
@@ -376,15 +683,20 @@
 
             <div class="navigation-content">
 
-                <a href="/Products">
+                <a asp-controller="Products"
+                   asp-action="Index">
                     Explorar
                 </a>
 
-                <a href="/Products">
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-fragment="productos-destacados">
                     Recomendaciones
                 </a>
 
-                <a href="/Products">
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-fragment="categorias">
                     Categorías
                 </a>
 
@@ -394,41 +706,54 @@
 
     </header>
 
-
     <main class="main">
 
-        <h1 class="title">
-            Crear cuenta
-        </h1>
+        <div class="title-area">
 
-        <p class="subtitle">
-            Únete a BigGame y comienza a explorar nuestra tienda.
-        </p>
+            <h1 class="title">
+                Crear cuenta
+            </h1>
 
+            <p class="subtitle">
+                Únete a BigGame para comprar videojuegos, consolas,
+                accesorios, coleccionables y consultar tus pedidos.
+            </p>
+
+        </div>
 
         <div class="register-panel">
 
+            <div class="panel-title">
+                Crea tu cuenta de BigGame
+            </div>
+
+            <div class="panel-subtitle">
+                Completa tus datos. Los campos necesarios serán
+                comprobados antes de crear la cuenta.
+            </div>
+
             <form asp-controller="Account"
                   asp-action="Register"
-                  method="post">
+                  method="post"
+                  id="registerForm"
+                  novalidate>
 
                 <div asp-validation-summary="ModelOnly"
-                     class="validation">
+                     class="validation-summary">
                 </div>
-
 
                 <div class="form-group">
 
                     <label asp-for="FullName"
                            class="form-label">
-
-                        NOMBRE COMPLETO
-
+                        Nombre completo
                     </label>
 
                     <input asp-for="FullName"
                            class="form-control"
-                           autocomplete="name" />
+                           autocomplete="name"
+                           placeholder="Tu nombre completo"
+                           maxlength="100" />
 
                     <span asp-validation-for="FullName"
                           class="validation">
@@ -436,19 +761,19 @@
 
                 </div>
 
-
                 <div class="form-group">
 
                     <label asp-for="Email"
                            class="form-label email-label">
-
-                        CORREO ELECTRÓNICO
-
+                        Correo electrónico
                     </label>
 
                     <input asp-for="Email"
                            class="form-control"
-                           autocomplete="email" />
+                           autocomplete="email"
+                           inputmode="email"
+                           placeholder="ejemplo@correo.com"
+                           maxlength="150" />
 
                     <span asp-validation-for="Email"
                           class="validation">
@@ -456,19 +781,32 @@
 
                 </div>
 
-
                 <div class="form-group">
 
                     <label asp-for="Password"
                            class="form-label">
-
-                        CONTRASEÑA
-
+                        Contraseña
                     </label>
 
-                    <input asp-for="Password"
-                           class="form-control"
-                           autocomplete="new-password" />
+                    <div class="password-wrapper">
+
+                        <input asp-for="Password"
+                               class="form-control"
+                               type="password"
+                               autocomplete="new-password"
+                               placeholder="Crea una contraseña"
+                               id="Password"
+                               maxlength="100" />
+
+                        <button type="button"
+                                class="password-toggle"
+                                id="togglePassword">
+
+                            MOSTRAR
+
+                        </button>
+
+                    </div>
 
                     <span asp-validation-for="Password"
                           class="validation">
@@ -476,19 +814,32 @@
 
                 </div>
 
-
                 <div class="form-group">
 
                     <label asp-for="ConfirmPassword"
                            class="form-label">
-
-                        CONFIRMAR CONTRASEÑA
-
+                        Confirmar contraseña
                     </label>
 
-                    <input asp-for="ConfirmPassword"
-                           class="form-control"
-                           autocomplete="new-password" />
+                    <div class="password-wrapper">
+
+                        <input asp-for="ConfirmPassword"
+                               class="form-control"
+                               type="password"
+                               autocomplete="new-password"
+                               placeholder="Repite tu contraseña"
+                               id="ConfirmPassword"
+                               maxlength="100" />
+
+                        <button type="button"
+                                class="password-toggle"
+                                id="toggleConfirmPassword">
+
+                            MOSTRAR
+
+                        </button>
+
+                    </div>
 
                     <span asp-validation-for="ConfirmPassword"
                           class="validation">
@@ -496,19 +847,35 @@
 
                 </div>
 
+                <div class="password-rules">
+
+                    <strong>
+                        Requisitos de la contraseña:
+                    </strong>
+
+                    mínimo 6 caracteres y debe coincidir con
+                    la confirmación.
+
+                </div>
 
                 <div class="form-group">
 
                     <label asp-for="Address"
                            class="form-label">
 
-                        DIRECCIÓN
+                        Dirección
+
+                        <span class="optional">
+                            OPCIONAL
+                        </span>
 
                     </label>
 
                     <input asp-for="Address"
                            class="form-control"
-                           autocomplete="street-address" />
+                           autocomplete="street-address"
+                           placeholder="Tu dirección"
+                           maxlength="200" />
 
                     <span asp-validation-for="Address"
                           class="validation">
@@ -516,16 +883,17 @@
 
                 </div>
 
-
                 <button type="submit"
-                        class="register-button">
+                        class="register-button"
+                        id="registerButton">
 
-                    Crear mi cuenta
+                    <span id="registerButtonText">
+                        Crear mi cuenta
+                    </span>
 
                 </button>
 
             </form>
-
 
             <div class="login-section">
 
@@ -545,19 +913,158 @@
 
         </div>
 
-    </main>
+        <div class="benefits">
 
+            <div class="benefit">
+
+                <div class="benefit-icon">
+                    🎮
+                </div>
+
+                <strong>
+                    Descubre productos
+                </strong>
+
+                <span>
+                    Explora videojuegos, consolas y accesorios.
+                </span>
+
+            </div>
+
+            <div class="benefit">
+
+                <div class="benefit-icon">
+                    🛒
+                </div>
+
+                <strong>
+                    Guarda tus compras
+                </strong>
+
+                <span>
+                    Compra productos desde tu propia cuenta.
+                </span>
+
+            </div>
+
+            <div class="benefit">
+
+                <div class="benefit-icon">
+                    📦
+                </div>
+
+                <strong>
+                    Consulta tus pedidos
+                </strong>
+
+                <span>
+                    Revisa tus compras y su información.
+                </span>
+
+            </div>
+
+        </div>
+
+    </main>
 
     <footer class="footer">
 
-        <strong>BIGGAME</strong><br><br>
+        <strong>BIGGAME</strong>
 
-        Tienda de videojuegos, consolas y accesorios · 2026
+        <br />
+
+        Tienda de videojuegos, consolas, accesorios y coleccionables
+
+        <br />
+
+        © 2026 BigGame
 
     </footer>
 
-
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+
+            function configurePasswordToggle(inputId, buttonId) {
+
+                const input =
+                    document.getElementById(inputId);
+
+                const button =
+                    document.getElementById(buttonId);
+
+                if (!input || !button) {
+                    return;
+                }
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const hidden =
+                            input.type === "password";
+
+                        input.type =
+                            hidden
+                                ? "text"
+                                : "password";
+
+                        button.textContent =
+                            hidden
+                                ? "OCULTAR"
+                                : "MOSTRAR";
+
+                        input.focus();
+                    }
+                );
+            }
+
+            configurePasswordToggle(
+                "Password",
+                "togglePassword"
+            );
+
+            configurePasswordToggle(
+                "ConfirmPassword",
+                "toggleConfirmPassword"
+            );
+
+
+            const form =
+                document.getElementById("registerForm");
+
+            const button =
+                document.getElementById("registerButton");
+
+            const buttonText =
+                document.getElementById("registerButtonText");
+
+
+            if (form && button && buttonText) {
+
+                form.addEventListener(
+                    "submit",
+                    function () {
+
+                        if (
+                            window.jQuery &&
+                            window.jQuery.validator &&
+                            !window.jQuery(form).valid()
+                        ) {
+                            return;
+                        }
+
+                        button.disabled = true;
+
+                        buttonText.textContent =
+                            "Creando cuenta...";
+                    }
+                );
+            }
+
+        })();
+    </script>
 
 </body>
 </html>

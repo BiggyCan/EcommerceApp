@@ -1,0 +1,2021 @@
+@using System.Text.Json
+
+@{
+    var cartCount = 0;
+
+    var cartJson = Context.Session.GetString("BigGameCart");
+
+    if (!string.IsNullOrWhiteSpace(cartJson))
+    {
+        try
+        {
+            var cart =
+                JsonSerializer.Deserialize<List<EcommerceApp.Models.CartItem>>(cartJson)
+                ?? new List<EcommerceApp.Models.CartItem>();
+
+            cartCount = cart.Sum(item => item.Quantity);
+        }
+        catch
+        {
+            cartCount = 0;
+        }
+    }
+}
+
+<style>
+    .store-header,
+    .store-header * {
+        box-sizing: border-box;
+    }
+
+    .store-header {
+        width: 100%;
+        position: relative;
+        z-index: 1000;
+
+        font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+        background: #ffffff;
+
+        color: #111111;
+    }
+
+
+    /* =========================================================
+       CABECERA PRINCIPAL
+    ========================================================= */
+
+    .store-top {
+        width: 100%;
+
+        background: #ffffff;
+
+        border-bottom:
+            1px solid #e6e6e6;
+    }
+
+    .store-top-inner {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+
+        min-height: 86px;
+
+        margin: 0 auto;
+
+        display: flex;
+        align-items: center;
+
+        gap: 24px;
+    }
+
+
+    /* =========================================================
+       BOTÓN MENÚ
+    ========================================================= */
+
+    .store-menu-button {
+        flex: 0 0 auto;
+
+        width: 54px;
+        min-height: 52px;
+
+        border: none;
+
+        background: transparent;
+
+        color: #111111;
+
+        cursor: pointer;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 4px;
+
+        font-size: 10px;
+        font-weight: 700;
+
+        border-radius: 6px;
+
+        transition:
+            background 0.2s ease;
+    }
+
+    .store-menu-button:hover {
+        background: #f3f3f3;
+    }
+
+    .store-menu-icon {
+        font-size: 25px;
+        line-height: 1;
+    }
+
+
+    /* =========================================================
+       LOGO
+    ========================================================= */
+
+    .store-logo {
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+
+        gap: 9px;
+
+        color: #111111;
+
+        text-decoration: none;
+    }
+
+    .store-logo:hover {
+        color: #111111;
+    }
+
+    .store-logo-icon {
+        width: 46px;
+        height: 46px;
+
+        border-radius: 50%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #0ea5e9,
+                #2563eb
+            );
+
+        box-shadow:
+            0 4px 14px rgba(37, 99, 235, 0.22);
+
+        font-size: 22px;
+    }
+
+    .store-logo-text {
+        display: flex;
+        align-items: center;
+
+        font-size: 29px;
+        font-weight: 900;
+
+        letter-spacing: -1px;
+
+        white-space: nowrap;
+    }
+
+    .store-logo-big {
+        color: #111111;
+    }
+
+    .store-logo-game {
+        color: #168bd2;
+    }
+
+
+    /* =========================================================
+       BUSCADOR
+    ========================================================= */
+
+    .store-search {
+        flex: 1;
+
+        min-width: 220px;
+
+        height: 48px;
+
+        display: flex;
+
+        border:
+            1px solid #b9b9b9;
+
+        border-radius: 5px;
+
+        overflow: hidden;
+
+        background: #ffffff;
+    }
+
+    .store-search:focus-within {
+        border-color: #111111;
+
+        box-shadow:
+            0 0 0 1px #111111;
+    }
+
+    .store-search-input {
+        flex: 1;
+
+        min-width: 0;
+
+        border: none;
+        outline: none;
+
+        padding:
+            0 17px;
+
+        background: #ffffff;
+
+        color: #111111;
+
+        font-size: 15px;
+    }
+
+    .store-search-input::placeholder {
+        color: #686868;
+    }
+
+    .store-search-button {
+        flex: 0 0 58px;
+
+        border: none;
+
+        background: #111111;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 19px;
+
+        transition:
+            background 0.2s ease;
+    }
+
+    .store-search-button:hover {
+        background: #292929;
+    }
+
+
+    /* =========================================================
+       ACCIONES DERECHA
+    ========================================================= */
+
+    .store-actions {
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+    }
+
+    .store-action {
+        position: relative;
+
+        min-width: 66px;
+        height: 54px;
+
+        padding:
+            5px 8px;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 3px;
+
+        border: none;
+        border-radius: 5px;
+
+        background: transparent;
+
+        color: #111111;
+
+        text-decoration: none;
+
+        font-size: 10px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease;
+    }
+
+    .store-action:hover {
+        background: #f2f2f2;
+
+        color: #111111;
+    }
+
+    .store-action-icon {
+        font-size: 22px;
+        line-height: 1;
+    }
+
+    .store-cart-count {
+        position: absolute;
+
+        top: 2px;
+        right: 9px;
+
+        min-width: 19px;
+        height: 19px;
+
+        padding:
+            0 5px;
+
+        border-radius: 20px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #e51b23;
+
+        color: #ffffff;
+
+        font-size: 10px;
+        font-weight: 900;
+    }
+
+    .store-logout-form {
+        margin: 0;
+        padding: 0;
+    }
+
+
+    /* =========================================================
+       NAVEGACIÓN PRINCIPAL
+    ========================================================= */
+
+    .store-nav {
+        width: 100%;
+
+        background: #ffffff;
+
+        border-bottom:
+            1px solid #dddddd;
+    }
+
+    .store-nav-inner {
+        width: calc(100% - 30px);
+        max-width: 1500px;
+
+        min-height: 50px;
+
+        margin: 0 auto;
+
+        display: flex;
+        align-items: stretch;
+
+        overflow-x: auto;
+
+        scrollbar-width: none;
+    }
+
+    .store-nav-inner::-webkit-scrollbar {
+        display: none;
+    }
+
+    .store-nav-item {
+        position: relative;
+
+        flex: 0 0 auto;
+    }
+
+    .store-nav-link {
+        height: 50px;
+
+        padding:
+            0 15px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 5px;
+
+        color: #111111;
+
+        text-decoration: none;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        white-space: nowrap;
+
+        border-bottom:
+            3px solid transparent;
+
+        transition:
+            border-color 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .store-nav-link:hover {
+        color: #111111;
+
+        background: #f6f6f6;
+
+        border-bottom-color: #e51b23;
+    }
+
+    .store-nav-link.sale {
+        color: #d71920;
+
+        font-weight: 900;
+    }
+
+    .store-chevron {
+        font-size: 10px;
+
+        transition:
+            transform 0.2s ease;
+    }
+
+
+    /* =========================================================
+       SUBMENÚS
+    ========================================================= */
+
+    .store-dropdown {
+        position: absolute;
+
+        top: 50px;
+        left: 0;
+
+        width: 290px;
+
+        padding:
+            14px 0;
+
+        border:
+            1px solid #dddddd;
+
+        border-radius:
+            0 0 7px 7px;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 12px 30px rgba(0, 0, 0, 0.14);
+
+        opacity: 0;
+
+        visibility: hidden;
+
+        transform:
+            translateY(-4px);
+
+        transition:
+            opacity 0.18s ease,
+            transform 0.18s ease,
+            visibility 0.18s ease;
+
+        z-index: 1500;
+    }
+
+    .store-nav-item:hover .store-dropdown,
+    .store-nav-item.dropdown-open .store-dropdown {
+        opacity: 1;
+
+        visibility: visible;
+
+        transform:
+            translateY(0);
+    }
+
+    .store-dropdown-title {
+        padding:
+            7px 18px 9px;
+
+        color: #707070;
+
+        font-size: 11px;
+        font-weight: 800;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.7px;
+    }
+
+    .store-dropdown-link {
+        display: block;
+
+        padding:
+            10px 18px;
+
+        color: #161616;
+
+        text-decoration: none;
+
+        font-size: 13px;
+        font-weight: 600;
+
+        transition:
+            background 0.15s ease,
+            padding-left 0.15s ease;
+    }
+
+    .store-dropdown-link:hover {
+        background: #f3f3f3;
+
+        color: #111111;
+
+        padding-left: 22px;
+    }
+
+    .store-dropdown-all {
+        margin-top: 8px;
+
+        padding-top: 12px;
+
+        border-top:
+            1px solid #eeeeee;
+
+        color: #d71920;
+
+        font-weight: 900;
+    }
+
+
+    /* =========================================================
+       BARRA PROMOCIONAL
+    ========================================================= */
+
+    .store-promo {
+        width: 100%;
+
+        min-height: 48px;
+
+        background: #111111;
+
+        color: #ffffff;
+    }
+
+    .store-promo-inner {
+        width: calc(100% - 30px);
+        max-width: 1500px;
+
+        min-height: 48px;
+
+        margin: 0 auto;
+
+        display: grid;
+
+        grid-template-columns:
+            50px 1fr 50px;
+
+        align-items: center;
+    }
+
+    .store-promo-arrow {
+        width: 38px;
+        height: 38px;
+
+        justify-self: center;
+
+        border: none;
+        border-radius: 50%;
+
+        background: transparent;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 24px;
+
+        transition:
+            background 0.2s ease;
+    }
+
+    .store-promo-arrow:hover {
+        background:
+            rgba(255, 255, 255, 0.12);
+    }
+
+    .store-promo-content {
+        min-width: 0;
+
+        text-align: center;
+    }
+
+    .store-promo-slide {
+        display: none;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        line-height: 1.4;
+    }
+
+    .store-promo-slide.active {
+        display: block;
+    }
+
+    .store-promo-highlight {
+        color: #ffd727;
+
+        font-weight: 900;
+    }
+
+
+    /* =========================================================
+       PANEL MENÚ MÓVIL / GENERAL
+    ========================================================= */
+
+    .store-menu-panel {
+        display: none;
+
+        width: 100%;
+
+        background: #ffffff;
+
+        border-bottom:
+            1px solid #dddddd;
+    }
+
+    .store-menu-panel.open {
+        display: block;
+    }
+
+    .store-menu-panel-inner {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+
+        margin: 0 auto;
+
+        padding:
+            24px 0 28px;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 28px;
+    }
+
+    .store-menu-section h3 {
+        margin:
+            0 0 12px;
+
+        color: #111111;
+
+        font-size: 14px;
+        font-weight: 900;
+    }
+
+    .store-menu-section a {
+        display: block;
+
+        margin-bottom: 9px;
+
+        color: #454545;
+
+        text-decoration: none;
+
+        font-size: 13px;
+    }
+
+    .store-menu-section a:hover {
+        color: #d71920;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 1100px) {
+
+        .store-top-inner {
+            width: calc(100% - 24px);
+
+            gap: 12px;
+        }
+
+        .store-logo-text {
+            font-size: 24px;
+        }
+
+        .store-logo-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .store-action {
+            min-width: 54px;
+
+            padding:
+                5px;
+        }
+
+        .store-menu-panel-inner {
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+    }
+
+
+    @@media (max-width: 820px) {
+
+        .store-top-inner {
+            padding:
+                12px 0;
+
+            flex-wrap: wrap;
+        }
+
+        .store-menu-button {
+            order: 1;
+        }
+
+        .store-logo {
+            order: 2;
+        }
+
+        .store-actions {
+            order: 3;
+
+            margin-left: auto;
+        }
+
+        .store-search {
+            order: 4;
+
+            flex:
+                0 0 100%;
+        }
+
+        .store-action-text {
+            display: none;
+        }
+
+        .store-action {
+            min-width: 46px;
+            width: 46px;
+        }
+
+        .store-nav-inner {
+            width: 100%;
+        }
+    }
+
+
+    @@media (max-width: 560px) {
+
+        .store-top-inner {
+            width: calc(100% - 16px);
+        }
+
+        .store-logo-text {
+            font-size: 21px;
+        }
+
+        .store-logo-icon {
+            width: 36px;
+            height: 36px;
+
+            font-size: 18px;
+        }
+
+        .store-menu-button {
+            width: 42px;
+
+            font-size: 0;
+        }
+
+        .store-menu-icon {
+            font-size: 24px;
+        }
+
+        .store-actions {
+            gap: 2px;
+        }
+
+        .store-action {
+            width: 40px;
+            min-width: 40px;
+        }
+
+        .store-action-icon {
+            font-size: 19px;
+        }
+
+        .store-cart-count {
+            right: 2px;
+        }
+
+        .store-search {
+            height: 45px;
+        }
+
+        .store-search-button {
+            flex-basis: 52px;
+        }
+
+        .store-nav-link {
+            padding:
+                0 12px;
+
+            font-size: 12px;
+        }
+
+        .store-dropdown {
+            position: fixed;
+
+            left: 10px;
+            right: 10px;
+
+            top: auto;
+
+            width: auto;
+        }
+
+        .store-promo-inner {
+            grid-template-columns:
+                40px 1fr 40px;
+
+            width: 100%;
+        }
+
+        .store-promo-slide {
+            font-size: 11px;
+        }
+
+        .store-menu-panel-inner {
+            width: calc(100% - 30px);
+
+            grid-template-columns: 1fr;
+
+            gap: 20px;
+        }
+    }
+</style>
+
+
+<header class="store-header">
+
+    <!-- =====================================================
+         CABECERA SUPERIOR
+    ====================================================== -->
+
+    <div class="store-top">
+
+        <div class="store-top-inner">
+
+            <!-- MENÚ -->
+
+            <button type="button"
+                    class="store-menu-button"
+                    id="storeMenuButton"
+                    aria-expanded="false"
+                    aria-controls="storeMenuPanel">
+
+                <span class="store-menu-icon">
+                    ☰
+                </span>
+
+                <span>
+                    MENÚ
+                </span>
+
+            </button>
+
+
+            <!-- LOGO -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="store-logo"
+               aria-label="Ir al inicio de BigGame">
+
+                <span class="store-logo-icon">
+                    🎮
+                </span>
+
+                <span class="store-logo-text">
+
+                    <span class="store-logo-big">
+                        BIG
+                    </span>
+
+                    <span class="store-logo-game">
+                        GAME
+                    </span>
+
+                </span>
+
+            </a>
+
+
+            <!-- BUSCADOR -->
+
+            <form asp-controller="Products"
+                  asp-action="Index"
+                  method="get"
+                  class="store-search">
+
+                <input type="search"
+                       name="search"
+                       value="@Context.Request.Query["search"]"
+                       class="store-search-input"
+                       placeholder="¿Qué estás buscando?"
+                       autocomplete="off"
+                       aria-label="Buscar productos en BigGame" />
+
+                <button type="submit"
+                        class="store-search-button"
+                        aria-label="Buscar">
+
+                    🔍
+
+                </button>
+
+            </form>
+
+
+            <!-- ACCIONES -->
+
+            <div class="store-actions">
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Admin"
+                           asp-action="Index"
+                           class="store-action">
+
+                            <span class="store-action-icon">
+                                👤
+                            </span>
+
+                            <span class="store-action-text">
+                                Administrar
+                            </span>
+
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Orders"
+                           asp-action="MyOrders"
+                           class="store-action">
+
+                            <span class="store-action-icon">
+                                👤
+                            </span>
+
+                            <span class="store-action-text">
+                                Mi cuenta
+                            </span>
+
+                        </a>
+                    }
+
+                    <form asp-controller="Account"
+                          asp-action="Logout"
+                          method="post"
+                          class="store-logout-form">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit"
+                                class="store-action"
+                                aria-label="Cerrar sesión">
+
+                            <span class="store-action-icon">
+                                ↪
+                            </span>
+
+                            <span class="store-action-text">
+                                Salir
+                            </span>
+
+                        </button>
+
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       class="store-action">
+
+                        <span class="store-action-icon">
+                            👤
+                        </span>
+
+                        <span class="store-action-text">
+                            Ingresar
+                        </span>
+
+                    </a>
+                }
+
+
+                <!-- PEDIDOS -->
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Orders"
+                       asp-action="MyOrders"
+                       class="store-action">
+
+                        <span class="store-action-icon">
+                            🚚
+                        </span>
+
+                        <span class="store-action-text">
+                            Pedidos
+                        </span>
+
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       asp-route-returnUrl="/Orders/MyOrders"
+                       class="store-action">
+
+                        <span class="store-action-icon">
+                            🚚
+                        </span>
+
+                        <span class="store-action-text">
+                            Pedidos
+                        </span>
+
+                    </a>
+                }
+
+
+                <!-- CARRITO -->
+
+                <a asp-controller="Cart"
+                   asp-action="Index"
+                   class="store-action">
+
+                    <span class="store-action-icon">
+                        🛒
+                    </span>
+
+                    @if (cartCount > 0)
+                    {
+                        <span class="store-cart-count">
+
+                            @(cartCount > 99
+                                ? "99+"
+                                : cartCount.ToString())
+
+                        </span>
+                    }
+
+                    <span class="store-action-text">
+                        Carrito
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MENÚ DESPLEGADO GENERAL
+    ====================================================== -->
+
+    <div class="store-menu-panel"
+         id="storeMenuPanel">
+
+        <div class="store-menu-panel-inner">
+
+            <div class="store-menu-section">
+
+                <h3>
+                    Videojuegos
+                </h3>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="PlayStation">
+                    PlayStation
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Nintendo">
+                    Nintendo
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Xbox">
+                    Xbox
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="PC">
+                    PC
+                </a>
+
+            </div>
+
+
+            <div class="store-menu-section">
+
+                <h3>
+                    Comprar
+                </h3>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="nuevo">
+                    Nuevos productos
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Seminuevo">
+                    Seminuevos
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="oferta">
+                    Ofertas
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="digital">
+                    Tienda digital
+                </a>
+
+            </div>
+
+
+            <div class="store-menu-section">
+
+                <h3>
+                    Coleccionables
+                </h3>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Pokémon">
+                    Pokémon
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Funko">
+                    Funko
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="figura">
+                    Figuras
+                </a>
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="coleccionable">
+                    Ver todos
+                </a>
+
+            </div>
+
+
+            <div class="store-menu-section">
+
+                <h3>
+                    Mi BigGame
+                </h3>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Orders"
+                       asp-action="MyOrders">
+                        Mis pedidos
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account"
+                       asp-action="Login">
+                        Iniciar sesión
+                    </a>
+
+                    <a asp-controller="Account"
+                       asp-action="Register">
+                        Crear cuenta
+                    </a>
+                }
+
+                <a asp-controller="Account"
+                   asp-action="LoginHelp">
+                    Ayuda
+                </a>
+
+                <a asp-controller="Cart"
+                   asp-action="Index">
+                    Carrito
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         NAVEGACIÓN
+    ====================================================== -->
+
+    <nav class="store-nav">
+
+        <div class="store-nav-inner">
+
+
+            <!-- OFERTAS -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="oferta"
+                   class="store-nav-link sale">
+
+                    Ofertas
+
+                </a>
+
+            </div>
+
+
+            <!-- COLECCIONABLES -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="coleccionable"
+                   class="store-nav-link">
+
+                    Coleccionables y más
+
+                    <span class="store-chevron">
+                        ▼
+                    </span>
+
+                </a>
+
+                <div class="store-dropdown">
+
+                    <div class="store-dropdown-title">
+                        Coleccionables
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Pokémon"
+                       class="store-dropdown-link">
+
+                        Pokémon
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Funko"
+                       class="store-dropdown-link">
+
+                        Funko
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="figura"
+                       class="store-dropdown-link">
+
+                        Figuras
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="coleccionable"
+                       class="store-dropdown-link store-dropdown-all">
+
+                        Ver todos los coleccionables
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- PLAYSTATION -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="PlayStation"
+                   class="store-nav-link">
+
+                    PlayStation
+
+                    <span class="store-chevron">
+                        ▼
+                    </span>
+
+                </a>
+
+                <div class="store-dropdown">
+
+                    <div class="store-dropdown-title">
+                        PlayStation
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="PS5"
+                       class="store-dropdown-link">
+
+                        PlayStation 5
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="PlayStation juego"
+                       class="store-dropdown-link">
+
+                        Juegos
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="DualSense"
+                       class="store-dropdown-link">
+
+                        Controles
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="PlayStation accesorio"
+                       class="store-dropdown-link">
+
+                        Accesorios
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="PlayStation"
+                       class="store-dropdown-link store-dropdown-all">
+
+                        Ver todo PlayStation
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- NINTENDO -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Nintendo"
+                   class="store-nav-link">
+
+                    Nintendo Switch
+
+                    <span class="store-chevron">
+                        ▼
+                    </span>
+
+                </a>
+
+                <div class="store-dropdown">
+
+                    <div class="store-dropdown-title">
+                        Nintendo
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Nintendo Switch 2"
+                       class="store-dropdown-link">
+
+                        Nintendo Switch 2
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Nintendo Switch"
+                       class="store-dropdown-link">
+
+                        Nintendo Switch
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Nintendo juego"
+                       class="store-dropdown-link">
+
+                        Juegos
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Nintendo accesorio"
+                       class="store-dropdown-link">
+
+                        Accesorios
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Nintendo"
+                       class="store-dropdown-link store-dropdown-all">
+
+                        Ver todo Nintendo
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- XBOX -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Xbox"
+                   class="store-nav-link">
+
+                    Xbox
+
+                    <span class="store-chevron">
+                        ▼
+                    </span>
+
+                </a>
+
+                <div class="store-dropdown">
+
+                    <div class="store-dropdown-title">
+                        Xbox
+                    </div>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Xbox Series"
+                       class="store-dropdown-link">
+
+                        Xbox Series X|S
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Xbox juego"
+                       class="store-dropdown-link">
+
+                        Juegos
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Xbox control"
+                       class="store-dropdown-link">
+
+                        Controles
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Xbox accesorio"
+                       class="store-dropdown-link">
+
+                        Accesorios
+
+                    </a>
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-search="Xbox"
+                       class="store-dropdown-link store-dropdown-all">
+
+                        Ver todo Xbox
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- SEMINUEVOS -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Seminuevo"
+                   class="store-nav-link">
+
+                    Seminuevos
+
+                </a>
+
+            </div>
+
+
+            <!-- NUEVOS -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="nuevo"
+                   class="store-nav-link">
+
+                    Nuevos y próximos
+
+                </a>
+
+            </div>
+
+
+            <!-- BIGGAME -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   class="store-nav-link">
+
+                    Solo en BigGame
+
+                </a>
+
+            </div>
+
+
+            <!-- DIGITAL -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="digital"
+                   class="store-nav-link">
+
+                    Tienda digital
+
+                </a>
+
+            </div>
+
+
+            <!-- RETRO -->
+
+            <div class="store-nav-item">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="retro"
+                   class="store-nav-link">
+
+                    Retro Gaming
+
+                </a>
+
+            </div>
+
+
+            <!-- PEDIDOS -->
+
+            <div class="store-nav-item">
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Orders"
+                       asp-action="MyOrders"
+                       class="store-nav-link">
+
+                        🚚 Seguir pedido
+
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       asp-route-returnUrl="/Orders/MyOrders"
+                       class="store-nav-link">
+
+                        🚚 Seguir pedido
+
+                    </a>
+                }
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =====================================================
+         PROMOCIONES ROTATIVAS
+    ====================================================== -->
+
+    <div class="store-promo">
+
+        <div class="store-promo-inner">
+
+            <button type="button"
+                    class="store-promo-arrow"
+                    id="promoPrevious"
+                    aria-label="Promoción anterior">
+
+                ‹
+
+            </button>
+
+
+            <div class="store-promo-content"
+                 id="promoContent">
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="oferta"
+                   class="store-promo-slide active">
+
+                    🔥 Descubre las
+                    <span class="store-promo-highlight">
+                        ofertas de BigGame
+                    </span>
+                    y encuentra tu próximo juego.
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="PlayStation"
+                   class="store-promo-slide">
+
+                    🎮 Explora videojuegos, consolas y accesorios de
+                    <span class="store-promo-highlight">
+                        PlayStation
+                    </span>.
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Nintendo"
+                   class="store-promo-slide">
+
+                    🍄 Entra al mundo de
+                    <span class="store-promo-highlight">
+                        Nintendo
+                    </span>
+                    y descubre juegos y accesorios.
+
+                </a>
+
+
+                <a asp-controller="Products"
+                   asp-action="Index"
+                   asp-route-search="Xbox"
+                   class="store-promo-slide">
+
+                    💚 Descubre productos
+                    <span class="store-promo-highlight">
+                        Xbox
+                    </span>
+                    disponibles en BigGame.
+
+                </a>
+
+            </div>
+
+
+            <button type="button"
+                    class="store-promo-arrow"
+                    id="promoNext"
+                    aria-label="Siguiente promoción">
+
+                ›
+
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<script>
+    (function () {
+
+        const menuButton =
+            document.getElementById("storeMenuButton");
+
+        const menuPanel =
+            document.getElementById("storeMenuPanel");
+
+
+        /* =====================================================
+           MENÚ GENERAL
+        ====================================================== */
+
+        if (menuButton && menuPanel) {
+
+            menuButton.addEventListener(
+                "click",
+                function () {
+
+                    const isOpen =
+                        menuPanel.classList.toggle("open");
+
+                    menuButton.setAttribute(
+                        "aria-expanded",
+                        isOpen
+                            ? "true"
+                            : "false"
+                    );
+                }
+            );
+        }
+
+
+        /* =====================================================
+           MENÚS DESPLEGABLES EN PANTALLAS TÁCTILES
+        ====================================================== */
+
+        const navItems =
+            document.querySelectorAll(
+                ".store-nav-item"
+            );
+
+        navItems.forEach(
+            function (item) {
+
+                const dropdown =
+                    item.querySelector(
+                        ".store-dropdown"
+                    );
+
+                const link =
+                    item.querySelector(
+                        ".store-nav-link"
+                    );
+
+                if (!dropdown || !link) {
+                    return;
+                }
+
+                link.addEventListener(
+                    "click",
+                    function (event) {
+
+                        if (
+                            window.matchMedia(
+                                "(hover: none)"
+                            ).matches
+                        ) {
+
+                            if (
+                                !item.classList.contains(
+                                    "dropdown-open"
+                                )
+                            ) {
+
+                                event.preventDefault();
+
+                                navItems.forEach(
+                                    function (otherItem) {
+                                        otherItem.classList.remove(
+                                            "dropdown-open"
+                                        );
+                                    }
+                                );
+
+                                item.classList.add(
+                                    "dropdown-open"
+                                );
+                            }
+                        }
+                    }
+                );
+            }
+        );
+
+
+        /* =====================================================
+           CARRUSEL PROMOCIONAL
+        ====================================================== */
+
+        const promoSlides =
+            Array.from(
+                document.querySelectorAll(
+                    ".store-promo-slide"
+                )
+            );
+
+        const promoPrevious =
+            document.getElementById(
+                "promoPrevious"
+            );
+
+        const promoNext =
+            document.getElementById(
+                "promoNext"
+            );
+
+        let currentPromo = 0;
+
+        let promoTimer = null;
+
+
+        function showPromo(index) {
+
+            if (promoSlides.length === 0) {
+                return;
+            }
+
+            if (index < 0) {
+                index =
+                    promoSlides.length - 1;
+            }
+
+            if (index >= promoSlides.length) {
+                index = 0;
+            }
+
+            promoSlides.forEach(
+                function (slide) {
+                    slide.classList.remove(
+                        "active"
+                    );
+                }
+            );
+
+            promoSlides[index].classList.add(
+                "active"
+            );
+
+            currentPromo = index;
+        }
+
+
+        function nextPromo() {
+
+            showPromo(
+                currentPromo + 1
+            );
+        }
+
+
+        function previousPromo() {
+
+            showPromo(
+                currentPromo - 1
+            );
+        }
+
+
+        function startPromoTimer() {
+
+            if (
+                window.matchMedia(
+                    "(prefers-reduced-motion: reduce)"
+                ).matches
+            ) {
+                return;
+            }
+
+            stopPromoTimer();
+
+            promoTimer =
+                window.setInterval(
+                    nextPromo,
+                    5000
+                );
+        }
+
+
+        function stopPromoTimer() {
+
+            if (promoTimer) {
+
+                window.clearInterval(
+                    promoTimer
+                );
+
+                promoTimer = null;
+            }
+        }
+
+
+        if (promoPrevious) {
+
+            promoPrevious.addEventListener(
+                "click",
+                function () {
+
+                    previousPromo();
+
+                    startPromoTimer();
+                }
+            );
+        }
+
+
+        if (promoNext) {
+
+            promoNext.addEventListener(
+                "click",
+                function () {
+
+                    nextPromo();
+
+                    startPromoTimer();
+                }
+            );
+        }
+
+
+        const promoContainer =
+            document.querySelector(
+                ".store-promo"
+            );
+
+
+        if (promoContainer) {
+
+            promoContainer.addEventListener(
+                "mouseenter",
+                stopPromoTimer
+            );
+
+            promoContainer.addEventListener(
+                "mouseleave",
+                startPromoTimer
+            );
+        }
+
+
+        showPromo(0);
+
+        startPromoTimer();
+
+    })();
+</script>

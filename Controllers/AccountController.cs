@@ -17,31 +17,22 @@ namespace EcommerceApp.Controllers
             _signInManager = signInManager;
         }
 
-
         // ==========================================
         // LOGIN
         // ==========================================
 
         [HttpGet]
-        public IActionResult Login(
-            string? returnUrl = null)
+        public IActionResult Login(string? returnUrl = null)
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                return RedirectToAction(
-                    "Index",
-                    "Products"
-                );
+                return RedirectToAction("Index", "Products");
             }
 
-            ViewBag.ReturnUrl =
-                returnUrl;
+            ViewBag.ReturnUrl = returnUrl;
 
-            return View(
-                new LoginViewModel()
-            );
+            return View(new LoginViewModel());
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -49,18 +40,16 @@ namespace EcommerceApp.Controllers
             LoginViewModel model,
             string? returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
+            model.Email = model.Email.Trim();
 
-            var user =
-                await _userManager
-                    .FindByEmailAsync(
-                        model.Email
-                    );
-
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null)
             {
@@ -72,16 +61,12 @@ namespace EcommerceApp.Controllers
                 return View(model);
             }
 
-
-            var result =
-                await _signInManager
-                    .PasswordSignInAsync(
-                        user,
-                        model.Password,
-                        model.RememberMe,
-                        lockoutOnFailure: false
-                    );
-
+            var result = await _signInManager.PasswordSignInAsync(
+                user,
+                model.Password,
+                model.RememberMe,
+                lockoutOnFailure: false
+            );
 
             if (!result.Succeeded)
             {
@@ -93,34 +78,29 @@ namespace EcommerceApp.Controllers
                 return View(model);
             }
 
-
-            if (!string.IsNullOrWhiteSpace(returnUrl)
-                &&
+            if (!string.IsNullOrWhiteSpace(returnUrl) &&
                 Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }
 
-
-            if (await _userManager
-                .IsInRoleAsync(
-                    user,
-                    "Admin"
-                ))
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
             {
-                return RedirectToAction(
-                    "Index",
-                    "Admin"
-                );
+                return RedirectToAction("Index", "Admin");
             }
 
-
-            return RedirectToAction(
-                "Index",
-                "Products"
-            );
+            return RedirectToAction("Index", "Products");
         }
 
+        // ==========================================
+        // AYUDA PARA INICIAR SESIÓN
+        // ==========================================
+
+        [HttpGet]
+        public IActionResult LoginHelp()
+        {
+            return View();
+        }
 
         // ==========================================
         // REGISTRO
@@ -131,17 +111,11 @@ namespace EcommerceApp.Controllers
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                return RedirectToAction(
-                    "Index",
-                    "Products"
-                );
+                return RedirectToAction("Index", "Products");
             }
 
-            return View(
-                new RegisterViewModel()
-            );
+            return View(new RegisterViewModel());
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -153,13 +127,10 @@ namespace EcommerceApp.Controllers
                 return View(model);
             }
 
+            model.Email = model.Email.Trim();
 
             var existingUser =
-                await _userManager
-                    .FindByEmailAsync(
-                        model.Email
-                    );
-
+                await _userManager.FindByEmailAsync(model.Email);
 
             if (existingUser != null)
             {
@@ -171,37 +142,21 @@ namespace EcommerceApp.Controllers
                 return View(model);
             }
 
-
-            var user =
-                new ApplicationUser
-                {
-                    UserName =
-                        model.Email,
-
-                    Email =
-                        model.Email,
-
-                    FullName =
-                        model.FullName,
-
-                    Address =
-                        model.Address,
-
-                    EmailConfirmed =
-                        true,
-
-                    CreatedAt =
-                        DateTime.UtcNow
-                };
-
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.FullName,
+                Address = model.Address,
+                EmailConfirmed = true,
+                CreatedAt = DateTime.UtcNow
+            };
 
             var result =
-                await _userManager
-                    .CreateAsync(
-                        user,
-                        model.Password
-                    );
-
+                await _userManager.CreateAsync(
+                    user,
+                    model.Password
+                );
 
             if (!result.Succeeded)
             {
@@ -216,19 +171,15 @@ namespace EcommerceApp.Controllers
                 return View(model);
             }
 
-
             var roleResult =
-                await _userManager
-                    .AddToRoleAsync(
-                        user,
-                        "User"
-                    );
-
+                await _userManager.AddToRoleAsync(
+                    user,
+                    "User"
+                );
 
             if (!roleResult.Succeeded)
             {
-                await _userManager
-                    .DeleteAsync(user);
+                await _userManager.DeleteAsync(user);
 
                 ModelState.AddModelError(
                     string.Empty,
@@ -238,20 +189,16 @@ namespace EcommerceApp.Controllers
                 return View(model);
             }
 
-
-            await _signInManager
-                .SignInAsync(
-                    user,
-                    isPersistent: false
-                );
-
+            await _signInManager.SignInAsync(
+                user,
+                isPersistent: false
+            );
 
             return RedirectToAction(
                 "Index",
                 "Products"
             );
         }
-
 
         // ==========================================
         // CERRAR SESIÓN
@@ -261,9 +208,7 @@ namespace EcommerceApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager
-                .SignOutAsync();
-
+            await _signInManager.SignOutAsync();
 
             return RedirectToAction(
                 "Index",
