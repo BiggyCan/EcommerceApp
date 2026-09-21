@@ -1,0 +1,1646 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    bool IsAccessory(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        var category =
+            (product.Category ?? string.Empty)
+            .ToLowerInvariant();
+
+        return
+            category.Contains("accesorio")
+            || category.Contains("pc gaming")
+            || name.Contains("controller")
+            || name.Contains("control")
+            || name.Contains("dualsense")
+            || name.Contains("headset")
+            || name.Contains("auricular")
+            || name.Contains("keyboard")
+            || name.Contains("teclado")
+            || name.Contains("ssd")
+            || name.Contains("almacenamiento");
+    }
+
+    string AccessoryType(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (
+            name.Contains("controller")
+            || name.Contains("control")
+            || name.Contains("dualsense")
+        )
+        {
+            return "controles";
+        }
+
+        if (
+            name.Contains("headset")
+            || name.Contains("auricular")
+        )
+        {
+            return "auriculares";
+        }
+
+        if (
+            name.Contains("keyboard")
+            || name.Contains("teclado")
+        )
+        {
+            return "teclados";
+        }
+
+        if (
+            name.Contains("ssd")
+            || name.Contains("storage")
+            || name.Contains("almacenamiento")
+        )
+        {
+            return "almacenamiento";
+        }
+
+        return "otros";
+    }
+
+    string AccessoryPlatform(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        var description =
+            (product.Description ?? string.Empty)
+            .ToLowerInvariant();
+
+        var combined =
+            name + " " + description;
+
+        if (
+            combined.Contains("playstation")
+            || combined.Contains("ps5")
+            || combined.Contains("dualsense")
+        )
+        {
+            return "playstation";
+        }
+
+        if (
+            combined.Contains("xbox")
+            || combined.Contains("microsoft")
+        )
+        {
+            return "xbox";
+        }
+
+        if (
+            combined.Contains("nintendo")
+            || combined.Contains("switch")
+        )
+        {
+            return "nintendo";
+        }
+
+        return "pc";
+    }
+
+    string AccessoryLabel(EcommerceApp.Models.Product product)
+    {
+        return AccessoryType(product) switch
+        {
+            "controles" => "Controles",
+            "auriculares" => "Auriculares",
+            "teclados" => "Teclados",
+            "almacenamiento" => "Almacenamiento",
+            _ => "Accesorios"
+        };
+    }
+
+    string AccessoryIcon(EcommerceApp.Models.Product product)
+    {
+        return AccessoryType(product) switch
+        {
+            "controles" => "🎮",
+            "auriculares" => "🎧",
+            "teclados" => "⌨️",
+            "almacenamiento" => "💾",
+            _ => "⚙️"
+        };
+    }
+
+    var accessories =
+        products
+            .Where(IsAccessory)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(30)
+            .ToList();
+}
+
+<style>
+
+    /* =========================================================
+       ACCESORIOS BIGGAME
+    ========================================================= */
+
+    .accessories-home {
+        width: 100%;
+
+        padding:
+            58px
+            0
+            66px;
+
+        background: #f6f7f9;
+
+        color: #111827;
+    }
+
+    .accessories-container {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       ENCABEZADO
+    ========================================================= */
+
+    .accessories-heading {
+        margin-bottom: 24px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .accessories-heading-left {
+        min-width: 0;
+    }
+
+    .accessories-kicker {
+        margin-bottom: 6px;
+
+        color: #7c3aed;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .accessories-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.08;
+
+        font-weight: 900;
+
+        letter-spacing: -0.8px;
+    }
+
+    .accessories-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color: #64748b;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .accessories-view-all {
+        flex: 0 0 auto;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .accessories-view-all:hover {
+        color: #7c3aed;
+    }
+
+
+    /* =========================================================
+       BANNER
+    ========================================================= */
+
+    .accessories-banner {
+        position: relative;
+
+        min-height: 225px;
+
+        margin-bottom: 25px;
+
+        overflow: hidden;
+
+        border-radius: 12px;
+
+        background:
+            radial-gradient(
+                circle at 80% 35%,
+                rgba(211, 154, 255, 0.30),
+                transparent 25%
+            ),
+            radial-gradient(
+                circle at 92% 80%,
+                rgba(41, 182, 246, 0.20),
+                transparent 23%
+            ),
+            linear-gradient(
+                110deg,
+                #10051d 0%,
+                #2d0c50 47%,
+                #6d28d9 100%
+            );
+
+        color: #ffffff;
+
+        box-shadow:
+            0
+            12px
+            30px
+            rgba(15, 23, 42, 0.14);
+    }
+
+    .accessories-banner-content {
+        position: relative;
+
+        z-index: 3;
+
+        min-height: 225px;
+
+        padding:
+            38px
+            42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 30px;
+    }
+
+    .accessories-banner-left {
+        max-width: 700px;
+    }
+
+    .accessories-banner-label {
+        margin-bottom: 8px;
+
+        color: #d8b4fe;
+
+        font-size: 10px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .accessories-banner-title {
+        margin:
+            0
+            0
+            11px;
+
+        font-size: 38px;
+        line-height: 1.03;
+
+        font-weight: 900;
+
+        letter-spacing: -1px;
+    }
+
+    .accessories-banner-description {
+        margin: 0;
+
+        max-width: 620px;
+
+        color:
+            rgba(255,255,255,0.84);
+
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .accessories-banner-icons {
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+
+        gap: 12px;
+
+        padding-right: 20px;
+    }
+
+    .accessories-banner-icon {
+        width: 79px;
+        height: 79px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border:
+            2px solid
+            rgba(255,255,255,0.16);
+
+        border-radius: 16px;
+
+        background:
+            rgba(255,255,255,0.07);
+
+        font-size: 37px;
+
+        backdrop-filter: blur(6px);
+
+        transform: rotate(-4deg);
+    }
+
+    .accessories-banner-icon:nth-child(2) {
+        transform:
+            translateY(-12px)
+            rotate(4deg);
+    }
+
+    .accessories-banner-icon:nth-child(3) {
+        transform: rotate(7deg);
+    }
+
+
+    /* =========================================================
+       FILTROS
+    ========================================================= */
+
+    .accessories-tabs {
+        margin-bottom: 24px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        overflow-x: auto;
+
+        scrollbar-width: none;
+    }
+
+    .accessories-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .accessories-tab {
+        flex: 0 0 auto;
+
+        min-height: 40px;
+
+        padding:
+            0
+            16px;
+
+        border:
+            1px solid #cbd5e1;
+
+        border-radius: 5px;
+
+        background: #ffffff;
+
+        color: #111827;
+
+        cursor: pointer;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        white-space: nowrap;
+
+        transition:
+            background 0.18s ease,
+            color 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .accessories-tab:hover {
+        border-color: #7c3aed;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .accessories-tab.active {
+        border-color: #7c3aed;
+
+        background: #7c3aed;
+
+        color: #ffffff;
+    }
+
+
+    /* =========================================================
+       CARRUSEL
+    ========================================================= */
+
+    .accessories-carousel {
+        position: relative;
+    }
+
+    .accessories-products {
+        display: flex;
+
+        gap: 15px;
+
+        overflow-x: auto;
+
+        padding:
+            3px
+            4px
+            20px;
+
+        scroll-behavior: smooth;
+
+        scroll-snap-type:
+            x proximity;
+
+        scrollbar-width: none;
+    }
+
+    .accessories-products::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =========================================================
+       TARJETA
+    ========================================================= */
+
+    .accessories-card {
+        flex:
+            0
+            0
+            230px;
+
+        min-height: 475px;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        scroll-snap-align: start;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .accessories-card:hover {
+        transform:
+            translateY(-4px);
+
+        border-color: #c4b5fd;
+
+        box-shadow:
+            0
+            12px
+            28px
+            rgba(15, 23, 42, 0.11);
+    }
+
+
+    /* =========================================================
+       IMAGEN
+    ========================================================= */
+
+    .accessories-image {
+        position: relative;
+
+        width: 100%;
+        height: 270px;
+
+        padding: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background:
+            linear-gradient(
+                180deg,
+                #ffffff,
+                #f8fafc
+            );
+    }
+
+    .accessories-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .accessories-card:hover
+    .accessories-image img {
+        transform:
+            scale(1.05);
+    }
+
+    .accessories-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #2e1065,
+                #111827
+            );
+
+        font-size: 62px;
+    }
+
+
+    /* =========================================================
+       BADGES
+    ========================================================= */
+
+    .accessories-type-badge {
+        position: absolute;
+
+        z-index: 4;
+
+        top: 10px;
+        left: 10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius: 4px;
+
+        background: #7c3aed;
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.45px;
+
+        text-transform: uppercase;
+    }
+
+    .accessories-platform-badge {
+        position: absolute;
+
+        z-index: 4;
+
+        top: 10px;
+        right: 10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        font-size: 8px;
+        font-weight: 900;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       INFORMACIÓN
+    ========================================================= */
+
+    .accessories-info {
+        flex: 1;
+
+        padding:
+            14px
+            15px
+            15px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .accessories-category {
+        margin-bottom: 6px;
+
+        color: #7c3aed;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.55px;
+
+        text-transform: uppercase;
+    }
+
+    .accessories-name {
+        min-height: 44px;
+
+        margin-bottom: 9px;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+    .accessories-price {
+        margin-top: auto;
+
+        color: #111827;
+
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .accessories-stock {
+        min-height: 18px;
+
+        margin-top: 4px;
+
+        color: #16a34a;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .accessories-stock.out {
+        color: #dc2626;
+    }
+
+
+    /* =========================================================
+       BOTONES
+    ========================================================= */
+
+    .accessories-actions {
+        margin-top: 12px;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            44px;
+
+        gap: 7px;
+    }
+
+    .accessories-details {
+        min-height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding:
+            0
+            12px;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .accessories-details:hover {
+        background: #174fc7;
+
+        color: #ffffff;
+    }
+
+    .accessories-cart-form {
+        margin: 0;
+    }
+
+    .accessories-cart {
+        width: 44px;
+        height: 42px;
+
+        border: none;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 17px;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .accessories-cart:hover {
+        background: #7c3aed;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .accessories-cart:disabled {
+        background: #cbd5e1;
+
+        color: #64748b;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =========================================================
+       FLECHAS
+    ========================================================= */
+
+    .accessories-arrow {
+        position: absolute;
+
+        z-index: 10;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        width: 46px;
+        height: 64px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        background:
+            rgba(17,24,39,0.94);
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 31px;
+
+        box-shadow:
+            0
+            6px
+            20px
+            rgba(15,23,42,0.20);
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .accessories-arrow:hover {
+        background: #7c3aed;
+    }
+
+    .accessories-arrow-left {
+        left: -15px;
+    }
+
+    .accessories-arrow-right {
+        right: -15px;
+    }
+
+
+    /* =========================================================
+       MENSAJE SIN RESULTADOS
+    ========================================================= */
+
+    .accessories-filter-empty {
+        display: none;
+
+        width: 100%;
+
+        margin-top: 5px;
+
+        padding:
+            38px
+            20px;
+
+        border:
+            1px dashed #cbd5e1;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        color: #64748b;
+
+        text-align: center;
+    }
+
+    .accessories-filter-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 16px;
+    }
+
+
+    /* =========================================================
+       VACÍO GENERAL
+    ========================================================= */
+
+    .accessories-empty {
+        width: 100%;
+
+        padding:
+            55px
+            20px;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        color: #64748b;
+
+        text-align: center;
+    }
+
+    .accessories-empty-icon {
+        margin-bottom: 12px;
+
+        font-size: 42px;
+    }
+
+    .accessories-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 18px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 950px) {
+
+        .accessories-title {
+            font-size: 27px;
+        }
+
+        .accessories-banner-icons {
+            transform:
+                scale(0.82);
+
+            transform-origin:
+                right center;
+        }
+
+        .accessories-card {
+            flex-basis: 215px;
+        }
+
+        .accessories-arrow-left {
+            left: 2px;
+        }
+
+        .accessories-arrow-right {
+            right: 2px;
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .accessories-home {
+            padding:
+                42px
+                0
+                50px;
+        }
+
+        .accessories-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .accessories-heading {
+            flex-direction: column;
+
+            align-items: flex-start;
+        }
+
+        .accessories-title {
+            font-size: 25px;
+        }
+
+        .accessories-banner-content {
+            min-height: 250px;
+
+            padding:
+                30px
+                24px;
+        }
+
+        .accessories-banner-title {
+            font-size: 29px;
+        }
+
+        .accessories-banner-icons {
+            display: none;
+        }
+
+        .accessories-card {
+            flex-basis: 195px;
+
+            min-height: 445px;
+        }
+
+        .accessories-image {
+            height: 230px;
+        }
+
+        .accessories-arrow {
+            width: 38px;
+            height: 54px;
+
+            font-size: 26px;
+        }
+    }
+
+</style>
+
+
+<section class="accessories-home"
+         id="accesorios">
+
+    <div class="accessories-container">
+
+
+        <!-- =====================================================
+             ENCABEZADO
+        ====================================================== -->
+
+        <div class="accessories-heading">
+
+            <div class="accessories-heading-left">
+
+                <div class="accessories-kicker">
+                    ACCESORIOS GAMING
+                </div>
+
+                <h2 class="accessories-title">
+                    Completa tu setup
+                </h2>
+
+                <p class="accessories-subtitle">
+                    Controles, auriculares, teclados,
+                    almacenamiento y accesorios para jugar mejor.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Accesorios"
+               class="accessories-view-all">
+
+                Ver todos →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             BANNER
+        ====================================================== -->
+
+        <div class="accessories-banner">
+
+            <div class="accessories-banner-content">
+
+                <div class="accessories-banner-left">
+
+                    <div class="accessories-banner-label">
+                        BIGGAME GEAR
+                    </div>
+
+                    <h3 class="accessories-banner-title">
+                        Tu partida. Tu equipo.
+                    </h3>
+
+                    <p class="accessories-banner-description">
+                        Mejora tu experiencia con controles,
+                        audio, periféricos y almacenamiento
+                        para consola y PC.
+                    </p>
+
+                </div>
+
+
+                <div class="accessories-banner-icons">
+
+                    <div class="accessories-banner-icon">
+                        🎮
+                    </div>
+
+                    <div class="accessories-banner-icon">
+                        🎧
+                    </div>
+
+                    <div class="accessories-banner-icon">
+                        ⌨️
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             FILTROS
+        ====================================================== -->
+
+        <div class="accessories-tabs"
+             id="accessoriesTabs">
+
+            <button type="button"
+                    class="accessories-tab active"
+                    data-accessory-filter="todos">
+
+                Todos
+
+            </button>
+
+
+            <button type="button"
+                    class="accessories-tab"
+                    data-accessory-filter="controles">
+
+                Controles
+
+            </button>
+
+
+            <button type="button"
+                    class="accessories-tab"
+                    data-accessory-filter="auriculares">
+
+                Auriculares
+
+            </button>
+
+
+            <button type="button"
+                    class="accessories-tab"
+                    data-accessory-filter="teclados">
+
+                Teclados
+
+            </button>
+
+
+            <button type="button"
+                    class="accessories-tab"
+                    data-accessory-filter="almacenamiento">
+
+                Almacenamiento
+
+            </button>
+
+
+            <button type="button"
+                    class="accessories-tab"
+                    data-accessory-filter="playstation">
+
+                PlayStation
+
+            </button>
+
+
+            <button type="button"
+                    class="accessories-tab"
+                    data-accessory-filter="xbox">
+
+                Xbox
+
+            </button>
+
+
+            <button type="button"
+                    class="accessories-tab"
+                    data-accessory-filter="nintendo">
+
+                Nintendo
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             PRODUCTOS
+        ====================================================== -->
+
+        @if (accessories.Any())
+        {
+            <div class="accessories-carousel">
+
+                <button type="button"
+                        class="accessories-arrow accessories-arrow-left"
+                        id="accessoriesPrevious"
+                        aria-label="Accesorios anteriores">
+
+                    ‹
+
+                </button>
+
+
+                <div class="accessories-products"
+                     id="accessoriesProducts">
+
+                    @foreach (var product in accessories)
+                    {
+                        var type =
+                            AccessoryType(product);
+
+                        var platform =
+                            AccessoryPlatform(product);
+
+                        var label =
+                            AccessoryLabel(product);
+
+                        var icon =
+                            AccessoryIcon(product);
+
+
+                        <article class="accessories-card"
+                                 data-accessory-type="@type"
+                                 data-accessory-platform="@platform">
+
+
+                            <!-- IMAGEN -->
+
+                            <div class="accessories-image">
+
+                                <span class="accessories-type-badge">
+                                    @label
+                                </span>
+
+
+                                <span class="accessories-platform-badge">
+
+                                    @switch (platform)
+                                    {
+                                        case "playstation":
+                                            @:PlayStation
+                                            break;
+
+                                        case "xbox":
+                                            @:Xbox
+                                            break;
+
+                                        case "nintendo":
+                                            @:Nintendo
+                                            break;
+
+                                        default:
+                                            @:PC Gaming
+                                            break;
+                                    }
+
+                                </span>
+
+
+                                @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl"
+                                         alt="@product.Name"
+                                         loading="lazy"
+                                         onerror="
+                                            this.style.display='none';
+                                            this.nextElementSibling.style.display='flex';
+                                         " />
+
+                                    <div class="accessories-placeholder"
+                                         style="display:none;">
+                                        @icon
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="accessories-placeholder">
+                                        @icon
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <!-- INFORMACIÓN -->
+
+                            <div class="accessories-info">
+
+                                <div class="accessories-category">
+                                    @label
+                                </div>
+
+
+                                <div class="accessories-name">
+                                    @product.Name
+                                </div>
+
+
+                                <div class="accessories-price">
+                                    Bs @product.Price.ToString("N2")
+                                </div>
+
+
+                                @if (product.Stock > 0)
+                                {
+                                    <div class="accessories-stock">
+                                        @product.Stock disponibles
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="accessories-stock out">
+                                        Agotado
+                                    </div>
+                                }
+
+
+                                <!-- ACCIONES -->
+
+                                <div class="accessories-actions">
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="accessories-details">
+
+                                        Ver producto
+
+                                    </a>
+
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-controller="Cart"
+                                              asp-action="Add"
+                                              method="post"
+                                              class="accessories-cart-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@product.Id" />
+
+                                            <button type="submit"
+                                                    class="accessories-cart"
+                                                    title="Agregar al carrito"
+                                                    aria-label="Agregar @product.Name al carrito">
+
+                                                🛒
+
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="accessories-cart"
+                                                disabled
+                                                title="Producto agotado">
+
+                                            🛒
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
+
+
+                <button type="button"
+                        class="accessories-arrow accessories-arrow-right"
+                        id="accessoriesNext"
+                        aria-label="Más accesorios">
+
+                    ›
+
+                </button>
+
+            </div>
+
+
+            <div class="accessories-filter-empty"
+                 id="accessoriesFilterEmpty">
+
+                <strong>
+                    No hay accesorios en esta categoría
+                </strong>
+
+                <span>
+                    Prueba con otra opción.
+                </span>
+
+            </div>
+        }
+        else
+        {
+            <div class="accessories-empty">
+
+                <div class="accessories-empty-icon">
+                    🎧
+                </div>
+
+                <strong>
+                    Próximamente más accesorios
+                </strong>
+
+                <span>
+                    Estamos preparando nuevos productos para BigGame.
+                </span>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const row =
+            document.getElementById(
+                "accessoriesProducts"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "accessoriesPrevious"
+            );
+
+        const nextButton =
+            document.getElementById(
+                "accessoriesNext"
+            );
+
+        const tabs =
+            Array.from(
+                document.querySelectorAll(
+                    ".accessories-tab"
+                )
+            );
+
+        const emptyMessage =
+            document.getElementById(
+                "accessoriesFilterEmpty"
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        /* =====================================================
+           FLECHAS
+        ====================================================== */
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: -735,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: 735,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FILTROS
+        ====================================================== */
+
+        tabs.forEach(
+            function (tab) {
+
+                tab.addEventListener(
+                    "click",
+                    function () {
+
+                        tabs.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+
+                        tab.classList.add(
+                            "active"
+                        );
+
+
+                        const filter =
+                            tab.dataset.accessoryFilter
+                            || "todos";
+
+
+                        const cards =
+                            Array.from(
+                                row.querySelectorAll(
+                                    ".accessories-card"
+                                )
+                            );
+
+
+                        let visibleCount = 0;
+
+
+                        cards.forEach(
+                            function (card) {
+
+                                const type =
+                                    card.dataset.accessoryType
+                                    || "";
+
+                                const platform =
+                                    card.dataset.accessoryPlatform
+                                    || "";
+
+
+                                let visible = false;
+
+
+                                if (filter === "todos")
+                                {
+                                    visible = true;
+                                }
+                                else if (
+                                    filter === "playstation"
+                                    || filter === "xbox"
+                                    || filter === "nintendo"
+                                )
+                                {
+                                    visible =
+                                        platform === filter;
+                                }
+                                else
+                                {
+                                    visible =
+                                        type === filter;
+                                }
+
+
+                                card.style.display =
+                                    visible
+                                    ? "flex"
+                                    : "none";
+
+
+                                if (visible) {
+                                    visibleCount++;
+                                }
+
+                            }
+                        );
+
+
+                        if (emptyMessage) {
+
+                            emptyMessage.style.display =
+                                visibleCount === 0
+                                ? "block"
+                                : "none";
+
+                        }
+
+
+                        row.scrollTo({
+                            left: 0,
+                            behavior: "smooth"
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+    })();
+
+</script>

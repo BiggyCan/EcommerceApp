@@ -1,0 +1,3094 @@
+@model List<EcommerceApp.Models.Product>
+@using System.Globalization
+
+@{
+    var products =
+        Model
+        ?? new List<EcommerceApp.Models.Product>();
+
+    var allProducts =
+        ViewBag.AllProducts as List<EcommerceApp.Models.Product>
+        ?? new List<EcommerceApp.Models.Product>();
+
+    var relatedProducts =
+        ViewBag.RelatedProducts as List<EcommerceApp.Models.Product>
+        ?? new List<EcommerceApp.Models.Product>();
+
+    var search =
+        Context.Request.Query["search"].ToString();
+
+    var category =
+        Context.Request.Query["category"].ToString();
+
+
+    string ProductImage(EcommerceApp.Models.Product product)
+    {
+        var name =
+            product.Name ?? "";
+
+        if (name.Contains("30th Celebration", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-30th.jpg";
+
+        if (name.Contains("Delta Reign", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-delta-reign.jpg";
+
+        if (name.Contains("Pitch Black", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-pitch-black.jpg";
+
+        if (name.Contains("Chaos Rising", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-chaos-rising.jpg";
+
+        if (name.Contains("Perfect Order", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-perfect-order.jpg";
+
+        if (name.Contains("Destined Rivals", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pokemon-destined-rivals.jpg";
+
+        if (name.Contains("Onimusha", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/onimusha-ps5.jpg";
+
+        if (name.Contains("Dawnwalker", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/blood-of-dawnwalker.jpg";
+
+        if (name.Contains("Wolverine", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/wolverine-ps5.jpg";
+
+        if (name.Contains("NBA 2K27", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/nba2k27-xbox.jpg";
+
+        if (name.Contains("FC 27", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/fc27-ps5.jpg";
+
+        if (name.Contains("MLB The Show 26", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/mlb-the-show-26-ps5.jpg";
+
+        if (name.Contains("Madden NFL 27", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/madden27-ps5.jpg";
+
+        if (name.Contains("NHL 27", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/nhl27-ps5.jpg";
+
+        if (name.Contains("Final Fantasy VII", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/final-fantasy-vii.jpg";
+
+        if (name.Contains("Ocarina of Time", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/zelda-ocarina-switch2.jpg";
+
+        if (name.Contains("Grand Theft Auto VI", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/gta6-ps5.jpg";
+
+        if (name.Contains("Star Wars Zero Company", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/star-wars-zero-company.jpg";
+
+        if (name.Contains("PlayStation 5 Slim", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/ps5-slim.jpg";
+
+        if (name.Contains("DualSense Edge", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/dualsense-edge.jpg";
+
+        if (
+            name.Contains("DualSense", StringComparison.OrdinalIgnoreCase)
+            &&
+            name.Contains("White", StringComparison.OrdinalIgnoreCase)
+        )
+            return "/images/products/dualsense-white.jpg";
+
+        if (
+            name.Contains("DualSense", StringComparison.OrdinalIgnoreCase)
+            &&
+            name.Contains("Pink", StringComparison.OrdinalIgnoreCase)
+        )
+            return "/images/products/dualsense-pink.jpg";
+
+        if (name.Contains("Xbox Wireless Controller", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/xbox-controller.jpg";
+
+        if (name.Contains("Stealth 700", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/turtle-beach-stealth-700.jpg";
+
+        if (name.Contains("Gaming Headset", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/gaming-headset.jpg";
+
+        if (name.Contains("Gaming Keyboard", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/gaming-keyboard.jpg";
+
+        if (name.Contains("Portable SSD", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/portable-ssd.jpg";
+
+        if (name.Contains("Switch 2 Pro Controller", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/switch2-pro-controller.jpg";
+
+        if (name.Contains("Magnificent Monsters", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/yugioh-magnificent-monsters.jpg";
+
+        if (name.Contains("Thragg", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/invincible-thragg.jpg";
+
+        if (name.Contains("Punisher", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/marvel-punisher.jpg";
+
+        if (
+            name.Contains("Woody", StringComparison.OrdinalIgnoreCase)
+            ||
+            name.Contains("Buzz", StringComparison.OrdinalIgnoreCase)
+        )
+            return "/images/products/funko-woody-buzz.jpg";
+
+        if (name.Contains("Pomni", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/pomni-plush.jpg";
+
+        if (name.Contains("PlayStation Store Gift Card", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/playstation-gift-card.jpg";
+
+        if (name.Contains("Xbox Gift Card", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/xbox-gift-card.jpg";
+
+        if (name.Contains("Nintendo eShop Gift Card", StringComparison.OrdinalIgnoreCase))
+            return "/images/products/nintendo-gift-card.jpg";
+
+        return product.ImageUrl ?? "";
+    }
+
+
+    string ProductIcon(EcommerceApp.Models.Product product)
+    {
+        var text =
+            $"{product.Name} {product.Category}"
+            .ToLowerInvariant();
+
+        if (text.Contains("controller") || text.Contains("dualsense"))
+            return "🎮";
+
+        if (text.Contains("headset"))
+            return "🎧";
+
+        if (text.Contains("keyboard"))
+            return "⌨️";
+
+        if (text.Contains("ssd"))
+            return "💾";
+
+        if (text.Contains("gift card"))
+            return "💳";
+
+        if (
+            text.Contains("figure")
+            ||
+            text.Contains("funko")
+            ||
+            text.Contains("plush")
+        )
+            return "🧸";
+
+        if (text.Contains("trading"))
+            return "🃏";
+
+        if (text.Contains("console"))
+            return "🕹️";
+
+        return "🎮";
+    }
+
+
+    string Platform(EcommerceApp.Models.Product product)
+    {
+        var text =
+            $"{product.Name} {product.Category}"
+            .ToLowerInvariant();
+
+        if (
+            text.Contains("playstation")
+            ||
+            text.Contains("ps5")
+            ||
+            text.Contains("dualsense")
+        )
+            return "PlayStation";
+
+        if (text.Contains("xbox"))
+            return "Xbox";
+
+        if (
+            text.Contains("nintendo")
+            ||
+            text.Contains("switch")
+            ||
+            text.Contains("zelda")
+        )
+            return "Nintendo";
+
+        if (
+            text.Contains("pc")
+            ||
+            text.Contains("keyboard")
+            ||
+            text.Contains("ssd")
+        )
+            return "PC";
+
+        if (
+            text.Contains("digital")
+            ||
+            text.Contains("gift card")
+        )
+            return "Digital";
+
+        return "Otros";
+    }
+
+
+    string Condition(EcommerceApp.Models.Product product)
+    {
+        var text =
+            $"{product.Name} {product.Category} {product.Description}"
+            .ToLowerInvariant();
+
+        if (
+            text.Contains("seminuevo")
+            ||
+            text.Contains("usado")
+            ||
+            text.Contains("pre-owned")
+        )
+            return "Seminuevo";
+
+        return "Nuevo";
+    }
+
+
+    string PurchaseType(EcommerceApp.Models.Product product)
+    {
+        var text =
+            $"{product.Name} {product.Category}"
+            .ToLowerInvariant();
+
+        if (
+            text.Contains("digital")
+            ||
+            text.Contains("gift card")
+            ||
+            text.Contains("eshop")
+        )
+            return "Digital";
+
+        return "Producto físico";
+    }
+
+
+    string Franchise(EcommerceApp.Models.Product product)
+    {
+        var text =
+            $"{product.Name} {product.Category}"
+            .ToLowerInvariant();
+
+        if (text.Contains("pokemon"))
+            return "Pokémon";
+
+        if (
+            text.Contains("wolverine")
+            ||
+            text.Contains("punisher")
+            ||
+            text.Contains("marvel")
+        )
+            return "Marvel";
+
+        if (text.Contains("zelda"))
+            return "The Legend of Zelda";
+
+        if (text.Contains("final fantasy"))
+            return "Final Fantasy";
+
+        if (
+            text.Contains("grand theft")
+            ||
+            text.Contains("gta")
+        )
+            return "Grand Theft Auto";
+
+        if (text.Contains("star wars"))
+            return "Star Wars";
+
+        if (text.Contains("yu-gi-oh"))
+            return "Yu-Gi-Oh!";
+
+        if (text.Contains("onimusha"))
+            return "Onimusha";
+
+        if (text.Contains("nba"))
+            return "NBA";
+
+        if (
+            text.Contains("fc 27")
+            ||
+            text.Contains("ea sports")
+        )
+            return "EA Sports";
+
+        if (text.Contains("mlb"))
+            return "MLB";
+
+        if (text.Contains("madden"))
+            return "Madden";
+
+        if (text.Contains("nhl"))
+            return "NHL";
+
+        return "Otros";
+    }
+
+
+    string Genre(EcommerceApp.Models.Product product)
+    {
+        var text =
+            $"{product.Name} {product.Category}"
+            .ToLowerInvariant();
+
+        if (
+            text.Contains("fc 27")
+            ||
+            text.Contains("nba")
+            ||
+            text.Contains("mlb")
+            ||
+            text.Contains("madden")
+            ||
+            text.Contains("nhl")
+        )
+            return "Deportes";
+
+        if (
+            text.Contains("final fantasy")
+            ||
+            text.Contains("dawnwalker")
+        )
+            return "RPG";
+
+        if (text.Contains("zelda"))
+            return "Aventura";
+
+        if (
+            text.Contains("onimusha")
+            ||
+            text.Contains("wolverine")
+            ||
+            text.Contains("grand theft")
+            ||
+            text.Contains("star wars")
+        )
+            return "Acción";
+
+        if (
+            text.Contains("pokemon")
+            ||
+            text.Contains("yu-gi-oh")
+            ||
+            text.Contains("trading")
+        )
+            return "Cartas";
+
+        if (
+            text.Contains("controller")
+            ||
+            text.Contains("headset")
+            ||
+            text.Contains("keyboard")
+            ||
+            text.Contains("ssd")
+        )
+            return "Accesorios";
+
+        if (
+            text.Contains("console")
+            ||
+            text.Contains("playstation 5 slim")
+        )
+            return "Hardware";
+
+        return "Otros";
+    }
+
+
+    string Brand(EcommerceApp.Models.Product product)
+    {
+        var text =
+            $"{product.Name} {product.Category}"
+            .ToLowerInvariant();
+
+        if (
+            text.Contains("playstation")
+            ||
+            text.Contains("ps5")
+            ||
+            text.Contains("dualsense")
+        )
+            return "Sony";
+
+        if (text.Contains("xbox"))
+            return "Microsoft";
+
+        if (
+            text.Contains("nintendo")
+            ||
+            text.Contains("switch")
+            ||
+            text.Contains("zelda")
+        )
+            return "Nintendo";
+
+        if (text.Contains("pokemon"))
+            return "Pokémon";
+
+        if (
+            text.Contains("marvel")
+            ||
+            text.Contains("wolverine")
+            ||
+            text.Contains("punisher")
+        )
+            return "Marvel";
+
+        if (text.Contains("funko"))
+            return "Funko";
+
+        if (text.Contains("turtle beach"))
+            return "Turtle Beach";
+
+        if (text.Contains("yu-gi-oh"))
+            return "Konami";
+
+        return "BigGame";
+    }
+
+
+    var categories =
+        allProducts
+            .Where(p => !string.IsNullOrWhiteSpace(p.Category))
+            .GroupBy(p => p.Category!)
+            .OrderByDescending(g => g.Count())
+            .ThenBy(g => g.Key)
+            .ToList();
+
+    var platforms =
+        allProducts
+            .GroupBy(p => Platform(p))
+            .OrderByDescending(g => g.Count())
+            .ThenBy(g => g.Key)
+            .ToList();
+
+    var franchises =
+        allProducts
+            .GroupBy(p => Franchise(p))
+            .OrderByDescending(g => g.Count())
+            .ThenBy(g => g.Key)
+            .ToList();
+
+    var genres =
+        allProducts
+            .GroupBy(p => Genre(p))
+            .OrderByDescending(g => g.Count())
+            .ThenBy(g => g.Key)
+            .ToList();
+
+    var brands =
+        allProducts
+            .GroupBy(p => Brand(p))
+            .OrderByDescending(g => g.Count())
+            .ThenBy(g => g.Key)
+            .ToList();
+
+    var physicalCount =
+        allProducts.Count(p => PurchaseType(p) == "Producto físico");
+
+    var digitalCount =
+        allProducts.Count(p => PurchaseType(p) == "Digital");
+
+    var newCount =
+        allProducts.Count(p => Condition(p) == "Nuevo");
+
+    var usedCount =
+        allProducts.Count(p => Condition(p) == "Seminuevo");
+
+    var now =
+        DateTime.UtcNow;
+
+    var last7Days =
+        allProducts.Count(
+            p =>
+                p.CreatedAt >=
+                now.AddDays(-7)
+        );
+
+    var last30Days =
+        allProducts.Count(
+            p =>
+                p.CreatedAt >=
+                now.AddDays(-30)
+        );
+}
+
+
+<style>
+
+    .catalog-search,
+    .catalog-search * {
+        box-sizing: border-box;
+    }
+
+    .catalog-search {
+        width: 100%;
+        min-height: 760px;
+        padding: 24px 0 58px;
+        background: #f1f2f4;
+        color: #111111;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .catalog-container {
+        width: calc(100% - 44px);
+        max-width: 1420px;
+        margin: 0 auto;
+    }
+
+
+    /* ============================================
+       CABECERA
+    ============================================ */
+
+    .catalog-heading {
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .catalog-title {
+        margin: 0;
+        font-size: 27px;
+        line-height: 1.15;
+        font-weight: 900;
+        color: #111111;
+    }
+
+    .catalog-title strong {
+        font-weight: 900;
+    }
+
+    .catalog-count {
+        margin-top: 6px;
+        color: #666666;
+        font-size: 12px;
+    }
+
+    .catalog-sort {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 0 0 auto;
+    }
+
+    .catalog-sort-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #444444;
+    }
+
+    .catalog-sort-select {
+        min-width: 190px;
+        height: 42px;
+        padding: 0 13px;
+        border: 1px solid #cccccc;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #111111;
+        outline: none;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+
+    /* ============================================
+       LAYOUT PRINCIPAL
+    ============================================ */
+
+    .catalog-layout {
+        display: grid;
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: 26px;
+        align-items: start;
+    }
+
+
+    /* ============================================
+       SIDEBAR
+    ============================================ */
+
+    .catalog-sidebar {
+        background: transparent;
+    }
+
+    .catalog-filter-block {
+        padding: 17px 0;
+        border-bottom: 1px solid #d9dadd;
+    }
+
+    .catalog-filter-block:first-child {
+        padding-top: 4px;
+    }
+
+    .catalog-filter-title {
+        margin: 0 0 11px;
+        color: #5d5d5d;
+        font-size: 15px;
+        font-weight: 900;
+    }
+
+    .catalog-filter-search {
+        width: 100%;
+        height: 39px;
+        margin-bottom: 9px;
+        padding: 0 12px;
+        border: 1px solid #cacaca;
+        border-radius: 6px;
+        background: #ffffff;
+        outline: none;
+        font-size: 11px;
+    }
+
+    .catalog-check {
+        min-height: 31px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        color: #333333;
+        font-size: 11px;
+    }
+
+    .catalog-check input {
+        width: 17px;
+        height: 17px;
+        margin: 0;
+        flex: 0 0 17px;
+        accent-color: #111111;
+        cursor: pointer;
+    }
+
+    .catalog-check-name {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .catalog-check-count {
+        color: #666666;
+        font-size: 10px;
+    }
+
+    .catalog-filter-more {
+        margin-top: 7px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: #222222;
+        font-size: 10px;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .catalog-filter-hidden {
+        display: none;
+    }
+
+    .catalog-filter-hidden.show {
+        display: flex;
+    }
+
+    .catalog-clear {
+        width: 100%;
+        min-height: 38px;
+        margin-top: 12px;
+        border: 1px solid #111111;
+        border-radius: 5px;
+        background: #ffffff;
+        color: #111111;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 900;
+    }
+
+    .catalog-clear:hover {
+        background: #111111;
+        color: #ffffff;
+    }
+
+
+    /* ============================================
+       PRODUCTOS
+    ============================================ */
+
+    .catalog-content {
+        min-width: 0;
+    }
+
+    .catalog-toolbar {
+        min-height: 38px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .catalog-visible {
+        color: #666666;
+        font-size: 11px;
+    }
+
+    .catalog-visible strong {
+        color: #111111;
+    }
+
+    .catalog-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .catalog-card {
+        min-width: 0;
+        min-height: 455px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid #d8d8d8;
+        border-radius: 7px;
+        background: #ffffff;
+        transition:
+            transform 0.16s ease,
+            box-shadow 0.16s ease;
+    }
+
+    .catalog-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+    }
+
+    .catalog-card.catalog-hidden {
+        display: none;
+    }
+
+    .catalog-image {
+        position: relative;
+        height: 280px;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+    }
+
+    .catalog-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .catalog-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        background:
+            linear-gradient(
+                135deg,
+                #172554,
+                #0f172a
+            );
+        font-size: 54px;
+    }
+
+    .catalog-platform-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        padding: 5px 8px;
+        border-radius: 3px;
+        background: #111827;
+        color: #ffffff;
+        font-size: 7px;
+        font-weight: 900;
+        text-transform: uppercase;
+    }
+
+    .catalog-card-body {
+        flex: 1;
+        padding: 11px 14px 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .catalog-category {
+        margin-bottom: 7px;
+        color: #2563eb;
+        font-size: 7px;
+        font-weight: 900;
+        text-transform: uppercase;
+    }
+
+    .catalog-name {
+        min-height: 46px;
+        margin: 0 0 8px;
+        color: #111111;
+        font-size: 13px;
+        line-height: 1.25;
+        font-weight: 800;
+    }
+
+    .catalog-meta {
+        margin-bottom: 10px;
+        color: #777777;
+        font-size: 9px;
+    }
+
+    .catalog-price {
+        margin-top: auto;
+        color: #111111;
+        font-size: 19px;
+        font-weight: 900;
+    }
+
+    .catalog-stock {
+        margin: 5px 0 11px;
+        color: #129343;
+        font-size: 9px;
+        font-weight: 800;
+    }
+
+    .catalog-stock.out {
+        color: #d62424;
+    }
+
+    .catalog-details {
+        min-height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        background: #2563eb;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 9px;
+        font-weight: 900;
+    }
+
+    .catalog-details:hover {
+        background: #1d4ed8;
+        color: #ffffff;
+    }
+
+
+    /* ============================================
+       SIN RESULTADOS
+    ============================================ */
+
+    .catalog-empty {
+        display: none;
+        min-height: 350px;
+        padding: 50px 20px;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        border: 1px solid #d8d8d8;
+        border-radius: 7px;
+        background: #ffffff;
+        text-align: center;
+    }
+
+    .catalog-empty.show {
+        display: flex;
+    }
+
+    .catalog-empty-icon {
+        margin-bottom: 10px;
+        font-size: 42px;
+    }
+
+    .catalog-empty h2 {
+        margin: 0 0 7px;
+        font-size: 19px;
+        font-weight: 900;
+    }
+
+    .catalog-empty p {
+        margin: 0;
+        color: #666666;
+        font-size: 11px;
+    }
+
+
+    /* ============================================
+       PAGINACIÓN
+    ============================================ */
+
+    .catalog-pagination {
+        min-height: 62px;
+        margin-top: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+    }
+
+    .catalog-page-button {
+        min-width: 34px;
+        height: 34px;
+        padding: 0 9px;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        background: transparent;
+        color: #111111;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 900;
+    }
+
+    .catalog-page-button:hover {
+        border-color: #bbbbbb;
+    }
+
+    .catalog-page-button.active {
+        background: #111111;
+        color: #ffffff;
+    }
+
+    .catalog-page-button:disabled {
+        opacity: 0.3;
+        cursor: default;
+    }
+
+
+    /* ============================================
+       RECOMENDADOS
+    ============================================ */
+
+    .catalog-recommendations {
+        margin-top: 28px;
+        padding-top: 24px;
+        border-top: 1px solid #d8d8d8;
+    }
+
+    .catalog-recommend-title {
+        margin: 0 0 15px;
+        font-size: 22px;
+        font-weight: 900;
+        color: #111111;
+    }
+
+    .catalog-recommend-shell {
+        position: relative;
+    }
+
+    .catalog-recommend-row {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+    }
+
+    .catalog-recommend-row::-webkit-scrollbar {
+        display: none;
+    }
+
+    .catalog-recommend-card {
+        flex: 0 0 235px;
+        min-height: 390px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #d8d8d8;
+        border-radius: 7px;
+        background: #ffffff;
+    }
+
+    .catalog-recommend-image {
+        height: 235px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .catalog-recommend-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .catalog-recommend-body {
+        flex: 1;
+        padding: 11px 13px 14px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .catalog-recommend-name {
+        min-height: 42px;
+        margin: 0 0 10px;
+        font-size: 12px;
+        line-height: 1.25;
+        font-weight: 800;
+    }
+
+    .catalog-recommend-price {
+        margin-top: auto;
+        font-size: 18px;
+        font-weight: 900;
+    }
+
+    .catalog-recommend-link {
+        margin-top: 10px;
+        min-height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        background: #111827;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 9px;
+        font-weight: 900;
+    }
+
+    .catalog-recommend-arrow {
+        position: absolute;
+        z-index: 3;
+        top: 50%;
+        width: 42px;
+        height: 42px;
+        transform: translateY(-50%);
+        border: none;
+        border-radius: 50%;
+        background: #111111;
+        color: #ffffff;
+        cursor: pointer;
+        font-size: 22px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.18);
+    }
+
+    .catalog-recommend-arrow.left {
+        left: -19px;
+    }
+
+    .catalog-recommend-arrow.right {
+        right: -19px;
+    }
+
+
+    /* ============================================
+       MÓVIL
+    ============================================ */
+
+    .catalog-mobile-filter {
+        display: none;
+        width: 100%;
+        min-height: 43px;
+        margin-bottom: 12px;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        background: #ffffff;
+        color: #111111;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 900;
+    }
+
+
+    @@media (max-width: 1200px) {
+
+        .catalog-grid {
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+        }
+
+    }
+
+
+    @@media (max-width: 950px) {
+
+        .catalog-layout {
+            grid-template-columns:
+                220px minmax(0, 1fr);
+        }
+
+        .catalog-grid {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+    }
+
+
+    @@media (max-width: 720px) {
+
+        .catalog-container {
+            width: calc(100% - 22px);
+        }
+
+        .catalog-heading {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .catalog-sort {
+            width: 100%;
+        }
+
+        .catalog-sort-select {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .catalog-mobile-filter {
+            display: block;
+        }
+
+        .catalog-layout {
+            display: block;
+        }
+
+        .catalog-sidebar {
+            display: none;
+            margin-bottom: 15px;
+        }
+
+        .catalog-sidebar.open {
+            display: block;
+        }
+
+        .catalog-grid {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+
+        .catalog-image {
+            height: 220px;
+        }
+
+        .catalog-recommend-arrow {
+            display: none;
+        }
+
+    }
+
+
+    @@media (max-width: 470px) {
+
+        .catalog-title {
+            font-size: 22px;
+        }
+
+        .catalog-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .catalog-image {
+            height: 280px;
+        }
+
+        .catalog-recommend-card {
+            flex-basis: 210px;
+        }
+
+    }
+
+</style>
+
+
+<section class="catalog-search">
+
+    <div class="catalog-container">
+
+
+        <!-- =========================================
+             CABECERA
+        ========================================== -->
+
+        <div class="catalog-heading">
+
+            <div>
+
+                <h1 class="catalog-title">
+
+                    @if (!string.IsNullOrWhiteSpace(search))
+                    {
+                        <text>
+                            Resultados para
+                            <strong>
+                                "@search"
+                            </strong>
+                        </text>
+                    }
+                    else if (!string.IsNullOrWhiteSpace(category))
+                    {
+                        <text>
+                            Productos de
+                            <strong>
+                                @category
+                            </strong>
+                        </text>
+                    }
+                    else
+                    {
+                        <text>
+                            Resultados de búsqueda
+                        </text>
+                    }
+
+                </h1>
+
+                <div class="catalog-count">
+
+                    <strong id="catalogTotalCount">
+                        @products.Count
+                    </strong>
+
+                    resultado@(products.Count == 1 ? "" : "s")
+
+                </div>
+
+            </div>
+
+
+            @if (products.Any())
+            {
+                <div class="catalog-sort">
+
+                    <span class="catalog-sort-label">
+                        Ordenar por:
+                    </span>
+
+                    <select id="catalogSort"
+                            class="catalog-sort-select">
+
+                        <option value="default">
+                            Relevancia
+                        </option>
+
+                        <option value="newest">
+                            Más recientes
+                        </option>
+
+                        <option value="price-low">
+                            Precio: menor a mayor
+                        </option>
+
+                        <option value="price-high">
+                            Precio: mayor a menor
+                        </option>
+
+                        <option value="name">
+                            Nombre A-Z
+                        </option>
+
+                    </select>
+
+                </div>
+            }
+
+        </div>
+
+
+        @if (products.Any())
+        {
+
+            <button type="button"
+                    class="catalog-mobile-filter"
+                    id="catalogMobileFilter">
+
+                ☰ Mostrar filtros
+
+            </button>
+
+
+            <div class="catalog-layout">
+
+
+                <!-- =================================
+                     SIDEBAR
+                ================================== -->
+
+                <aside class="catalog-sidebar"
+                       id="catalogSidebar">
+
+
+                    <!-- DISPONIBILIDAD -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Disponibilidad
+                        </h3>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="stock"
+                                   value="in" />
+
+                            <span class="catalog-check-name">
+                                Disponible
+                            </span>
+
+                        </label>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="stock"
+                                   value="out" />
+
+                            <span class="catalog-check-name">
+                                Agotado
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- CATEGORÍAS -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Categorías
+                        </h3>
+
+                        @for (var i = 0; i < categories.Count; i++)
+                        {
+                            var group =
+                                categories[i];
+
+                            <label class="catalog-check @(i >= 6 ? "catalog-filter-hidden category-more" : "")">
+
+                                <input type="checkbox"
+                                       class="catalog-filter"
+                                       data-group="category"
+                                       value="@group.Key.ToLowerInvariant()" />
+
+                                <span class="catalog-check-name">
+                                    @group.Key
+                                </span>
+
+                                <span class="catalog-check-count">
+                                    (@group.Count())
+                                </span>
+
+                            </label>
+                        }
+
+                        @if (categories.Count > 6)
+                        {
+                            <button type="button"
+                                    class="catalog-filter-more"
+                                    data-more-target="category-more">
+
+                                Ver más
+
+                            </button>
+                        }
+
+                    </div>
+
+
+                    <!-- PLATAFORMA -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Plataforma
+                        </h3>
+
+                        @foreach (var group in platforms)
+                        {
+                            <label class="catalog-check">
+
+                                <input type="checkbox"
+                                       class="catalog-filter"
+                                       data-group="platform"
+                                       value="@group.Key.ToLowerInvariant()" />
+
+                                <span class="catalog-check-name">
+                                    @group.Key
+                                </span>
+
+                                <span class="catalog-check-count">
+                                    (@group.Count())
+                                </span>
+
+                            </label>
+                        }
+
+                    </div>
+
+
+                    <!-- CONDICIÓN -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Condición
+                        </h3>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="condition"
+                                   value="nuevo" />
+
+                            <span class="catalog-check-name">
+                                Nuevo
+                            </span>
+
+                            <span class="catalog-check-count">
+                                (@newCount)
+                            </span>
+
+                        </label>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="condition"
+                                   value="seminuevo" />
+
+                            <span class="catalog-check-name">
+                                Seminuevo
+                            </span>
+
+                            <span class="catalog-check-count">
+                                (@usedCount)
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- FRANQUICIA -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Franquicia
+                        </h3>
+
+
+                        <input type="search"
+                               class="catalog-filter-search"
+                               placeholder="Buscar franquicia"
+                               data-filter-search="franchise" />
+
+
+                        @for (var i = 0; i < franchises.Count; i++)
+                        {
+                            var group =
+                                franchises[i];
+
+                            <label class="catalog-check franchise-item @(i >= 7 ? "catalog-filter-hidden franchise-more" : "")"
+                                   data-filter-item="@group.Key.ToLowerInvariant()">
+
+                                <input type="checkbox"
+                                       class="catalog-filter"
+                                       data-group="franchise"
+                                       value="@group.Key.ToLowerInvariant()" />
+
+                                <span class="catalog-check-name">
+                                    @group.Key
+                                </span>
+
+                                <span class="catalog-check-count">
+                                    (@group.Count())
+                                </span>
+
+                            </label>
+                        }
+
+                        @if (franchises.Count > 7)
+                        {
+                            <button type="button"
+                                    class="catalog-filter-more"
+                                    data-more-target="franchise-more">
+
+                                Ver más
+
+                            </button>
+                        }
+
+                    </div>
+
+
+                    <!-- GÉNERO -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Género
+                        </h3>
+
+                        @foreach (var group in genres)
+                        {
+                            <label class="catalog-check">
+
+                                <input type="checkbox"
+                                       class="catalog-filter"
+                                       data-group="genre"
+                                       value="@group.Key.ToLowerInvariant()" />
+
+                                <span class="catalog-check-name">
+                                    @group.Key
+                                </span>
+
+                                <span class="catalog-check-count">
+                                    (@group.Count())
+                                </span>
+
+                            </label>
+                        }
+
+                    </div>
+
+
+                    <!-- NOVEDADES -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Novedades
+                        </h3>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="release"
+                                   value="week" />
+
+                            <span class="catalog-check-name">
+                                Agregados esta semana
+                            </span>
+
+                            <span class="catalog-check-count">
+                                (@last7Days)
+                            </span>
+
+                        </label>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="release"
+                                   value="month" />
+
+                            <span class="catalog-check-name">
+                                Agregados este mes
+                            </span>
+
+                            <span class="catalog-check-count">
+                                (@last30Days)
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- FORMAS DE COMPRA -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Formas de comprar
+                        </h3>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="purchase"
+                                   value="producto físico" />
+
+                            <span class="catalog-check-name">
+                                Producto físico
+                            </span>
+
+                            <span class="catalog-check-count">
+                                (@physicalCount)
+                            </span>
+
+                        </label>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="purchase"
+                                   value="digital" />
+
+                            <span class="catalog-check-name">
+                                Digital
+                            </span>
+
+                            <span class="catalog-check-count">
+                                (@digitalCount)
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- PRECIO -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Precio
+                        </h3>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="price"
+                                   value="low" />
+
+                            <span class="catalog-check-name">
+                                Hasta Bs 100
+                            </span>
+
+                        </label>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="price"
+                                   value="mid" />
+
+                            <span class="catalog-check-name">
+                                Bs 101 a Bs 500
+                            </span>
+
+                        </label>
+
+
+                        <label class="catalog-check">
+
+                            <input type="checkbox"
+                                   class="catalog-filter"
+                                   data-group="price"
+                                   value="high" />
+
+                            <span class="catalog-check-name">
+                                Más de Bs 500
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- MARCA -->
+
+                    <div class="catalog-filter-block">
+
+                        <h3 class="catalog-filter-title">
+                            Marca
+                        </h3>
+
+
+                        <input type="search"
+                               class="catalog-filter-search"
+                               placeholder="Buscar por marca"
+                               data-filter-search="brand" />
+
+
+                        @for (var i = 0; i < brands.Count; i++)
+                        {
+                            var group =
+                                brands[i];
+
+                            <label class="catalog-check brand-item @(i >= 7 ? "catalog-filter-hidden brand-more" : "")"
+                                   data-filter-item="@group.Key.ToLowerInvariant()">
+
+                                <input type="checkbox"
+                                       class="catalog-filter"
+                                       data-group="brand"
+                                       value="@group.Key.ToLowerInvariant()" />
+
+                                <span class="catalog-check-name">
+                                    @group.Key
+                                </span>
+
+                                <span class="catalog-check-count">
+                                    (@group.Count())
+                                </span>
+
+                            </label>
+                        }
+
+                        @if (brands.Count > 7)
+                        {
+                            <button type="button"
+                                    class="catalog-filter-more"
+                                    data-more-target="brand-more">
+
+                                Ver más
+
+                            </button>
+                        }
+
+                    </div>
+
+
+                    <button type="button"
+                            class="catalog-clear"
+                            id="catalogClearFilters">
+
+                        Limpiar todos los filtros
+
+                    </button>
+
+                </aside>
+
+
+                <!-- =================================
+                     RESULTADOS
+                ================================== -->
+
+                <div class="catalog-content">
+
+
+                    <div class="catalog-toolbar">
+
+                        <div class="catalog-visible">
+
+                            Mostrando
+
+                            <strong id="catalogVisibleCount">
+                                @products.Count
+                            </strong>
+
+                            producto@(products.Count == 1 ? "" : "s")
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="catalog-grid"
+                         id="catalogGrid">
+
+                        @{
+                            var originalIndex = 0;
+                        }
+
+                        @foreach (var product in products)
+                        {
+                            originalIndex++;
+
+                            var image =
+                                ProductImage(product);
+
+                            var platform =
+                                Platform(product);
+
+                            var condition =
+                                Condition(product);
+
+                            var purchaseType =
+                                PurchaseType(product);
+
+                            var franchise =
+                                Franchise(product);
+
+                            var genre =
+                                Genre(product);
+
+                            var brand =
+                                Brand(product);
+
+                            var stock =
+                                product.Stock > 0
+                                    ? "in"
+                                    : "out";
+
+
+                            <article class="catalog-card"
+                                     data-catalog-card
+                                     data-original="@originalIndex"
+                                     data-category="@((product.Category ?? "").ToLowerInvariant())"
+                                     data-platform="@platform.ToLowerInvariant()"
+                                     data-condition="@condition.ToLowerInvariant()"
+                                     data-franchise="@franchise.ToLowerInvariant()"
+                                     data-genre="@genre.ToLowerInvariant()"
+                                     data-brand="@brand.ToLowerInvariant()"
+                                     data-purchase="@purchaseType.ToLowerInvariant()"
+                                     data-stock="@stock"
+                                     data-price="@product.Price.ToString(CultureInfo.InvariantCulture)"
+                                     data-name="@product.Name.ToLowerInvariant()"
+                                     data-created="@product.CreatedAt.ToUniversalTime().ToString("O")">
+
+
+                                <div class="catalog-image">
+
+                                    <span class="catalog-platform-badge">
+                                        @platform
+                                    </span>
+
+
+                                    @if (!string.IsNullOrWhiteSpace(image))
+                                    {
+                                        <img src="@image"
+                                             alt="@product.Name"
+                                             loading="lazy"
+                                             onerror="
+                                                 this.style.display='none';
+                                                 this.nextElementSibling.style.display='flex';
+                                             " />
+
+                                        <div class="catalog-placeholder"
+                                             style="display:none;">
+
+                                            @ProductIcon(product)
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="catalog-placeholder">
+
+                                            @ProductIcon(product)
+
+                                        </div>
+                                    }
+
+                                </div>
+
+
+                                <div class="catalog-card-body">
+
+                                    <div class="catalog-category">
+                                        @(product.Category ?? "Producto")
+                                    </div>
+
+
+                                    <h2 class="catalog-name">
+                                        @product.Name
+                                    </h2>
+
+
+                                    <div class="catalog-meta">
+
+                                        @platform
+                                        ·
+                                        @condition
+
+                                    </div>
+
+
+                                    <div class="catalog-price">
+
+                                        Bs
+                                        @product.Price.ToString("N2")
+
+                                    </div>
+
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <div class="catalog-stock">
+
+                                            @product.Stock disponibles
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="catalog-stock out">
+
+                                            Agotado
+
+                                        </div>
+                                    }
+
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="catalog-details">
+
+                                        Ver producto
+
+                                    </a>
+
+                                </div>
+
+                            </article>
+                        }
+
+                    </div>
+
+
+                    <!-- SIN RESULTADOS -->
+
+                    <div class="catalog-empty"
+                         id="catalogEmpty">
+
+                        <div class="catalog-empty-icon">
+                            🔍
+                        </div>
+
+                        <h2>
+                            No hay productos con esos filtros
+                        </h2>
+
+                        <p>
+                            Prueba quitando alguno de los filtros seleccionados.
+                        </p>
+
+                    </div>
+
+
+                    <!-- PAGINACIÓN -->
+
+                    <div class="catalog-pagination"
+                         id="catalogPagination">
+                    </div>
+
+                </div>
+
+            </div>
+
+        }
+        else
+        {
+
+            <div class="catalog-empty show">
+
+                <div class="catalog-empty-icon">
+                    🔍
+                </div>
+
+                <h2>
+                    No encontramos productos
+                </h2>
+
+                <p>
+                    Prueba buscando otro nombre, plataforma o categoría.
+                </p>
+
+            </div>
+
+        }
+
+
+        <!-- =========================================
+             TAMBIÉN TE PUEDE GUSTAR
+        ========================================== -->
+
+        @if (relatedProducts.Any())
+        {
+            <section class="catalog-recommendations">
+
+                <h2 class="catalog-recommend-title">
+                    También te puede gustar
+                </h2>
+
+
+                <div class="catalog-recommend-shell">
+
+
+                    <button type="button"
+                            class="catalog-recommend-arrow left"
+                            id="recommendLeft"
+                            aria-label="Productos anteriores">
+
+                        ‹
+
+                    </button>
+
+
+                    <div class="catalog-recommend-row"
+                         id="recommendRow">
+
+                        @foreach (var product in relatedProducts)
+                        {
+                            var image =
+                                ProductImage(product);
+
+
+                            <article class="catalog-recommend-card">
+
+
+                                <div class="catalog-recommend-image">
+
+                                    @if (!string.IsNullOrWhiteSpace(image))
+                                    {
+                                        <img src="@image"
+                                             alt="@product.Name"
+                                             loading="lazy"
+                                             onerror="
+                                                 this.style.display='none';
+                                                 this.nextElementSibling.style.display='flex';
+                                             " />
+
+                                        <div class="catalog-placeholder"
+                                             style="display:none;">
+
+                                            @ProductIcon(product)
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="catalog-placeholder">
+
+                                            @ProductIcon(product)
+
+                                        </div>
+                                    }
+
+                                </div>
+
+
+                                <div class="catalog-recommend-body">
+
+                                    <h3 class="catalog-recommend-name">
+                                        @product.Name
+                                    </h3>
+
+
+                                    <div class="catalog-recommend-price">
+
+                                        Bs
+                                        @product.Price.ToString("N2")
+
+                                    </div>
+
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="catalog-recommend-link">
+
+                                        Ver producto
+
+                                    </a>
+
+                                </div>
+
+                            </article>
+                        }
+
+                    </div>
+
+
+                    <button type="button"
+                            class="catalog-recommend-arrow right"
+                            id="recommendRight"
+                            aria-label="Más productos">
+
+                        ›
+
+                    </button>
+
+                </div>
+
+            </section>
+        }
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const cards =
+            Array.from(
+                document.querySelectorAll(
+                    "[data-catalog-card]"
+                )
+            );
+
+
+        const filters =
+            Array.from(
+                document.querySelectorAll(
+                    ".catalog-filter"
+                )
+            );
+
+
+        const grid =
+            document.getElementById(
+                "catalogGrid"
+            );
+
+
+        const visibleCount =
+            document.getElementById(
+                "catalogVisibleCount"
+            );
+
+
+        const empty =
+            document.getElementById(
+                "catalogEmpty"
+            );
+
+
+        const pagination =
+            document.getElementById(
+                "catalogPagination"
+            );
+
+
+        const sort =
+            document.getElementById(
+                "catalogSort"
+            );
+
+
+        const clearFilters =
+            document.getElementById(
+                "catalogClearFilters"
+            );
+
+
+        const mobileFilter =
+            document.getElementById(
+                "catalogMobileFilter"
+            );
+
+
+        const sidebar =
+            document.getElementById(
+                "catalogSidebar"
+            );
+
+
+        let currentPage =
+            1;
+
+
+        const pageSize =
+            8;
+
+
+        function selected(group) {
+
+            return filters
+                .filter(
+                    function (filter) {
+
+                        return (
+                            filter.dataset.group === group
+                            &&
+                            filter.checked
+                        );
+
+                    }
+                )
+                .map(
+                    function (filter) {
+
+                        return filter.value;
+
+                    }
+                );
+
+        }
+
+
+        function priceMatches(
+            price,
+            ranges
+        ) {
+
+            if (ranges.length === 0) {
+                return true;
+            }
+
+
+            return ranges.some(
+                function (range) {
+
+                    if (range === "low") {
+                        return price <= 100;
+                    }
+
+                    if (range === "mid") {
+                        return (
+                            price > 100
+                            &&
+                            price <= 500
+                        );
+                    }
+
+                    if (range === "high") {
+                        return price > 500;
+                    }
+
+                    return true;
+
+                }
+            );
+
+        }
+
+
+        function releaseMatches(
+            created,
+            releases
+        ) {
+
+            if (releases.length === 0) {
+                return true;
+            }
+
+
+            const date =
+                new Date(
+                    created
+                );
+
+
+            const now =
+                new Date();
+
+
+            const diffDays =
+                (
+                    now.getTime()
+                    -
+                    date.getTime()
+                )
+                /
+                86400000;
+
+
+            return releases.some(
+                function (release) {
+
+                    if (release === "week") {
+                        return diffDays <= 7;
+                    }
+
+                    if (release === "month") {
+                        return diffDays <= 30;
+                    }
+
+                    return true;
+
+                }
+            );
+
+        }
+
+
+        function getFilteredCards() {
+
+            const categories =
+                selected("category");
+
+            const platforms =
+                selected("platform");
+
+            const conditions =
+                selected("condition");
+
+            const franchises =
+                selected("franchise");
+
+            const genres =
+                selected("genre");
+
+            const brands =
+                selected("brand");
+
+            const purchase =
+                selected("purchase");
+
+            const stock =
+                selected("stock");
+
+            const prices =
+                selected("price");
+
+            const releases =
+                selected("release");
+
+
+            return cards.filter(
+                function (card) {
+
+                    const categoryMatch =
+                        categories.length === 0
+                        ||
+                        categories.includes(
+                            card.dataset.category
+                        );
+
+
+                    const platformMatch =
+                        platforms.length === 0
+                        ||
+                        platforms.includes(
+                            card.dataset.platform
+                        );
+
+
+                    const conditionMatch =
+                        conditions.length === 0
+                        ||
+                        conditions.includes(
+                            card.dataset.condition
+                        );
+
+
+                    const franchiseMatch =
+                        franchises.length === 0
+                        ||
+                        franchises.includes(
+                            card.dataset.franchise
+                        );
+
+
+                    const genreMatch =
+                        genres.length === 0
+                        ||
+                        genres.includes(
+                            card.dataset.genre
+                        );
+
+
+                    const brandMatch =
+                        brands.length === 0
+                        ||
+                        brands.includes(
+                            card.dataset.brand
+                        );
+
+
+                    const purchaseMatch =
+                        purchase.length === 0
+                        ||
+                        purchase.includes(
+                            card.dataset.purchase
+                        );
+
+
+                    const stockMatch =
+                        stock.length === 0
+                        ||
+                        stock.includes(
+                            card.dataset.stock
+                        );
+
+
+                    const priceMatch =
+                        priceMatches(
+                            Number.parseFloat(
+                                card.dataset.price
+                            ),
+                            prices
+                        );
+
+
+                    const releaseMatch =
+                        releaseMatches(
+                            card.dataset.created,
+                            releases
+                        );
+
+
+                    return (
+                        categoryMatch
+                        &&
+                        platformMatch
+                        &&
+                        conditionMatch
+                        &&
+                        franchiseMatch
+                        &&
+                        genreMatch
+                        &&
+                        brandMatch
+                        &&
+                        purchaseMatch
+                        &&
+                        stockMatch
+                        &&
+                        priceMatch
+                        &&
+                        releaseMatch
+                    );
+
+                }
+            );
+
+        }
+
+
+        function sortCards(cardsToSort) {
+
+            const value =
+                sort
+                    ? sort.value
+                    : "default";
+
+
+            return [...cardsToSort]
+                .sort(
+                    function (a, b) {
+
+                        if (value === "price-low") {
+
+                            return (
+                                Number.parseFloat(
+                                    a.dataset.price
+                                )
+                                -
+                                Number.parseFloat(
+                                    b.dataset.price
+                                )
+                            );
+
+                        }
+
+
+                        if (value === "price-high") {
+
+                            return (
+                                Number.parseFloat(
+                                    b.dataset.price
+                                )
+                                -
+                                Number.parseFloat(
+                                    a.dataset.price
+                                )
+                            );
+
+                        }
+
+
+                        if (value === "name") {
+
+                            return (
+                                a.dataset.name
+                                    .localeCompare(
+                                        b.dataset.name,
+                                        "es"
+                                    )
+                            );
+
+                        }
+
+
+                        if (value === "newest") {
+
+                            return (
+                                new Date(
+                                    b.dataset.created
+                                )
+                                -
+                                new Date(
+                                    a.dataset.created
+                                )
+                            );
+
+                        }
+
+
+                        return (
+                            Number.parseInt(
+                                a.dataset.original
+                            )
+                            -
+                            Number.parseInt(
+                                b.dataset.original
+                            )
+                        );
+
+                    }
+                );
+
+        }
+
+
+        function renderPagination(
+            totalCards
+        ) {
+
+            if (!pagination) {
+                return;
+            }
+
+
+            pagination.innerHTML =
+                "";
+
+
+            const totalPages =
+                Math.max(
+                    1,
+                    Math.ceil(
+                        totalCards
+                        /
+                        pageSize
+                    )
+                );
+
+
+            if (
+                currentPage
+                >
+                totalPages
+            ) {
+
+                currentPage =
+                    totalPages;
+
+            }
+
+
+            const previous =
+                document.createElement(
+                    "button"
+                );
+
+
+            previous.type =
+                "button";
+
+            previous.className =
+                "catalog-page-button";
+
+            previous.textContent =
+                "‹";
+
+            previous.disabled =
+                currentPage === 1;
+
+
+            previous.addEventListener(
+                "click",
+                function () {
+
+                    currentPage--;
+
+                    render();
+
+                }
+            );
+
+
+            pagination.appendChild(
+                previous
+            );
+
+
+            for (
+                let page = 1;
+                page <= totalPages;
+                page++
+            ) {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                button.type =
+                    "button";
+
+                button.className =
+                    "catalog-page-button";
+
+
+                if (
+                    page ===
+                    currentPage
+                ) {
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+                button.textContent =
+                    page.toString();
+
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        currentPage =
+                            page;
+
+                        render();
+
+                    }
+                );
+
+
+                pagination.appendChild(
+                    button
+                );
+
+            }
+
+
+            const next =
+                document.createElement(
+                    "button"
+                );
+
+
+            next.type =
+                "button";
+
+            next.className =
+                "catalog-page-button";
+
+            next.textContent =
+                "›";
+
+            next.disabled =
+                currentPage === totalPages;
+
+
+            next.addEventListener(
+                "click",
+                function () {
+
+                    currentPage++;
+
+                    render();
+
+                }
+            );
+
+
+            pagination.appendChild(
+                next
+            );
+
+        }
+
+
+        function render() {
+
+            if (!grid) {
+                return;
+            }
+
+
+            cards.forEach(
+                function (card) {
+
+                    card.classList.add(
+                        "catalog-hidden"
+                    );
+
+                }
+            );
+
+
+            let filtered =
+                getFilteredCards();
+
+
+            filtered =
+                sortCards(
+                    filtered
+                );
+
+
+            filtered.forEach(
+                function (card) {
+
+                    grid.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+
+            const start =
+                (
+                    currentPage - 1
+                )
+                *
+                pageSize;
+
+
+            const end =
+                start
+                +
+                pageSize;
+
+
+            const visibleCards =
+                filtered.slice(
+                    start,
+                    end
+                );
+
+
+            visibleCards.forEach(
+                function (card) {
+
+                    card.classList.remove(
+                        "catalog-hidden"
+                    );
+
+                }
+            );
+
+
+            if (visibleCount) {
+
+                visibleCount.textContent =
+                    filtered.length.toString();
+
+            }
+
+
+            if (empty) {
+
+                empty.classList.toggle(
+                    "show",
+                    filtered.length === 0
+                );
+
+            }
+
+
+            renderPagination(
+                filtered.length
+            );
+
+        }
+
+
+        filters.forEach(
+            function (filter) {
+
+                filter.addEventListener(
+                    "change",
+                    function () {
+
+                        currentPage =
+                            1;
+
+                        render();
+
+                    }
+                );
+
+            }
+        );
+
+
+        if (sort) {
+
+            sort.addEventListener(
+                "change",
+                function () {
+
+                    currentPage =
+                        1;
+
+                    render();
+
+                }
+            );
+
+        }
+
+
+        if (clearFilters) {
+
+            clearFilters.addEventListener(
+                "click",
+                function () {
+
+                    filters.forEach(
+                        function (filter) {
+
+                            filter.checked =
+                                false;
+
+                        }
+                    );
+
+
+                    currentPage =
+                        1;
+
+
+                    render();
+
+                }
+            );
+
+        }
+
+
+        if (
+            mobileFilter
+            &&
+            sidebar
+        ) {
+
+            mobileFilter.addEventListener(
+                "click",
+                function () {
+
+                    const open =
+                        sidebar.classList.toggle(
+                            "open"
+                        );
+
+
+                    mobileFilter.textContent =
+                        open
+                            ? "✕ Ocultar filtros"
+                            : "☰ Mostrar filtros";
+
+                }
+            );
+
+        }
+
+
+        document
+            .querySelectorAll(
+                ".catalog-filter-more"
+            )
+            .forEach(
+                function (button) {
+
+                    button.addEventListener(
+                        "click",
+                        function () {
+
+                            const target =
+                                button.dataset.moreTarget;
+
+
+                            const elements =
+                                document.querySelectorAll(
+                                    "." + target
+                                );
+
+
+                            let opening =
+                                false;
+
+
+                            elements.forEach(
+                                function (element) {
+
+                                    if (
+                                        !element.classList.contains(
+                                            "show"
+                                        )
+                                    ) {
+
+                                        opening =
+                                            true;
+
+                                    }
+
+                                }
+                            );
+
+
+                            elements.forEach(
+                                function (element) {
+
+                                    element.classList.toggle(
+                                        "show",
+                                        opening
+                                    );
+
+                                }
+                            );
+
+
+                            button.textContent =
+                                opening
+                                    ? "Ver menos"
+                                    : "Ver más";
+
+                        }
+                    );
+
+                }
+            );
+
+
+        document
+            .querySelectorAll(
+                "[data-filter-search]"
+            )
+            .forEach(
+                function (input) {
+
+                    input.addEventListener(
+                        "input",
+                        function () {
+
+                            const group =
+                                input.dataset.filterSearch;
+
+
+                            const value =
+                                input.value
+                                    .trim()
+                                    .toLowerCase();
+
+
+                            const items =
+                                document.querySelectorAll(
+                                    "." + group + "-item"
+                                );
+
+
+                            items.forEach(
+                                function (item) {
+
+                                    const text =
+                                        item.dataset.filterItem
+                                        ||
+                                        "";
+
+
+                                    item.style.display =
+                                        text.includes(
+                                            value
+                                        )
+                                            ? "flex"
+                                            : "none";
+
+                                }
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* =========================================
+           RECOMENDACIONES
+        ========================================== */
+
+        const recommendRow =
+            document.getElementById(
+                "recommendRow"
+            );
+
+
+        const recommendLeft =
+            document.getElementById(
+                "recommendLeft"
+            );
+
+
+        const recommendRight =
+            document.getElementById(
+                "recommendRight"
+            );
+
+
+        if (
+            recommendLeft
+            &&
+            recommendRow
+        ) {
+
+            recommendLeft.addEventListener(
+                "click",
+                function () {
+
+                    recommendRow.scrollBy({
+                        left: -520,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        if (
+            recommendRight
+            &&
+            recommendRow
+        ) {
+
+            recommendRight.addEventListener(
+                "click",
+                function () {
+
+                    recommendRow.scrollBy({
+                        left: 520,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        render();
+
+    })();
+
+</script>

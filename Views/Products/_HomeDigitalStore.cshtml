@@ -1,0 +1,1761 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    bool IsDigitalProduct(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        var category =
+            (product.Category ?? string.Empty)
+            .ToLowerInvariant();
+
+        return
+            category.Contains("tienda digital")
+            || category.Contains("digital")
+            || name.Contains("gift card")
+            || name.Contains("eshop")
+            || name.Contains("store card");
+    }
+
+    string DigitalPlatform(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (
+            name.Contains("playstation")
+            || name.Contains("psn")
+        )
+        {
+            return "playstation";
+        }
+
+        if (
+            name.Contains("xbox")
+            || name.Contains("microsoft")
+        )
+        {
+            return "xbox";
+        }
+
+        if (
+            name.Contains("nintendo")
+            || name.Contains("eshop")
+        )
+        {
+            return "nintendo";
+        }
+
+        return "otros";
+    }
+
+    string DigitalPlatformLabel(
+        EcommerceApp.Models.Product product)
+    {
+        return DigitalPlatform(product) switch
+        {
+            "playstation" => "PlayStation Store",
+            "xbox" => "Xbox",
+            "nintendo" => "Nintendo eShop",
+            _ => "Tienda digital"
+        };
+    }
+
+    string DigitalIcon(
+        EcommerceApp.Models.Product product)
+    {
+        return DigitalPlatform(product) switch
+        {
+            "playstation" => "🎮",
+            "xbox" => "🟢",
+            "nintendo" => "🔴",
+            _ => "🎁"
+        };
+    }
+
+    var digitalProducts =
+        products
+            .Where(IsDigitalProduct)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(18)
+            .ToList();
+}
+
+<style>
+
+    /* =========================================================
+       TIENDA DIGITAL BIGGAME
+    ========================================================= */
+
+    .digital-home {
+        width: 100%;
+
+        padding:
+            60px
+            0
+            68px;
+
+        background: #ffffff;
+
+        color: #111827;
+    }
+
+    .digital-container {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       CABECERA
+    ========================================================= */
+
+    .digital-heading {
+        margin-bottom: 25px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .digital-heading-left {
+        min-width: 0;
+    }
+
+    .digital-kicker {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .digital-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.08;
+
+        font-weight: 900;
+
+        letter-spacing: -0.8px;
+    }
+
+    .digital-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color: #64748b;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .digital-view-all {
+        flex: 0 0 auto;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .digital-view-all:hover {
+        color: #2563eb;
+    }
+
+
+    /* =========================================================
+       BANNER PRINCIPAL
+    ========================================================= */
+
+    .digital-banner {
+        position: relative;
+
+        min-height: 250px;
+
+        margin-bottom: 26px;
+
+        overflow: hidden;
+
+        border-radius: 14px;
+
+        background:
+            radial-gradient(
+                circle at 82% 35%,
+                rgba(0, 212, 255, 0.28),
+                transparent 25%
+            ),
+            radial-gradient(
+                circle at 93% 76%,
+                rgba(147, 51, 234, 0.25),
+                transparent 22%
+            ),
+            linear-gradient(
+                110deg,
+                #030712 0%,
+                #071b3e 45%,
+                #1d4ed8 100%
+            );
+
+        color: #ffffff;
+
+        box-shadow:
+            0
+            13px
+            34px
+            rgba(15, 23, 42, 0.15);
+    }
+
+    .digital-banner::after {
+        content: "";
+
+        position: absolute;
+
+        top: -130px;
+        right: -80px;
+
+        width: 370px;
+        height: 370px;
+
+        border:
+            2px solid
+            rgba(255,255,255,0.10);
+
+        border-radius: 50%;
+    }
+
+    .digital-banner-content {
+        position: relative;
+
+        z-index: 4;
+
+        min-height: 250px;
+
+        padding:
+            40px
+            44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 35px;
+    }
+
+    .digital-banner-left {
+        max-width: 720px;
+    }
+
+    .digital-banner-label {
+        margin-bottom: 8px;
+
+        color: #7dd3fc;
+
+        font-size: 10px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .digital-banner-title {
+        margin:
+            0
+            0
+            12px;
+
+        max-width: 680px;
+
+        font-size: 40px;
+        line-height: 1.03;
+
+        font-weight: 900;
+
+        letter-spacing: -1.2px;
+    }
+
+    .digital-banner-description {
+        max-width: 650px;
+
+        margin: 0;
+
+        color:
+            rgba(255,255,255,0.83);
+
+        font-size: 14px;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       ICONOS DEL BANNER
+    ========================================================= */
+
+    .digital-banner-cards {
+        flex: 0 0 auto;
+
+        position: relative;
+
+        width: 330px;
+        height: 175px;
+    }
+
+    .digital-mini-card {
+        position: absolute;
+
+        width: 150px;
+        height: 92px;
+
+        padding: 13px;
+
+        display: flex;
+        flex-direction: column;
+
+        justify-content: space-between;
+
+        border:
+            1px solid
+            rgba(255,255,255,0.24);
+
+        border-radius: 11px;
+
+        background:
+            rgba(255,255,255,0.09);
+
+        box-shadow:
+            0
+            12px
+            20px
+            rgba(0,0,0,0.20);
+
+        backdrop-filter:
+            blur(8px);
+
+        color: #ffffff;
+    }
+
+    .digital-mini-card-one {
+        top: 12px;
+        left: 5px;
+
+        transform:
+            rotate(-8deg);
+    }
+
+    .digital-mini-card-two {
+        top: 55px;
+        left: 92px;
+
+        transform:
+            rotate(3deg);
+    }
+
+    .digital-mini-card-three {
+        top: 8px;
+        right: 3px;
+
+        transform:
+            rotate(9deg);
+    }
+
+    .digital-mini-icon {
+        font-size: 25px;
+    }
+
+    .digital-mini-text {
+        font-size: 9px;
+        font-weight: 900;
+
+        text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       FILTROS
+    ========================================================= */
+
+    .digital-tabs {
+        margin-bottom: 24px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        overflow-x: auto;
+
+        scrollbar-width: none;
+    }
+
+    .digital-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .digital-tab {
+        flex: 0 0 auto;
+
+        min-height: 41px;
+
+        padding:
+            0
+            17px;
+
+        border:
+            1px solid #cbd5e1;
+
+        border-radius: 5px;
+
+        background: #ffffff;
+
+        color: #111827;
+
+        cursor: pointer;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        white-space: nowrap;
+
+        transition:
+            background 0.18s ease,
+            color 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .digital-tab:hover {
+        border-color: #2563eb;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .digital-tab.active {
+        border-color: #111827;
+
+        background: #111827;
+
+        color: #ffffff;
+    }
+
+
+    /* =========================================================
+       CARRUSEL
+    ========================================================= */
+
+    .digital-carousel {
+        position: relative;
+    }
+
+    .digital-products {
+        display: flex;
+
+        gap: 16px;
+
+        overflow-x: auto;
+
+        padding:
+            4px
+            4px
+            22px;
+
+        scroll-behavior: smooth;
+
+        scroll-snap-type:
+            x proximity;
+
+        scrollbar-width: none;
+    }
+
+    .digital-products::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =========================================================
+       TARJETA
+    ========================================================= */
+
+    .digital-card {
+        flex:
+            0
+            0
+            300px;
+
+        min-height: 470px;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        scroll-snap-align: start;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 11px;
+
+        background: #ffffff;
+
+        box-shadow:
+            0
+            5px
+            18px
+            rgba(15,23,42,0.05);
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .digital-card:hover {
+        transform:
+            translateY(-5px);
+
+        border-color: #a5b4fc;
+
+        box-shadow:
+            0
+            14px
+            30px
+            rgba(15,23,42,0.12);
+    }
+
+
+    /* =========================================================
+       VISUAL DE TARJETA
+    ========================================================= */
+
+    .digital-image {
+        position: relative;
+
+        width: 100%;
+        height: 280px;
+
+        padding: 24px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background:
+            linear-gradient(
+                180deg,
+                #f8fafc 0%,
+                #eef2f7 100%
+            );
+    }
+
+    .digital-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .digital-card:hover
+    .digital-image img {
+        transform:
+            scale(1.045);
+    }
+
+    .digital-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #07162e,
+                #1d4ed8
+            );
+
+        color: #ffffff;
+
+        font-size: 72px;
+    }
+
+
+    /* =========================================================
+       BADGES
+    ========================================================= */
+
+    .digital-platform-badge {
+        position: absolute;
+
+        z-index: 5;
+
+        top: 12px;
+        left: 12px;
+
+        padding:
+            7px
+            10px;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.45px;
+
+        text-transform: uppercase;
+    }
+
+    .digital-delivery-badge {
+        position: absolute;
+
+        z-index: 5;
+
+        top: 12px;
+        right: 12px;
+
+        padding:
+            7px
+            10px;
+
+        border-radius: 4px;
+
+        background: #16a34a;
+
+        color: #ffffff;
+
+        font-size: 8px;
+        font-weight: 900;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       INFORMACIÓN
+    ========================================================= */
+
+    .digital-info {
+        flex: 1;
+
+        padding:
+            16px
+            17px
+            17px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .digital-category {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.55px;
+
+        text-transform: uppercase;
+    }
+
+    .digital-name {
+        min-height: 43px;
+
+        margin-bottom: 8px;
+
+        color: #111827;
+
+        font-size: 14px;
+        font-weight: 900;
+
+        line-height: 1.3;
+    }
+
+    .digital-price {
+        margin-top: auto;
+
+        color: #111827;
+
+        font-size: 22px;
+        font-weight: 900;
+    }
+
+    .digital-stock {
+        min-height: 18px;
+
+        margin-top: 4px;
+
+        color: #16a34a;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .digital-stock.out {
+        color: #dc2626;
+    }
+
+
+    /* =========================================================
+       ACCIONES
+    ========================================================= */
+
+    .digital-actions {
+        margin-top: 13px;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            46px;
+
+        gap: 8px;
+    }
+
+    .digital-details {
+        min-height: 43px;
+
+        padding:
+            0
+            13px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .digital-details:hover {
+        background: #174fc7;
+
+        color: #ffffff;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .digital-cart-form {
+        margin: 0;
+    }
+
+    .digital-cart {
+        width: 46px;
+        height: 43px;
+
+        border: none;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 18px;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .digital-cart:hover {
+        background: #2563eb;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .digital-cart:disabled {
+        background: #cbd5e1;
+
+        color: #64748b;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =========================================================
+       FLECHAS
+    ========================================================= */
+
+    .digital-arrow {
+        position: absolute;
+
+        z-index: 10;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        width: 46px;
+        height: 64px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        background:
+            rgba(17,24,39,0.95);
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 31px;
+
+        box-shadow:
+            0
+            6px
+            20px
+            rgba(15,23,42,0.20);
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .digital-arrow:hover {
+        background: #2563eb;
+    }
+
+    .digital-arrow-left {
+        left: -15px;
+    }
+
+    .digital-arrow-right {
+        right: -15px;
+    }
+
+
+    /* =========================================================
+       MENSAJE SIN RESULTADOS
+    ========================================================= */
+
+    .digital-filter-empty {
+        display: none;
+
+        width: 100%;
+
+        margin-top: 4px;
+
+        padding:
+            40px
+            20px;
+
+        border:
+            1px dashed #cbd5e1;
+
+        border-radius: 8px;
+
+        background: #f8fafc;
+
+        color: #64748b;
+
+        text-align: center;
+    }
+
+    .digital-filter-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 16px;
+    }
+
+
+    /* =========================================================
+       BENEFICIOS
+    ========================================================= */
+
+    .digital-benefits {
+        margin-top: 22px;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        gap: 13px;
+    }
+
+    .digital-benefit {
+        min-height: 92px;
+
+        padding:
+            18px
+            19px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 13px;
+
+        border:
+            1px solid #e2e8f0;
+
+        border-radius: 8px;
+
+        background: #f8fafc;
+    }
+
+    .digital-benefit-icon {
+        width: 46px;
+        height: 46px;
+
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 8px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        font-size: 22px;
+    }
+
+    .digital-benefit-title {
+        margin-bottom: 3px;
+
+        color: #111827;
+
+        font-size: 12px;
+        font-weight: 900;
+    }
+
+    .digital-benefit-text {
+        color: #64748b;
+
+        font-size: 10px;
+        line-height: 1.4;
+    }
+
+
+    /* =========================================================
+       VACÍO GENERAL
+    ========================================================= */
+
+    .digital-empty {
+        width: 100%;
+
+        padding:
+            55px
+            20px;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #f8fafc;
+
+        color: #64748b;
+
+        text-align: center;
+    }
+
+    .digital-empty-icon {
+        margin-bottom: 12px;
+
+        font-size: 44px;
+    }
+
+    .digital-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 18px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 1000px) {
+
+        .digital-banner-cards {
+            transform:
+                scale(0.84);
+
+            transform-origin:
+                right center;
+        }
+
+        .digital-card {
+            flex-basis: 270px;
+        }
+
+        .digital-arrow-left {
+            left: 2px;
+        }
+
+        .digital-arrow-right {
+            right: 2px;
+        }
+    }
+
+
+    @@media (max-width: 800px) {
+
+        .digital-benefits {
+            grid-template-columns:
+                1fr;
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .digital-home {
+            padding:
+                44px
+                0
+                52px;
+        }
+
+        .digital-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .digital-heading {
+            flex-direction: column;
+
+            align-items: flex-start;
+        }
+
+        .digital-title {
+            font-size: 25px;
+        }
+
+        .digital-banner-content {
+            min-height: 260px;
+
+            padding:
+                30px
+                24px;
+        }
+
+        .digital-banner-title {
+            font-size: 30px;
+        }
+
+        .digital-banner-cards {
+            display: none;
+        }
+
+        .digital-card {
+            flex-basis: 220px;
+
+            min-height: 440px;
+        }
+
+        .digital-image {
+            height: 235px;
+
+            padding: 17px;
+        }
+
+        .digital-arrow {
+            width: 38px;
+            height: 54px;
+
+            font-size: 26px;
+        }
+    }
+
+</style>
+
+
+<section class="digital-home"
+         id="tienda-digital">
+
+    <div class="digital-container">
+
+
+        <!-- =====================================================
+             CABECERA
+        ====================================================== -->
+
+        <div class="digital-heading">
+
+            <div class="digital-heading-left">
+
+                <div class="digital-kicker">
+                    TIENDA DIGITAL
+                </div>
+
+                <h2 class="digital-title">
+                    Saldo para seguir jugando
+                </h2>
+
+                <p class="digital-subtitle">
+                    Tarjetas para PlayStation Store,
+                    Xbox y Nintendo eShop.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Gift Card"
+               class="digital-view-all">
+
+                Ver todas →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             BANNER
+        ====================================================== -->
+
+        <div class="digital-banner">
+
+            <div class="digital-banner-content">
+
+                <div class="digital-banner-left">
+
+                    <div class="digital-banner-label">
+                        BIGGAME DIGITAL
+                    </div>
+
+                    <h3 class="digital-banner-title">
+                        El siguiente juego está a un código de distancia
+                    </h3>
+
+                    <p class="digital-banner-description">
+                        Encuentra tarjetas digitales para tus
+                        plataformas favoritas y agrega saldo
+                        a tu cuenta para juegos, contenido
+                        descargable y más.
+                    </p>
+
+                </div>
+
+
+                <div class="digital-banner-cards">
+
+                    <div class="digital-mini-card digital-mini-card-one">
+
+                        <span class="digital-mini-icon">
+                            🎮
+                        </span>
+
+                        <span class="digital-mini-text">
+                            PlayStation
+                        </span>
+
+                    </div>
+
+
+                    <div class="digital-mini-card digital-mini-card-two">
+
+                        <span class="digital-mini-icon">
+                            🟢
+                        </span>
+
+                        <span class="digital-mini-text">
+                            Xbox
+                        </span>
+
+                    </div>
+
+
+                    <div class="digital-mini-card digital-mini-card-three">
+
+                        <span class="digital-mini-icon">
+                            🔴
+                        </span>
+
+                        <span class="digital-mini-text">
+                            Nintendo
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             FILTROS
+        ====================================================== -->
+
+        <div class="digital-tabs"
+             id="digitalTabs">
+
+            <button type="button"
+                    class="digital-tab active"
+                    data-digital-filter="todos">
+
+                Todas
+
+            </button>
+
+
+            <button type="button"
+                    class="digital-tab"
+                    data-digital-filter="playstation">
+
+                PlayStation Store
+
+            </button>
+
+
+            <button type="button"
+                    class="digital-tab"
+                    data-digital-filter="xbox">
+
+                Xbox
+
+            </button>
+
+
+            <button type="button"
+                    class="digital-tab"
+                    data-digital-filter="nintendo">
+
+                Nintendo eShop
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             PRODUCTOS
+        ====================================================== -->
+
+        @if (digitalProducts.Any())
+        {
+            <div class="digital-carousel">
+
+                <button type="button"
+                        class="digital-arrow digital-arrow-left"
+                        id="digitalPrevious"
+                        aria-label="Tarjetas anteriores">
+
+                    ‹
+
+                </button>
+
+
+                <div class="digital-products"
+                     id="digitalProducts">
+
+                    @foreach (var product in digitalProducts)
+                    {
+                        var platform =
+                            DigitalPlatform(product);
+
+                        var platformLabel =
+                            DigitalPlatformLabel(product);
+
+                        var icon =
+                            DigitalIcon(product);
+
+
+                        <article class="digital-card"
+                                 data-digital-platform="@platform">
+
+
+                            <!-- IMAGEN -->
+
+                            <div class="digital-image">
+
+                                <span class="digital-platform-badge">
+                                    @platformLabel
+                                </span>
+
+
+                                <span class="digital-delivery-badge">
+                                    Digital
+                                </span>
+
+
+                                @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl"
+                                         alt="@product.Name"
+                                         loading="lazy"
+                                         onerror="
+                                            this.style.display='none';
+                                            this.nextElementSibling.style.display='flex';
+                                         " />
+
+                                    <div class="digital-placeholder"
+                                         style="display:none;">
+                                        @icon
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="digital-placeholder">
+                                        @icon
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <!-- INFORMACIÓN -->
+
+                            <div class="digital-info">
+
+                                <div class="digital-category">
+                                    @platformLabel
+                                </div>
+
+
+                                <div class="digital-name">
+                                    @product.Name
+                                </div>
+
+
+                                <div class="digital-price">
+                                    Bs @product.Price.ToString("N2")
+                                </div>
+
+
+                                @if (product.Stock > 0)
+                                {
+                                    <div class="digital-stock">
+                                        @product.Stock disponibles
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="digital-stock out">
+                                        Agotado
+                                    </div>
+                                }
+
+
+                                <div class="digital-actions">
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="digital-details">
+
+                                        Ver producto
+
+                                    </a>
+
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-controller="Cart"
+                                              asp-action="Add"
+                                              method="post"
+                                              class="digital-cart-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@product.Id" />
+
+                                            <button type="submit"
+                                                    class="digital-cart"
+                                                    title="Agregar al carrito"
+                                                    aria-label="Agregar @product.Name al carrito">
+
+                                                🛒
+
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="digital-cart"
+                                                disabled
+                                                title="Producto agotado">
+
+                                            🛒
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
+
+
+                <button type="button"
+                        class="digital-arrow digital-arrow-right"
+                        id="digitalNext"
+                        aria-label="Más tarjetas">
+
+                    ›
+
+                </button>
+
+            </div>
+
+
+            <div class="digital-filter-empty"
+                 id="digitalFilterEmpty">
+
+                <strong>
+                    No hay tarjetas de esta plataforma
+                </strong>
+
+                <span>
+                    Prueba con otra opción.
+                </span>
+
+            </div>
+        }
+        else
+        {
+            <div class="digital-empty">
+
+                <div class="digital-empty-icon">
+                    🎁
+                </div>
+
+                <strong>
+                    Próximamente más productos digitales
+                </strong>
+
+                <span>
+                    Estamos preparando nuevas opciones
+                    para la tienda digital de BigGame.
+                </span>
+
+            </div>
+        }
+
+
+        <!-- =====================================================
+             BENEFICIOS
+        ====================================================== -->
+
+        <div class="digital-benefits">
+
+            <div class="digital-benefit">
+
+                <div class="digital-benefit-icon">
+                    🎁
+                </div>
+
+                <div>
+
+                    <div class="digital-benefit-title">
+                        Varias plataformas
+                    </div>
+
+                    <div class="digital-benefit-text">
+                        Encuentra tarjetas para PlayStation,
+                        Xbox y Nintendo.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="digital-benefit">
+
+                <div class="digital-benefit-icon">
+                    🔒
+                </div>
+
+                <div>
+
+                    <div class="digital-benefit-title">
+                        Compra desde BigGame
+                    </div>
+
+                    <div class="digital-benefit-text">
+                        Revisa el producto, agrégalo al carrito
+                        y completa tu pedido.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="digital-benefit">
+
+                <div class="digital-benefit-icon">
+                    🛒
+                </div>
+
+                <div>
+
+                    <div class="digital-benefit-title">
+                        Stock controlado
+                    </div>
+
+                    <div class="digital-benefit-text">
+                        La disponibilidad se gestiona directamente
+                        desde el inventario de BigGame.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const row =
+            document.getElementById(
+                "digitalProducts"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "digitalPrevious"
+            );
+
+        const nextButton =
+            document.getElementById(
+                "digitalNext"
+            );
+
+        const tabs =
+            Array.from(
+                document.querySelectorAll(
+                    ".digital-tab"
+                )
+            );
+
+        const emptyMessage =
+            document.getElementById(
+                "digitalFilterEmpty"
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        /* =====================================================
+           FLECHA IZQUIERDA
+        ====================================================== */
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: -650,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FLECHA DERECHA
+        ====================================================== */
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: 650,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FILTROS
+        ====================================================== */
+
+        tabs.forEach(
+            function (tab) {
+
+                tab.addEventListener(
+                    "click",
+                    function () {
+
+                        tabs.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+
+                        tab.classList.add(
+                            "active"
+                        );
+
+
+                        const filter =
+                            tab.dataset.digitalFilter
+                            || "todos";
+
+
+                        const cards =
+                            Array.from(
+                                row.querySelectorAll(
+                                    ".digital-card"
+                                )
+                            );
+
+
+                        let visibleCount = 0;
+
+
+                        cards.forEach(
+                            function (card) {
+
+                                const platform =
+                                    card.dataset.digitalPlatform
+                                    || "";
+
+
+                                const visible =
+                                    filter === "todos"
+                                    ||
+                                    platform === filter;
+
+
+                                card.style.display =
+                                    visible
+                                    ? "flex"
+                                    : "none";
+
+
+                                if (visible) {
+                                    visibleCount++;
+                                }
+
+                            }
+                        );
+
+
+                        if (emptyMessage) {
+
+                            emptyMessage.style.display =
+                                visibleCount === 0
+                                ? "block"
+                                : "none";
+
+                        }
+
+
+                        row.scrollTo({
+                            left: 0,
+                            behavior: "smooth"
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+    })();
+
+</script>

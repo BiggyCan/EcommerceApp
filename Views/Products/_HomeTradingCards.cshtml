@@ -1,0 +1,1429 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    bool IsTradingCard(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        var category =
+            (product.Category ?? string.Empty)
+            .ToLowerInvariant();
+
+        return
+            category.Contains("trading")
+            || category.Contains("card")
+            || name.Contains("pokémon")
+            || name.Contains("pokemon")
+            || name.Contains("yu-gi-oh")
+            || name.Contains("magic")
+            || name.Contains("lorcana")
+            || name.Contains("one piece")
+            || name.Contains("booster")
+            || name.Contains("tcg");
+    }
+
+    string CardGame(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (
+            name.Contains("pokémon")
+            || name.Contains("pokemon")
+        )
+        {
+            return "pokemon";
+        }
+
+        if (name.Contains("yu-gi-oh"))
+        {
+            return "yugioh";
+        }
+
+        if (
+            name.Contains("magic")
+            || name.Contains("mtg")
+        )
+        {
+            return "magic";
+        }
+
+        if (name.Contains("one piece"))
+        {
+            return "onepiece";
+        }
+
+        if (name.Contains("lorcana"))
+        {
+            return "lorcana";
+        }
+
+        return "otros";
+    }
+
+    string CardGameLabel(EcommerceApp.Models.Product product)
+    {
+        return CardGame(product) switch
+        {
+            "pokemon" => "Pokémon TCG",
+            "yugioh" => "Yu-Gi-Oh!",
+            "magic" => "Magic: The Gathering",
+            "onepiece" => "One Piece",
+            "lorcana" => "Disney Lorcana",
+            _ => "Trading Cards"
+        };
+    }
+
+    string CardIcon(EcommerceApp.Models.Product product)
+    {
+        return CardGame(product) switch
+        {
+            "pokemon" => "⚡",
+            "yugioh" => "🔮",
+            "magic" => "🔥",
+            "onepiece" => "🏴‍☠️",
+            "lorcana" => "✨",
+            _ => "🃏"
+        };
+    }
+
+    var tradingCards =
+        products
+            .Where(IsTradingCard)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(24)
+            .ToList();
+}
+
+<style>
+
+    /* =========================================================
+       TRADING CARDS BIGGAME
+    ========================================================= */
+
+    .tcg-home {
+        width: 100%;
+
+        padding:
+            56px
+            0
+            62px;
+
+        background: #f4f5f7;
+
+        color: #111111;
+    }
+
+    .tcg-container {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       CABECERA
+    ========================================================= */
+
+    .tcg-heading {
+        margin-bottom: 23px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .tcg-heading-left {
+        min-width: 0;
+    }
+
+    .tcg-kicker {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .tcg-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.08;
+
+        font-weight: 900;
+
+        letter-spacing: -0.8px;
+    }
+
+    .tcg-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color: #64748b;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .tcg-view-all {
+        flex: 0 0 auto;
+
+        color: #111111;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        text-decoration: underline;
+
+        text-underline-offset: 4px;
+    }
+
+    .tcg-view-all:hover {
+        color: #2563eb;
+    }
+
+
+    /* =========================================================
+       BANNER
+    ========================================================= */
+
+    .tcg-banner {
+        position: relative;
+
+        min-height: 205px;
+
+        margin-bottom: 25px;
+
+        overflow: hidden;
+
+        border-radius: 11px;
+
+        background:
+            radial-gradient(
+                circle at 83% 40%,
+                rgba(67, 211, 255, 0.28),
+                transparent 25%
+            ),
+            radial-gradient(
+                circle at 72% 80%,
+                rgba(163, 82, 255, 0.30),
+                transparent 27%
+            ),
+            linear-gradient(
+                115deg,
+                #07111f 0%,
+                #0e2450 48%,
+                #172d69 100%
+            );
+
+        color: #ffffff;
+
+        box-shadow:
+            0
+            10px
+            28px
+            rgba(15, 23, 42, 0.12);
+    }
+
+    .tcg-banner-content {
+        position: relative;
+
+        z-index: 3;
+
+        min-height: 205px;
+
+        padding:
+            34px
+            40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 28px;
+    }
+
+    .tcg-banner-left {
+        max-width: 720px;
+    }
+
+    .tcg-banner-label {
+        margin-bottom: 8px;
+
+        color: #52c7ff;
+
+        font-size: 10px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .tcg-banner-title {
+        margin:
+            0
+            0
+            10px;
+
+        font-size: 36px;
+        line-height: 1.04;
+
+        font-weight: 900;
+
+        letter-spacing: -1px;
+    }
+
+    .tcg-banner-description {
+        margin: 0;
+
+        max-width: 640px;
+
+        color:
+            rgba(255, 255, 255, 0.84);
+
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .tcg-banner-cards {
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+
+        padding-right: 30px;
+    }
+
+    .tcg-banner-card {
+        width: 82px;
+        height: 115px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border:
+            3px solid
+            rgba(255, 255, 255, 0.72);
+
+        border-radius: 7px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #273970,
+                #111a39
+            );
+
+        font-size: 37px;
+
+        box-shadow:
+            0
+            12px
+            25px
+            rgba(0, 0, 0, 0.25);
+    }
+
+    .tcg-banner-card:nth-child(1) {
+        transform:
+            rotate(-10deg)
+            translateX(18px);
+    }
+
+    .tcg-banner-card:nth-child(2) {
+        position: relative;
+
+        z-index: 2;
+
+        transform:
+            translateY(-7px);
+    }
+
+    .tcg-banner-card:nth-child(3) {
+        transform:
+            rotate(10deg)
+            translateX(-18px);
+    }
+
+
+    /* =========================================================
+       FILTROS
+    ========================================================= */
+
+    .tcg-tabs {
+        margin-bottom: 24px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        overflow-x: auto;
+
+        scrollbar-width: none;
+    }
+
+    .tcg-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tcg-tab {
+        flex: 0 0 auto;
+
+        min-height: 40px;
+
+        padding:
+            0
+            17px;
+
+        border:
+            1px solid #cbd5e1;
+
+        border-radius: 5px;
+
+        background: #ffffff;
+
+        color: #111827;
+
+        cursor: pointer;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        white-space: nowrap;
+
+        transition:
+            background 0.18s ease,
+            color 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .tcg-tab:hover {
+        border-color: #111827;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .tcg-tab.active {
+        border-color: #111827;
+
+        background: #111827;
+
+        color: #ffffff;
+    }
+
+
+    /* =========================================================
+       CARRUSEL
+    ========================================================= */
+
+    .tcg-carousel {
+        position: relative;
+    }
+
+    .tcg-products {
+        display: flex;
+
+        gap: 15px;
+
+        overflow-x: auto;
+
+        padding:
+            3px
+            4px
+            20px;
+
+        scroll-behavior: smooth;
+
+        scroll-snap-type:
+            x proximity;
+
+        scrollbar-width: none;
+    }
+
+    .tcg-products::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =========================================================
+       PRODUCTO
+    ========================================================= */
+
+    .tcg-card {
+        flex:
+            0
+            0
+            230px;
+
+        min-height: 475px;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        scroll-snap-align: start;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .tcg-card:hover {
+        transform:
+            translateY(-4px);
+
+        border-color: #b8c5d8;
+
+        box-shadow:
+            0
+            12px
+            28px
+            rgba(15, 23, 42, 0.11);
+    }
+
+
+    /* =========================================================
+       IMAGEN
+    ========================================================= */
+
+    .tcg-image {
+        position: relative;
+
+        width: 100%;
+        height: 270px;
+
+        padding: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #ffffff;
+    }
+
+    .tcg-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .tcg-card:hover .tcg-image img {
+        transform:
+            scale(1.04);
+    }
+
+    .tcg-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #132b5d,
+                #07142f
+            );
+
+        font-size: 62px;
+    }
+
+    .tcg-badge {
+        position: absolute;
+
+        z-index: 4;
+
+        top: 10px;
+        left: 10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.5px;
+
+        text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       INFORMACIÓN
+    ========================================================= */
+
+    .tcg-info {
+        flex: 1;
+
+        padding:
+            14px
+            15px
+            15px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tcg-category {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.55px;
+
+        text-transform: uppercase;
+    }
+
+    .tcg-name {
+        min-height: 43px;
+
+        margin-bottom: 9px;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+    .tcg-price {
+        margin-top: auto;
+
+        color: #111827;
+
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .tcg-stock {
+        min-height: 18px;
+
+        margin-top: 4px;
+
+        color: #16a34a;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .tcg-stock.out {
+        color: #dc2626;
+    }
+
+
+    /* =========================================================
+       ACCIONES
+    ========================================================= */
+
+    .tcg-actions {
+        margin-top: 12px;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            44px;
+
+        gap: 7px;
+    }
+
+    .tcg-details {
+        min-height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding:
+            0
+            12px;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .tcg-details:hover {
+        background: #174fc7;
+
+        color: #ffffff;
+    }
+
+    .tcg-cart-form {
+        margin: 0;
+    }
+
+    .tcg-cart {
+        width: 44px;
+        height: 42px;
+
+        border: none;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 17px;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .tcg-cart:hover {
+        background: #2563eb;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .tcg-cart:disabled {
+        background: #cbd5e1;
+
+        color: #64748b;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =========================================================
+       FLECHAS
+    ========================================================= */
+
+    .tcg-arrow {
+        position: absolute;
+
+        z-index: 10;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        width: 46px;
+        height: 64px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        background:
+            rgba(17, 24, 39, 0.94);
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 31px;
+
+        box-shadow:
+            0
+            6px
+            20px
+            rgba(15, 23, 42, 0.20);
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .tcg-arrow:hover {
+        background: #2563eb;
+    }
+
+    .tcg-arrow-left {
+        left: -15px;
+    }
+
+    .tcg-arrow-right {
+        right: -15px;
+    }
+
+
+    /* =========================================================
+       VACÍO
+    ========================================================= */
+
+    .tcg-empty {
+        width: 100%;
+
+        padding:
+            55px
+            20px;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        text-align: center;
+
+        color: #64748b;
+    }
+
+    .tcg-empty-icon {
+        margin-bottom: 12px;
+
+        font-size: 42px;
+    }
+
+    .tcg-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 18px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 900px) {
+
+        .tcg-title {
+            font-size: 27px;
+        }
+
+        .tcg-card {
+            flex-basis: 215px;
+        }
+
+        .tcg-arrow-left {
+            left: 2px;
+        }
+
+        .tcg-arrow-right {
+            right: 2px;
+        }
+
+        .tcg-banner-cards {
+            transform:
+                scale(0.82);
+
+            transform-origin:
+                right center;
+        }
+    }
+
+    @@media (max-width: 650px) {
+
+        .tcg-home {
+            padding:
+                42px
+                0
+                48px;
+        }
+
+        .tcg-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .tcg-heading {
+            flex-direction: column;
+
+            align-items: flex-start;
+        }
+
+        .tcg-title {
+            font-size: 25px;
+        }
+
+        .tcg-banner-content {
+            min-height: 230px;
+
+            padding:
+                28px
+                24px;
+
+            align-items: flex-start;
+        }
+
+        .tcg-banner-title {
+            font-size: 28px;
+        }
+
+        .tcg-banner-cards {
+            display: none;
+        }
+
+        .tcg-card {
+            flex-basis: 195px;
+
+            min-height: 440px;
+        }
+
+        .tcg-image {
+            height: 230px;
+        }
+
+        .tcg-arrow {
+            width: 38px;
+            height: 54px;
+
+            font-size: 26px;
+        }
+    }
+
+</style>
+
+
+<section class="tcg-home"
+         id="trading-cards">
+
+    <div class="tcg-container">
+
+
+        <!-- =====================================================
+             CABECERA
+        ====================================================== -->
+
+        <div class="tcg-heading">
+
+            <div class="tcg-heading-left">
+
+                <div class="tcg-kicker">
+                    TRADING CARDS
+                </div>
+
+                <h2 class="tcg-title">
+                    Cartas coleccionables
+                </h2>
+
+                <p class="tcg-subtitle">
+                    Encuentra sobres, cajas y colecciones de tus
+                    juegos de cartas favoritos.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="TCG"
+               class="tcg-view-all">
+
+                Ver todas →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             BANNER
+        ====================================================== -->
+
+        <div class="tcg-banner">
+
+            <div class="tcg-banner-content">
+
+                <div class="tcg-banner-left">
+
+                    <div class="tcg-banner-label">
+                        NUEVAS CARTAS Y COLECCIONES
+                    </div>
+
+                    <h3 class="tcg-banner-title">
+                        Abre. Descubre. Colecciona.
+                    </h3>
+
+                    <p class="tcg-banner-description">
+                        Explora Pokémon TCG, Yu-Gi-Oh!, Magic,
+                        One Piece y otras colecciones disponibles
+                        en BigGame.
+                    </p>
+
+                </div>
+
+
+                <div class="tcg-banner-cards">
+
+                    <div class="tcg-banner-card">
+                        ⚡
+                    </div>
+
+                    <div class="tcg-banner-card">
+                        🃏
+                    </div>
+
+                    <div class="tcg-banner-card">
+                        🔥
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             FILTROS
+        ====================================================== -->
+
+        <div class="tcg-tabs"
+             id="tcgTabs">
+
+            <button type="button"
+                    class="tcg-tab active"
+                    data-tcg-filter="todos">
+
+                Todos
+
+            </button>
+
+
+            <button type="button"
+                    class="tcg-tab"
+                    data-tcg-filter="pokemon">
+
+                Pokémon
+
+            </button>
+
+
+            <button type="button"
+                    class="tcg-tab"
+                    data-tcg-filter="yugioh">
+
+                Yu-Gi-Oh!
+
+            </button>
+
+
+            <button type="button"
+                    class="tcg-tab"
+                    data-tcg-filter="magic">
+
+                Magic: The Gathering
+
+            </button>
+
+
+            <button type="button"
+                    class="tcg-tab"
+                    data-tcg-filter="onepiece">
+
+                One Piece
+
+            </button>
+
+
+            <button type="button"
+                    class="tcg-tab"
+                    data-tcg-filter="lorcana">
+
+                Disney Lorcana
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             PRODUCTOS
+        ====================================================== -->
+
+        @if (tradingCards.Any())
+        {
+            <div class="tcg-carousel">
+
+                <button type="button"
+                        class="tcg-arrow tcg-arrow-left"
+                        id="tcgPrevious"
+                        aria-label="Cartas anteriores">
+
+                    ‹
+
+                </button>
+
+
+                <div class="tcg-products"
+                     id="tcgProducts">
+
+                    @foreach (var product in tradingCards)
+                    {
+                        var game =
+                            CardGame(product);
+
+                        var label =
+                            CardGameLabel(product);
+
+                        var icon =
+                            CardIcon(product);
+
+
+                        <article class="tcg-card"
+                                 data-tcg-game="@game">
+
+
+                            <div class="tcg-image">
+
+                                <span class="tcg-badge">
+                                    @label
+                                </span>
+
+
+                                @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl"
+                                         alt="@product.Name"
+                                         loading="lazy"
+                                         onerror="
+                                            this.style.display='none';
+                                            this.nextElementSibling.style.display='flex';
+                                         " />
+
+                                    <div class="tcg-placeholder"
+                                         style="display:none;">
+                                        @icon
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="tcg-placeholder">
+                                        @icon
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div class="tcg-info">
+
+                                <div class="tcg-category">
+                                    @label
+                                </div>
+
+                                <div class="tcg-name">
+                                    @product.Name
+                                </div>
+
+                                <div class="tcg-price">
+                                    Bs @product.Price.ToString("N2")
+                                </div>
+
+
+                                @if (product.Stock > 0)
+                                {
+                                    <div class="tcg-stock">
+                                        @product.Stock disponibles
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="tcg-stock out">
+                                        Agotado
+                                    </div>
+                                }
+
+
+                                <div class="tcg-actions">
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="tcg-details">
+
+                                        Ver producto
+
+                                    </a>
+
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-controller="Cart"
+                                              asp-action="Add"
+                                              method="post"
+                                              class="tcg-cart-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@product.Id" />
+
+                                            <button type="submit"
+                                                    class="tcg-cart"
+                                                    title="Agregar al carrito"
+                                                    aria-label="Agregar @product.Name al carrito">
+
+                                                🛒
+
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="tcg-cart"
+                                                disabled
+                                                title="Producto agotado">
+
+                                            🛒
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
+
+
+                <button type="button"
+                        class="tcg-arrow tcg-arrow-right"
+                        id="tcgNext"
+                        aria-label="Más cartas">
+
+                    ›
+
+                </button>
+
+            </div>
+        }
+        else
+        {
+            <div class="tcg-empty">
+
+                <div class="tcg-empty-icon">
+                    🃏
+                </div>
+
+                <strong>
+                    Próximamente más Trading Cards
+                </strong>
+
+                <span>
+                    Estamos preparando nuevas colecciones para BigGame.
+                </span>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const row =
+            document.getElementById(
+                "tcgProducts"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "tcgPrevious"
+            );
+
+        const nextButton =
+            document.getElementById(
+                "tcgNext"
+            );
+
+        const tabs =
+            Array.from(
+                document.querySelectorAll(
+                    ".tcg-tab"
+                )
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        /* =====================================================
+           FLECHAS
+        ====================================================== */
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: -735,
+                        behavior: "smooth"
+                    });
+                }
+            );
+        }
+
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: 735,
+                        behavior: "smooth"
+                    });
+                }
+            );
+        }
+
+
+        /* =====================================================
+           FILTROS
+        ====================================================== */
+
+        tabs.forEach(
+            function (tab) {
+
+                tab.addEventListener(
+                    "click",
+                    function () {
+
+                        tabs.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+                            }
+                        );
+
+
+                        tab.classList.add(
+                            "active"
+                        );
+
+
+                        const filter =
+                            tab.dataset.tcgFilter
+                            || "todos";
+
+
+                        const cards =
+                            Array.from(
+                                row.querySelectorAll(
+                                    ".tcg-card"
+                                )
+                            );
+
+
+                        cards.forEach(
+                            function (card) {
+
+                                const game =
+                                    card.dataset.tcgGame
+                                    || "";
+
+
+                                if (
+                                    filter === "todos"
+                                    ||
+                                    game === filter
+                                )
+                                {
+                                    card.style.display =
+                                        "flex";
+                                }
+                                else
+                                {
+                                    card.style.display =
+                                        "none";
+                                }
+                            }
+                        );
+
+
+                        row.scrollTo({
+                            left: 0,
+                            behavior: "smooth"
+                        });
+                    }
+                );
+            }
+        );
+
+    })();
+
+</script>

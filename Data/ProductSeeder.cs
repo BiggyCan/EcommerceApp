@@ -25,6 +25,7 @@ namespace EcommerceApp.Data
             var products =
                 new List<Product>
                 {
+
                     // ==========================================
                     // POKÉMON TCG
                     // ==========================================
@@ -142,6 +143,11 @@ namespace EcommerceApp.Data
                         UpdatedAt = now
                     },
 
+
+                    // ==========================================
+                    // DEPORTES
+                    // ==========================================
+
                     new Product
                     {
                         Name = "NBA 2K27 - Xbox Series X",
@@ -150,6 +156,54 @@ namespace EcommerceApp.Data
                         Stock = 9,
                         Category = "Videojuegos",
                         ImageUrl = "/images/products/nba2k27-xbox.jpg",
+                        CreatedAt = now,
+                        UpdatedAt = now
+                    },
+
+                    new Product
+                    {
+                        Name = "EA SPORTS FC 27 - PlayStation 5",
+                        Description = "Videojuego de fútbol EA SPORTS FC 27 para PlayStation 5.",
+                        Price = 489.00m,
+                        Stock = 12,
+                        Category = "Videojuegos",
+                        ImageUrl = "/images/products/fc27-ps5.jpg",
+                        CreatedAt = now,
+                        UpdatedAt = now
+                    },
+
+                    new Product
+                    {
+                        Name = "Madden NFL 27 - PlayStation 5",
+                        Description = "Videojuego de fútbol americano Madden NFL 27 para PlayStation 5.",
+                        Price = 489.00m,
+                        Stock = 10,
+                        Category = "Videojuegos",
+                        ImageUrl = "/images/products/madden27-ps5.jpg",
+                        CreatedAt = now,
+                        UpdatedAt = now
+                    },
+
+                    new Product
+                    {
+                        Name = "NHL 27 - PlayStation 5",
+                        Description = "Videojuego de hockey NHL 27 para PlayStation 5.",
+                        Price = 489.00m,
+                        Stock = 8,
+                        Category = "Videojuegos",
+                        ImageUrl = "/images/products/nhl27-ps5.jpg",
+                        CreatedAt = now,
+                        UpdatedAt = now
+                    },
+
+                    new Product
+                    {
+                        Name = "MLB The Show 26 - PlayStation 5",
+                        Description = "Videojuego de béisbol MLB The Show 26 para PlayStation 5.",
+                        Price = 469.00m,
+                        Stock = 11,
+                        Category = "Videojuegos",
+                        ImageUrl = "/images/products/mlb-the-show-26-ps5.jpg",
                         CreatedAt = now,
                         UpdatedAt = now
                     },

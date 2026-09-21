@@ -1,0 +1,1664 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+
+    int CountByCategory(params string[] terms)
+    {
+        return products.Count(
+            product =>
+            {
+                var name =
+                    (product.Name ?? string.Empty)
+                    .ToLowerInvariant();
+
+                var category =
+                    (product.Category ?? string.Empty)
+                    .ToLowerInvariant();
+
+                var description =
+                    (product.Description ?? string.Empty)
+                    .ToLowerInvariant();
+
+                var combined =
+                    $"{name} {category} {description}";
+
+                return terms.Any(
+                    term =>
+                        combined.Contains(
+                            term.ToLowerInvariant()
+                        )
+                );
+            }
+        );
+    }
+
+
+    var videoGamesCount =
+        products.Count(
+            p =>
+                (p.Category ?? string.Empty)
+                .Contains(
+                    "Videojuegos",
+                    StringComparison.OrdinalIgnoreCase
+                )
+        );
+
+    var consolesCount =
+        products.Count(
+            p =>
+                (p.Category ?? string.Empty)
+                .Contains(
+                    "Consolas",
+                    StringComparison.OrdinalIgnoreCase
+                )
+        );
+
+    var accessoriesCount =
+        products.Count(
+            p =>
+            {
+                var category =
+                    p.Category ?? string.Empty;
+
+                return
+                    category.Contains(
+                        "Accesorios",
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                    ||
+                    category.Contains(
+                        "PC Gaming",
+                        StringComparison.OrdinalIgnoreCase
+                    );
+            }
+        );
+
+    var tradingCardsCount =
+        products.Count(
+            p =>
+                (p.Category ?? string.Empty)
+                .Contains(
+                    "Trading Cards",
+                    StringComparison.OrdinalIgnoreCase
+                )
+        );
+
+    var collectiblesCount =
+        products.Count(
+            p =>
+                (p.Category ?? string.Empty)
+                .Contains(
+                    "Coleccionables",
+                    StringComparison.OrdinalIgnoreCase
+                )
+        );
+
+    var digitalCount =
+        products.Count(
+            p =>
+                (p.Category ?? string.Empty)
+                .Contains(
+                    "Tienda digital",
+                    StringComparison.OrdinalIgnoreCase
+                )
+        );
+
+    var pcGamingCount =
+        products.Count(
+            p =>
+                (p.Category ?? string.Empty)
+                .Contains(
+                    "PC Gaming",
+                    StringComparison.OrdinalIgnoreCase
+                )
+        );
+
+    var releasesCount =
+        CountByCategory(
+            "grand theft auto vi",
+            "wolverine",
+            "onimusha",
+            "blood of dawnwalker",
+            "star wars zero company",
+            "final fantasy vii rebirth",
+            "ocarina of time"
+        );
+}
+
+<style>
+
+    /* =========================================================
+       EXPLORAR CATEGORÍAS BIGGAME
+    ========================================================= */
+
+    .browse-home {
+        width: 100%;
+
+        padding:
+            60px
+            0
+            72px;
+
+        background:
+            #f5f6f8;
+
+        color:
+            #111827;
+    }
+
+    .browse-container {
+        width:
+            calc(100% - 40px);
+
+        max-width:
+            1460px;
+
+        margin:
+            0 auto;
+    }
+
+
+    /* =========================================================
+       CABECERA
+    ========================================================= */
+
+    .browse-heading {
+        margin-bottom:
+            27px;
+
+        display:
+            flex;
+
+        align-items:
+            flex-end;
+
+        justify-content:
+            space-between;
+
+        gap:
+            20px;
+    }
+
+    .browse-heading-left {
+        min-width:
+            0;
+    }
+
+    .browse-kicker {
+        margin-bottom:
+            6px;
+
+        color:
+            #2563eb;
+
+        font-size:
+            11px;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            1px;
+
+        text-transform:
+            uppercase;
+    }
+
+    .browse-title {
+        margin:
+            0;
+
+        color:
+            #111827;
+
+        font-size:
+            32px;
+
+        line-height:
+            1.08;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            -0.8px;
+    }
+
+    .browse-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color:
+            #64748b;
+
+        font-size:
+            13px;
+
+        line-height:
+            1.5;
+    }
+
+    .browse-all {
+        flex:
+            0 0 auto;
+
+        color:
+            #111827;
+
+        font-size:
+            13px;
+
+        font-weight:
+            900;
+
+        text-decoration:
+            underline;
+
+        text-underline-offset:
+            4px;
+    }
+
+    .browse-all:hover {
+        color:
+            #2563eb;
+    }
+
+
+    /* =========================================================
+       BANNER SUPERIOR
+    ========================================================= */
+
+    .browse-banner {
+        position:
+            relative;
+
+        min-height:
+            235px;
+
+        margin-bottom:
+            27px;
+
+        overflow:
+            hidden;
+
+        border-radius:
+            14px;
+
+        background:
+            radial-gradient(
+                circle at 84% 32%,
+                rgba(59,130,246,0.31),
+                transparent 24%
+            ),
+            radial-gradient(
+                circle at 93% 78%,
+                rgba(168,85,247,0.22),
+                transparent 24%
+            ),
+            linear-gradient(
+                110deg,
+                #030712 0%,
+                #10172b 46%,
+                #1e3a8a 100%
+            );
+
+        color:
+            #ffffff;
+
+        box-shadow:
+            0
+            13px
+            32px
+            rgba(15,23,42,0.15);
+    }
+
+    .browse-banner-content {
+        position:
+            relative;
+
+        z-index:
+            4;
+
+        min-height:
+            235px;
+
+        padding:
+            38px
+            44px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        gap:
+            32px;
+    }
+
+    .browse-banner-left {
+        max-width:
+            720px;
+    }
+
+    .browse-banner-label {
+        margin-bottom:
+            8px;
+
+        color:
+            #93c5fd;
+
+        font-size:
+            10px;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            1px;
+
+        text-transform:
+            uppercase;
+    }
+
+    .browse-banner-title {
+        margin:
+            0
+            0
+            11px;
+
+        font-size:
+            39px;
+
+        line-height:
+            1.03;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            -1.1px;
+    }
+
+    .browse-banner-description {
+        max-width:
+            650px;
+
+        margin:
+            0;
+
+        color:
+            rgba(255,255,255,0.83);
+
+        font-size:
+            13px;
+
+        line-height:
+            1.55;
+    }
+
+
+    /* =========================================================
+       ICONOS BANNER
+    ========================================================= */
+
+    .browse-banner-icons {
+        flex:
+            0 0 auto;
+
+        width:
+            310px;
+
+        display:
+            grid;
+
+        grid-template-columns:
+            repeat(3, 82px);
+
+        justify-content:
+            center;
+
+        gap:
+            11px;
+    }
+
+    .browse-banner-icon {
+        width:
+            82px;
+
+        height:
+            82px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border:
+            1px solid
+            rgba(255,255,255,0.17);
+
+        border-radius:
+            16px;
+
+        background:
+            rgba(255,255,255,0.08);
+
+        font-size:
+            34px;
+
+        backdrop-filter:
+            blur(6px);
+
+        transition:
+            transform 0.2s ease;
+    }
+
+    .browse-banner-icon:hover {
+        transform:
+            translateY(-4px)
+            rotate(-3deg);
+    }
+
+
+    /* =========================================================
+       GRID
+    ========================================================= */
+
+    .browse-grid {
+        display:
+            grid;
+
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+
+        gap:
+            15px;
+    }
+
+
+    /* =========================================================
+       TARJETAS
+    ========================================================= */
+
+    .browse-card {
+        position:
+            relative;
+
+        min-height:
+            250px;
+
+        overflow:
+            hidden;
+
+        border:
+            1px solid
+            #dbe1e9;
+
+        border-radius:
+            12px;
+
+        background:
+            #ffffff;
+
+        color:
+            #111827;
+
+        text-decoration:
+            none;
+
+        isolation:
+            isolate;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .browse-card:hover {
+        transform:
+            translateY(-5px);
+
+        border-color:
+            #aab9cd;
+
+        box-shadow:
+            0
+            14px
+            30px
+            rgba(15,23,42,0.11);
+
+        color:
+            #111827;
+    }
+
+    .browse-card::before {
+        content:
+            "";
+
+        position:
+            absolute;
+
+        inset:
+            0;
+
+        z-index:
+            -2;
+
+        opacity:
+            0.09;
+    }
+
+
+    /* =========================================================
+       FONDOS
+    ========================================================= */
+
+    .browse-videogames::before {
+        background:
+            linear-gradient(
+                145deg,
+                #2563eb,
+                #1e3a8a
+            );
+    }
+
+    .browse-consoles::before {
+        background:
+            linear-gradient(
+                145deg,
+                #111827,
+                #475569
+            );
+    }
+
+    .browse-accessories::before {
+        background:
+            linear-gradient(
+                145deg,
+                #7c3aed,
+                #4c1d95
+            );
+    }
+
+    .browse-cards::before {
+        background:
+            linear-gradient(
+                145deg,
+                #eab308,
+                #ea580c
+            );
+    }
+
+    .browse-collectibles::before {
+        background:
+            linear-gradient(
+                145deg,
+                #db2777,
+                #7c3aed
+            );
+    }
+
+    .browse-digital::before {
+        background:
+            linear-gradient(
+                145deg,
+                #0284c7,
+                #1d4ed8
+            );
+    }
+
+    .browse-pc::before {
+        background:
+            linear-gradient(
+                145deg,
+                #0891b2,
+                #0f766e
+            );
+    }
+
+    .browse-releases::before {
+        background:
+            linear-gradient(
+                145deg,
+                #dc2626,
+                #7f1d1d
+            );
+    }
+
+
+    /* =========================================================
+       CONTENIDO
+    ========================================================= */
+
+    .browse-card-content {
+        min-height:
+            250px;
+
+        padding:
+            22px;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+    }
+
+
+    /* =========================================================
+       ICONO
+    ========================================================= */
+
+    .browse-card-icon {
+        width:
+            64px;
+
+        height:
+            64px;
+
+        margin-bottom:
+            21px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            14px;
+
+        background:
+            #111827;
+
+        color:
+            #ffffff;
+
+        font-size:
+            29px;
+
+        box-shadow:
+            0
+            8px
+            19px
+            rgba(15,23,42,0.17);
+
+        transition:
+            transform 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .browse-card:hover
+    .browse-card-icon {
+        transform:
+            scale(1.08)
+            rotate(-4deg);
+
+        background:
+            #2563eb;
+    }
+
+
+    /* =========================================================
+       TEXTOS
+    ========================================================= */
+
+    .browse-card-title {
+        margin:
+            0
+            0
+            7px;
+
+        color:
+            #111827;
+
+        font-size:
+            20px;
+
+        font-weight:
+            900;
+
+        line-height:
+            1.1;
+    }
+
+    .browse-card-description {
+        margin:
+            0
+            0
+            17px;
+
+        color:
+            #64748b;
+
+        font-size:
+            11px;
+
+        line-height:
+            1.5;
+    }
+
+
+    /* =========================================================
+       PIE TARJETA
+    ========================================================= */
+
+    .browse-card-footer {
+        margin-top:
+            auto;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        gap:
+            12px;
+    }
+
+    .browse-card-count {
+        color:
+            #475569;
+
+        font-size:
+            10px;
+
+        font-weight:
+            800;
+    }
+
+    .browse-card-count-number {
+        color:
+            #111827;
+
+        font-size:
+            14px;
+
+        font-weight:
+            900;
+    }
+
+    .browse-card-arrow {
+        width:
+            36px;
+
+        height:
+            36px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            50%;
+
+        background:
+            #111827;
+
+        color:
+            #ffffff;
+
+        font-size:
+            20px;
+
+        transition:
+            transform 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .browse-card:hover
+    .browse-card-arrow {
+        transform:
+            translateX(3px);
+
+        background:
+            #2563eb;
+    }
+
+
+    /* =========================================================
+       CTA FINAL
+    ========================================================= */
+
+    .browse-final {
+        position:
+            relative;
+
+        min-height:
+            150px;
+
+        margin-top:
+            22px;
+
+        padding:
+            27px
+            30px;
+
+        overflow:
+            hidden;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        gap:
+            25px;
+
+        border-radius:
+            12px;
+
+        background:
+            linear-gradient(
+                105deg,
+                #111827 0%,
+                #1e293b 48%,
+                #1d4ed8 100%
+            );
+
+        color:
+            #ffffff;
+    }
+
+    .browse-final::after {
+        content:
+            "";
+
+        position:
+            absolute;
+
+        width:
+            250px;
+
+        height:
+            250px;
+
+        right:
+            -80px;
+
+        top:
+            -120px;
+
+        border:
+            2px solid
+            rgba(255,255,255,0.08);
+
+        border-radius:
+            50%;
+    }
+
+    .browse-final-left {
+        position:
+            relative;
+
+        z-index:
+            3;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            18px;
+    }
+
+    .browse-final-icon {
+        width:
+            68px;
+
+        height:
+            68px;
+
+        flex:
+            0 0 auto;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border:
+            1px solid
+            rgba(255,255,255,0.17);
+
+        border-radius:
+            14px;
+
+        background:
+            rgba(255,255,255,0.08);
+
+        font-size:
+            31px;
+    }
+
+    .browse-final-title {
+        margin:
+            0;
+
+        font-size:
+            20px;
+
+        font-weight:
+            900;
+    }
+
+    .browse-final-text {
+        max-width:
+            620px;
+
+        margin:
+            5px
+            0
+            0;
+
+        color:
+            rgba(255,255,255,0.76);
+
+        font-size:
+            11px;
+
+        line-height:
+            1.45;
+    }
+
+    .browse-final-button {
+        position:
+            relative;
+
+        z-index:
+            3;
+
+        flex:
+            0 0 auto;
+
+        min-height:
+            44px;
+
+        padding:
+            0
+            20px;
+
+        display:
+            inline-flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            4px;
+
+        background:
+            #ffffff;
+
+        color:
+            #111827;
+
+        text-decoration:
+            none;
+
+        font-size:
+            11px;
+
+        font-weight:
+            900;
+
+        transition:
+            transform 0.18s ease,
+            background 0.18s ease;
+    }
+
+    .browse-final-button:hover {
+        transform:
+            translateY(-2px);
+
+        background:
+            #e2e8f0;
+
+        color:
+            #111827;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 1050px) {
+
+        .browse-grid {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+    }
+
+
+    @@media (max-width: 850px) {
+
+        .browse-banner-icons {
+            transform:
+                scale(0.82);
+
+            transform-origin:
+                right center;
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .browse-home {
+            padding:
+                44px
+                0
+                54px;
+        }
+
+        .browse-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .browse-heading {
+            flex-direction:
+                column;
+
+            align-items:
+                flex-start;
+        }
+
+        .browse-title {
+            font-size:
+                25px;
+        }
+
+        .browse-banner-content {
+            min-height:
+                250px;
+
+            padding:
+                30px
+                24px;
+        }
+
+        .browse-banner-title {
+            font-size:
+                29px;
+        }
+
+        .browse-banner-icons {
+            display:
+                none;
+        }
+
+        .browse-grid {
+            grid-template-columns:
+                1fr;
+        }
+
+        .browse-card,
+        .browse-card-content {
+            min-height:
+                215px;
+        }
+
+        .browse-final {
+            align-items:
+                flex-start;
+
+            flex-direction:
+                column;
+        }
+    }
+
+</style>
+
+
+<section class="browse-home"
+         id="categorias">
+
+    <div class="browse-container">
+
+
+        <!-- =====================================================
+             CABECERA
+        ====================================================== -->
+
+        <div class="browse-heading">
+
+            <div class="browse-heading-left">
+
+                <div class="browse-kicker">
+                    EXPLORA BIGGAME
+                </div>
+
+                <h2 class="browse-title">
+                    Compra por categoría
+                </h2>
+
+                <p class="browse-subtitle">
+                    Encuentra rápidamente el tipo de producto
+                    que buscas dentro de BigGame.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="browse-all">
+
+                Ver catálogo completo →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             BANNER
+        ====================================================== -->
+
+        <div class="browse-banner">
+
+            <div class="browse-banner-content">
+
+                <div class="browse-banner-left">
+
+                    <div class="browse-banner-label">
+                        BIGGAME
+                    </div>
+
+                    <h3 class="browse-banner-title">
+                        Todo tu mundo gaming en un solo lugar
+                    </h3>
+
+                    <p class="browse-banner-description">
+                        Videojuegos, consolas, accesorios,
+                        cartas, coleccionables y productos digitales.
+                        Elige una categoría y empieza a explorar.
+                    </p>
+
+                </div>
+
+
+                <div class="browse-banner-icons">
+
+                    <div class="browse-banner-icon">
+                        🎮
+                    </div>
+
+                    <div class="browse-banner-icon">
+                        🕹️
+                    </div>
+
+                    <div class="browse-banner-icon">
+                        🎧
+                    </div>
+
+                    <div class="browse-banner-icon">
+                        🃏
+                    </div>
+
+                    <div class="browse-banner-icon">
+                        ⭐
+                    </div>
+
+                    <div class="browse-banner-icon">
+                        🎁
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             CATEGORÍAS
+        ====================================================== -->
+
+        <div class="browse-grid">
+
+
+            <!-- VIDEOJUEGOS -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Videojuegos"
+               class="browse-card browse-videogames">
+
+                <div class="browse-card-content">
+
+                    <div class="browse-card-icon">
+                        🎮
+                    </div>
+
+                    <h3 class="browse-card-title">
+                        Videojuegos
+                    </h3>
+
+                    <p class="browse-card-description">
+                        Acción, aventura, RPG,
+                        deportes y más para tus plataformas.
+                    </p>
+
+                    <div class="browse-card-footer">
+
+                        <span class="browse-card-count">
+
+                            <span class="browse-card-count-number">
+                                @videoGamesCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="browse-card-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- CONSOLAS -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Consolas"
+               class="browse-card browse-consoles">
+
+                <div class="browse-card-content">
+
+                    <div class="browse-card-icon">
+                        🕹️
+                    </div>
+
+                    <h3 class="browse-card-title">
+                        Consolas
+                    </h3>
+
+                    <p class="browse-card-description">
+                        PlayStation, Xbox y Nintendo
+                        para llevar tus juegos al siguiente nivel.
+                    </p>
+
+                    <div class="browse-card-footer">
+
+                        <span class="browse-card-count">
+
+                            <span class="browse-card-count-number">
+                                @consolesCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="browse-card-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- ACCESORIOS -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Accesorios"
+               class="browse-card browse-accessories">
+
+                <div class="browse-card-content">
+
+                    <div class="browse-card-icon">
+                        🎧
+                    </div>
+
+                    <h3 class="browse-card-title">
+                        Accesorios
+                    </h3>
+
+                    <p class="browse-card-description">
+                        Controles, auriculares,
+                        teclados y almacenamiento.
+                    </p>
+
+                    <div class="browse-card-footer">
+
+                        <span class="browse-card-count">
+
+                            <span class="browse-card-count-number">
+                                @accessoriesCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="browse-card-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- CARTAS -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Trading Cards"
+               class="browse-card browse-cards">
+
+                <div class="browse-card-content">
+
+                    <div class="browse-card-icon">
+                        🃏
+                    </div>
+
+                    <h3 class="browse-card-title">
+                        Cartas coleccionables
+                    </h3>
+
+                    <p class="browse-card-description">
+                        Pokémon TCG, Yu-Gi-Oh!
+                        y productos para coleccionistas.
+                    </p>
+
+                    <div class="browse-card-footer">
+
+                        <span class="browse-card-count">
+
+                            <span class="browse-card-count-number">
+                                @tradingCardsCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="browse-card-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- COLECCIONABLES -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Coleccionables"
+               class="browse-card browse-collectibles">
+
+                <div class="browse-card-content">
+
+                    <div class="browse-card-icon">
+                        ⭐
+                    </div>
+
+                    <h3 class="browse-card-title">
+                        Coleccionables
+                    </h3>
+
+                    <p class="browse-card-description">
+                        Figuras, Funko POP!,
+                        peluches y artículos especiales.
+                    </p>
+
+                    <div class="browse-card-footer">
+
+                        <span class="browse-card-count">
+
+                            <span class="browse-card-count-number">
+                                @collectiblesCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="browse-card-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- TIENDA DIGITAL -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Gift Card"
+               class="browse-card browse-digital">
+
+                <div class="browse-card-content">
+
+                    <div class="browse-card-icon">
+                        🎁
+                    </div>
+
+                    <h3 class="browse-card-title">
+                        Tienda digital
+                    </h3>
+
+                    <p class="browse-card-description">
+                        Tarjetas para PlayStation Store,
+                        Xbox y Nintendo eShop.
+                    </p>
+
+                    <div class="browse-card-footer">
+
+                        <span class="browse-card-count">
+
+                            <span class="browse-card-count-number">
+                                @digitalCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="browse-card-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- PC GAMING -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="PC Gaming"
+               class="browse-card browse-pc">
+
+                <div class="browse-card-content">
+
+                    <div class="browse-card-icon">
+                        💻
+                    </div>
+
+                    <h3 class="browse-card-title">
+                        PC Gaming
+                    </h3>
+
+                    <p class="browse-card-description">
+                        Periféricos, almacenamiento
+                        y productos para tu escritorio gaming.
+                    </p>
+
+                    <div class="browse-card-footer">
+
+                        <span class="browse-card-count">
+
+                            <span class="browse-card-count-number">
+                                @pcGamingCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="browse-card-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- NUEVOS Y PRÓXIMOS -->
+
+            <a href="#nuevos-proximos"
+               class="browse-card browse-releases">
+
+                <div class="browse-card-content">
+
+                    <div class="browse-card-icon">
+                        🔥
+                    </div>
+
+                    <h3 class="browse-card-title">
+                        Nuevos y próximos
+                    </h3>
+
+                    <p class="browse-card-description">
+                        Revisa novedades y títulos destacados
+                        que tenemos en el radar.
+                    </p>
+
+                    <div class="browse-card-footer">
+
+                        <span class="browse-card-count">
+
+                            <span class="browse-card-count-number">
+                                @releasesCount
+                            </span>
+
+                            destacados
+
+                        </span>
+
+                        <span class="browse-card-arrow">
+                            ↑
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             CTA FINAL
+        ====================================================== -->
+
+        <div class="browse-final">
+
+            <div class="browse-final-left">
+
+                <div class="browse-final-icon">
+                    🎮
+                </div>
+
+                <div>
+
+                    <h3 class="browse-final-title">
+                        ¿No encontraste lo que buscabas?
+                    </h3>
+
+                    <p class="browse-final-text">
+                        Explora todo el catálogo de BigGame
+                        o utiliza el buscador superior para encontrar
+                        productos por nombre, plataforma o categoría.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="browse-final-button">
+
+                Explorar catálogo completo
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>

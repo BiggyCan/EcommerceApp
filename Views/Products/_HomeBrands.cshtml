@@ -1,0 +1,1571 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    int CountBrand(params string[] terms)
+    {
+        return products.Count(
+            product =>
+            {
+                var name =
+                    (product.Name ?? string.Empty)
+                    .ToLowerInvariant();
+
+                var description =
+                    (product.Description ?? string.Empty)
+                    .ToLowerInvariant();
+
+                var category =
+                    (product.Category ?? string.Empty)
+                    .ToLowerInvariant();
+
+                var combined =
+                    $"{name} {description} {category}";
+
+                return terms.Any(
+                    term =>
+                        combined.Contains(
+                            term.ToLowerInvariant()
+                        )
+                );
+            }
+        );
+    }
+
+    var playStationCount =
+        CountBrand(
+            "playstation",
+            "ps5",
+            "dualsense"
+        );
+
+    var xboxCount =
+        CountBrand(
+            "xbox",
+            "microsoft"
+        );
+
+    var nintendoCount =
+        CountBrand(
+            "nintendo",
+            "switch"
+        );
+
+    var pokemonCount =
+        CountBrand(
+            "pokémon",
+            "pokemon"
+        );
+
+    var marvelCount =
+        CountBrand(
+            "marvel",
+            "wolverine",
+            "punisher"
+        );
+
+    var yugiohCount =
+        CountBrand(
+            "yu-gi-oh",
+            "yugioh"
+        );
+
+    var turtleBeachCount =
+        CountBrand(
+            "turtle beach"
+        );
+
+    var funkoCount =
+        CountBrand(
+            "funko"
+        );
+}
+
+<style>
+
+    /* =========================================================
+       MARCAS BIGGAME
+    ========================================================= */
+
+    .brands-home {
+        width: 100%;
+
+        padding:
+            58px
+            0
+            66px;
+
+        background:
+            #ffffff;
+
+        color:
+            #111827;
+    }
+
+    .brands-container {
+        width:
+            calc(100% - 40px);
+
+        max-width:
+            1460px;
+
+        margin:
+            0 auto;
+    }
+
+
+    /* =========================================================
+       CABECERA
+    ========================================================= */
+
+    .brands-heading {
+        margin-bottom:
+            26px;
+
+        display:
+            flex;
+
+        align-items:
+            flex-end;
+
+        justify-content:
+            space-between;
+
+        gap:
+            20px;
+    }
+
+    .brands-heading-left {
+        min-width:
+            0;
+    }
+
+    .brands-kicker {
+        margin-bottom:
+            6px;
+
+        color:
+            #2563eb;
+
+        font-size:
+            11px;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            1px;
+
+        text-transform:
+            uppercase;
+    }
+
+    .brands-title {
+        margin:
+            0;
+
+        color:
+            #111827;
+
+        font-size:
+            32px;
+
+        line-height:
+            1.08;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            -0.8px;
+    }
+
+    .brands-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color:
+            #64748b;
+
+        font-size:
+            13px;
+
+        line-height:
+            1.5;
+    }
+
+    .brands-view-all {
+        flex:
+            0 0 auto;
+
+        color:
+            #111827;
+
+        font-size:
+            13px;
+
+        font-weight:
+            900;
+
+        text-decoration:
+            underline;
+
+        text-underline-offset:
+            4px;
+    }
+
+    .brands-view-all:hover {
+        color:
+            #2563eb;
+    }
+
+
+    /* =========================================================
+       BANNER
+    ========================================================= */
+
+    .brands-banner {
+        position:
+            relative;
+
+        min-height:
+            220px;
+
+        margin-bottom:
+            25px;
+
+        overflow:
+            hidden;
+
+        border-radius:
+            13px;
+
+        background:
+            radial-gradient(
+                circle at 81% 35%,
+                rgba(59, 130, 246, 0.32),
+                transparent 24%
+            ),
+            radial-gradient(
+                circle at 91% 70%,
+                rgba(236, 72, 153, 0.22),
+                transparent 24%
+            ),
+            linear-gradient(
+                110deg,
+                #050816 0%,
+                #151d3e 50%,
+                #312e81 100%
+            );
+
+        color:
+            #ffffff;
+
+        box-shadow:
+            0
+            12px
+            30px
+            rgba(15, 23, 42, 0.14);
+    }
+
+    .brands-banner-content {
+        position:
+            relative;
+
+        z-index:
+            4;
+
+        min-height:
+            220px;
+
+        padding:
+            36px
+            42px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        gap:
+            30px;
+    }
+
+    .brands-banner-left {
+        max-width:
+            700px;
+    }
+
+    .brands-banner-label {
+        margin-bottom:
+            8px;
+
+        color:
+            #93c5fd;
+
+        font-size:
+            10px;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            1px;
+
+        text-transform:
+            uppercase;
+    }
+
+    .brands-banner-title {
+        margin:
+            0
+            0
+            11px;
+
+        font-size:
+            38px;
+
+        line-height:
+            1.03;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            -1px;
+    }
+
+    .brands-banner-description {
+        margin:
+            0;
+
+        max-width:
+            620px;
+
+        color:
+            rgba(255,255,255,0.82);
+
+        font-size:
+            13px;
+
+        line-height:
+            1.55;
+    }
+
+    .brands-banner-visual {
+        flex:
+            0 0 auto;
+
+        display:
+            grid;
+
+        grid-template-columns:
+            repeat(3, 74px);
+
+        gap:
+            10px;
+
+        padding-right:
+            20px;
+    }
+
+    .brands-banner-chip {
+        width:
+            74px;
+
+        height:
+            74px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border:
+            1px solid
+            rgba(255,255,255,0.16);
+
+        border-radius:
+            14px;
+
+        background:
+            rgba(255,255,255,0.08);
+
+        font-size:
+            31px;
+
+        backdrop-filter:
+            blur(6px);
+    }
+
+
+    /* =========================================================
+       GRID DE MARCAS
+    ========================================================= */
+
+    .brands-grid {
+        display:
+            grid;
+
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+
+        gap:
+            15px;
+    }
+
+
+    /* =========================================================
+       TARJETA
+    ========================================================= */
+
+    .brand-card {
+        position:
+            relative;
+
+        min-height:
+            235px;
+
+        overflow:
+            hidden;
+
+        border:
+            1px solid
+            #dbe1e9;
+
+        border-radius:
+            11px;
+
+        background:
+            #f8fafc;
+
+        text-decoration:
+            none;
+
+        color:
+            #111827;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .brand-card:hover {
+        transform:
+            translateY(-5px);
+
+        border-color:
+            #b8c5d8;
+
+        box-shadow:
+            0
+            14px
+            28px
+            rgba(15,23,42,0.11);
+
+        color:
+            #111827;
+    }
+
+    .brand-card-background {
+        position:
+            absolute;
+
+        inset:
+            0;
+
+        opacity:
+            0.08;
+    }
+
+    .brand-card-content {
+        position:
+            relative;
+
+        z-index:
+            3;
+
+        min-height:
+            235px;
+
+        padding:
+            22px;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+    }
+
+
+    /* =========================================================
+       COLORES DE MARCAS
+    ========================================================= */
+
+    .brand-playstation
+    .brand-card-background {
+        background:
+            linear-gradient(
+                135deg,
+                #006fcd,
+                #003087
+            );
+    }
+
+    .brand-xbox
+    .brand-card-background {
+        background:
+            linear-gradient(
+                135deg,
+                #107c10,
+                #064d06
+            );
+    }
+
+    .brand-nintendo
+    .brand-card-background {
+        background:
+            linear-gradient(
+                135deg,
+                #e60012,
+                #8f0010
+            );
+    }
+
+    .brand-pokemon
+    .brand-card-background {
+        background:
+            linear-gradient(
+                135deg,
+                #facc15,
+                #2563eb
+            );
+    }
+
+    .brand-marvel
+    .brand-card-background {
+        background:
+            linear-gradient(
+                135deg,
+                #dc2626,
+                #7f1d1d
+            );
+    }
+
+    .brand-yugioh
+    .brand-card-background {
+        background:
+            linear-gradient(
+                135deg,
+                #7c2d12,
+                #111827
+            );
+    }
+
+    .brand-turtle
+    .brand-card-background {
+        background:
+            linear-gradient(
+                135deg,
+                #0f766e,
+                #134e4a
+            );
+    }
+
+    .brand-funko
+    .brand-card-background {
+        background:
+            linear-gradient(
+                135deg,
+                #7c3aed,
+                #db2777
+            );
+    }
+
+
+    /* =========================================================
+       ICONO
+    ========================================================= */
+
+    .brand-icon {
+        width:
+            62px;
+
+        height:
+            62px;
+
+        margin-bottom:
+            20px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            13px;
+
+        background:
+            #111827;
+
+        color:
+            #ffffff;
+
+        font-size:
+            28px;
+
+        box-shadow:
+            0
+            7px
+            18px
+            rgba(15,23,42,0.17);
+
+        transition:
+            transform 0.2s ease;
+    }
+
+    .brand-card:hover
+    .brand-icon {
+        transform:
+            scale(1.08)
+            rotate(-3deg);
+    }
+
+
+    /* =========================================================
+       TEXTO
+    ========================================================= */
+
+    .brand-name {
+        margin:
+            0
+            0
+            6px;
+
+        color:
+            #111827;
+
+        font-size:
+            20px;
+
+        font-weight:
+            900;
+
+        line-height:
+            1.1;
+    }
+
+    .brand-description {
+        margin:
+            0
+            0
+            15px;
+
+        color:
+            #64748b;
+
+        font-size:
+            11px;
+
+        line-height:
+            1.45;
+    }
+
+
+    /* =========================================================
+       PIE
+    ========================================================= */
+
+    .brand-footer {
+        margin-top:
+            auto;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        gap:
+            10px;
+    }
+
+    .brand-count {
+        color:
+            #475569;
+
+        font-size:
+            10px;
+
+        font-weight:
+            800;
+    }
+
+    .brand-count-number {
+        color:
+            #111827;
+
+        font-size:
+            13px;
+
+        font-weight:
+            900;
+    }
+
+    .brand-arrow {
+        width:
+            35px;
+
+        height:
+            35px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            50%;
+
+        background:
+            #111827;
+
+        color:
+            #ffffff;
+
+        font-size:
+            20px;
+
+        transition:
+            transform 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .brand-card:hover
+    .brand-arrow {
+        transform:
+            translateX(3px);
+
+        background:
+            #2563eb;
+    }
+
+
+    /* =========================================================
+       BLOQUE INFERIOR
+    ========================================================= */
+
+    .brands-bottom {
+        margin-top:
+            20px;
+
+        min-height:
+            105px;
+
+        padding:
+            21px
+            25px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        gap:
+            20px;
+
+        border:
+            1px solid
+            #dbe1e9;
+
+        border-radius:
+            10px;
+
+        background:
+            linear-gradient(
+                100deg,
+                #f8fafc,
+                #eef2ff
+            );
+    }
+
+    .brands-bottom-left {
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            15px;
+    }
+
+    .brands-bottom-icon {
+        width:
+            55px;
+
+        height:
+            55px;
+
+        flex:
+            0 0 auto;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            10px;
+
+        background:
+            #111827;
+
+        color:
+            #ffffff;
+
+        font-size:
+            27px;
+    }
+
+    .brands-bottom-title {
+        margin:
+            0;
+
+        color:
+            #111827;
+
+        font-size:
+            17px;
+
+        font-weight:
+            900;
+    }
+
+    .brands-bottom-text {
+        margin:
+            4px
+            0
+            0;
+
+        color:
+            #64748b;
+
+        font-size:
+            11px;
+
+        line-height:
+            1.4;
+    }
+
+    .brands-bottom-button {
+        flex:
+            0 0 auto;
+
+        min-height:
+            42px;
+
+        padding:
+            0
+            18px;
+
+        display:
+            inline-flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            4px;
+
+        background:
+            #2563eb;
+
+        color:
+            #ffffff;
+
+        text-decoration:
+            none;
+
+        font-size:
+            11px;
+
+        font-weight:
+            900;
+    }
+
+    .brands-bottom-button:hover {
+        background:
+            #174fc7;
+
+        color:
+            #ffffff;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 1050px) {
+
+        .brands-grid {
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+        }
+    }
+
+
+    @@media (max-width: 850px) {
+
+        .brands-banner-visual {
+            transform:
+                scale(0.82);
+
+            transform-origin:
+                right center;
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .brands-home {
+            padding:
+                44px
+                0
+                52px;
+        }
+
+        .brands-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .brands-heading {
+            flex-direction:
+                column;
+
+            align-items:
+                flex-start;
+        }
+
+        .brands-title {
+            font-size:
+                25px;
+        }
+
+        .brands-banner-content {
+            min-height:
+                245px;
+
+            padding:
+                30px
+                24px;
+        }
+
+        .brands-banner-title {
+            font-size:
+                29px;
+        }
+
+        .brands-banner-visual {
+            display:
+                none;
+        }
+
+        .brands-grid {
+            grid-template-columns:
+                1fr;
+        }
+
+        .brand-card,
+        .brand-card-content {
+            min-height:
+                210px;
+        }
+
+        .brands-bottom {
+            align-items:
+                flex-start;
+
+            flex-direction:
+                column;
+        }
+    }
+
+</style>
+
+
+<section class="brands-home"
+         id="marcas">
+
+    <div class="brands-container">
+
+
+        <!-- =====================================================
+             ENCABEZADO
+        ====================================================== -->
+
+        <div class="brands-heading">
+
+            <div class="brands-heading-left">
+
+                <div class="brands-kicker">
+                    MARCAS Y FRANQUICIAS
+                </div>
+
+                <h2 class="brands-title">
+                    Explora tus favoritas
+                </h2>
+
+                <p class="brands-subtitle">
+                    Encuentra consolas, videojuegos,
+                    accesorios y coleccionables por marca.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="brands-view-all">
+
+                Ver catálogo completo →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             BANNER
+        ====================================================== -->
+
+        <div class="brands-banner">
+
+            <div class="brands-banner-content">
+
+                <div class="brands-banner-left">
+
+                    <div class="brands-banner-label">
+                        BIGGAME BRANDS
+                    </div>
+
+                    <h3 class="brands-banner-title">
+                        Un catálogo lleno de universos
+                    </h3>
+
+                    <p class="brands-banner-description">
+                        Desde las principales plataformas hasta
+                        franquicias de videojuegos y coleccionables.
+                        Entra directamente a la marca que buscas.
+                    </p>
+
+                </div>
+
+
+                <div class="brands-banner-visual">
+
+                    <div class="brands-banner-chip">
+                        🎮
+                    </div>
+
+                    <div class="brands-banner-chip">
+                        🟢
+                    </div>
+
+                    <div class="brands-banner-chip">
+                        🔴
+                    </div>
+
+                    <div class="brands-banner-chip">
+                        ⚡
+                    </div>
+
+                    <div class="brands-banner-chip">
+                        🦸
+                    </div>
+
+                    <div class="brands-banner-chip">
+                        🃏
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             MARCAS
+        ====================================================== -->
+
+        <div class="brands-grid">
+
+
+            <!-- PLAYSTATION -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="PlayStation"
+               class="brand-card brand-playstation">
+
+                <div class="brand-card-background">
+                </div>
+
+                <div class="brand-card-content">
+
+                    <div class="brand-icon">
+                        🎮
+                    </div>
+
+                    <h3 class="brand-name">
+                        PlayStation
+                    </h3>
+
+                    <p class="brand-description">
+                        Consolas PS5, videojuegos,
+                        controles DualSense y accesorios.
+                    </p>
+
+                    <div class="brand-footer">
+
+                        <span class="brand-count">
+
+                            <span class="brand-count-number">
+                                @playStationCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="brand-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- XBOX -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Xbox"
+               class="brand-card brand-xbox">
+
+                <div class="brand-card-background">
+                </div>
+
+                <div class="brand-card-content">
+
+                    <div class="brand-icon">
+                        🟢
+                    </div>
+
+                    <h3 class="brand-name">
+                        Xbox
+                    </h3>
+
+                    <p class="brand-description">
+                        Xbox Series X|S, controles,
+                        videojuegos y accesorios Microsoft.
+                    </p>
+
+                    <div class="brand-footer">
+
+                        <span class="brand-count">
+
+                            <span class="brand-count-number">
+                                @xboxCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="brand-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- NINTENDO -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Nintendo"
+               class="brand-card brand-nintendo">
+
+                <div class="brand-card-background">
+                </div>
+
+                <div class="brand-card-content">
+
+                    <div class="brand-icon">
+                        🔴
+                    </div>
+
+                    <h3 class="brand-name">
+                        Nintendo
+                    </h3>
+
+                    <p class="brand-description">
+                        Nintendo Switch, Switch 2,
+                        videojuegos, controles y accesorios.
+                    </p>
+
+                    <div class="brand-footer">
+
+                        <span class="brand-count">
+
+                            <span class="brand-count-number">
+                                @nintendoCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="brand-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- POKÉMON -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Pokémon"
+               class="brand-card brand-pokemon">
+
+                <div class="brand-card-background">
+                </div>
+
+                <div class="brand-card-content">
+
+                    <div class="brand-icon">
+                        ⚡
+                    </div>
+
+                    <h3 class="brand-name">
+                        Pokémon
+                    </h3>
+
+                    <p class="brand-description">
+                        Sobres, cajas y productos
+                        coleccionables de Pokémon TCG.
+                    </p>
+
+                    <div class="brand-footer">
+
+                        <span class="brand-count">
+
+                            <span class="brand-count-number">
+                                @pokemonCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="brand-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- MARVEL -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Marvel"
+               class="brand-card brand-marvel">
+
+                <div class="brand-card-background">
+                </div>
+
+                <div class="brand-card-content">
+
+                    <div class="brand-icon">
+                        🦸
+                    </div>
+
+                    <h3 class="brand-name">
+                        Marvel
+                    </h3>
+
+                    <p class="brand-description">
+                        Videojuegos y figuras
+                        coleccionables del universo Marvel.
+                    </p>
+
+                    <div class="brand-footer">
+
+                        <span class="brand-count">
+
+                            <span class="brand-count-number">
+                                @marvelCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="brand-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- YU-GI-OH -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Yu-Gi-Oh"
+               class="brand-card brand-yugioh">
+
+                <div class="brand-card-background">
+                </div>
+
+                <div class="brand-card-content">
+
+                    <div class="brand-icon">
+                        🃏
+                    </div>
+
+                    <h3 class="brand-name">
+                        Yu-Gi-Oh!
+                    </h3>
+
+                    <p class="brand-description">
+                        Cartas y cajas coleccionables
+                        para jugadores y coleccionistas.
+                    </p>
+
+                    <div class="brand-footer">
+
+                        <span class="brand-count">
+
+                            <span class="brand-count-number">
+                                @yugiohCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="brand-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- TURTLE BEACH -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Turtle Beach"
+               class="brand-card brand-turtle">
+
+                <div class="brand-card-background">
+                </div>
+
+                <div class="brand-card-content">
+
+                    <div class="brand-icon">
+                        🎧
+                    </div>
+
+                    <h3 class="brand-name">
+                        Turtle Beach
+                    </h3>
+
+                    <p class="brand-description">
+                        Audio gaming y accesorios
+                        para consola y PC.
+                    </p>
+
+                    <div class="brand-footer">
+
+                        <span class="brand-count">
+
+                            <span class="brand-count-number">
+                                @turtleBeachCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="brand-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- FUNKO -->
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Funko"
+               class="brand-card brand-funko">
+
+                <div class="brand-card-background">
+                </div>
+
+                <div class="brand-card-content">
+
+                    <div class="brand-icon">
+                        ⭐
+                    </div>
+
+                    <h3 class="brand-name">
+                        Funko
+                    </h3>
+
+                    <p class="brand-description">
+                        Figuras POP! y productos
+                        coleccionables de tus personajes favoritos.
+                    </p>
+
+                    <div class="brand-footer">
+
+                        <span class="brand-count">
+
+                            <span class="brand-count-number">
+                                @funkoCount
+                            </span>
+
+                            productos
+
+                        </span>
+
+                        <span class="brand-arrow">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             BLOQUE INFERIOR
+        ====================================================== -->
+
+        <div class="brands-bottom">
+
+            <div class="brands-bottom-left">
+
+                <div class="brands-bottom-icon">
+                    🏷️
+                </div>
+
+                <div>
+
+                    <h3 class="brands-bottom-title">
+                        ¿Buscas otra marca o franquicia?
+                    </h3>
+
+                    <p class="brands-bottom-text">
+                        Utiliza el buscador de BigGame
+                        para encontrar juegos, consolas,
+                        accesorios y coleccionables.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="brands-bottom-button">
+
+                Explorar todos los productos
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>

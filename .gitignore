@@ -1,25 +1,28 @@
-# Archivos generados por .NET
 bin/
 obj/
-
-# Visual Studio
 .vs/
-
-# Visual Studio Code
 .vscode/
 
-# Archivos de usuario
 *.user
 *.suo
-
-# Logs
 *.log
 
-# Variables y secretos
 .env
 .env.*
 secrets.json
 
-# Sistema operativo
 .DS_Store
 Thumbs.db
+
+# Respaldos locales de la portada BigGame
+Views/Products/Index_ANTES_*.cshtml
+
+# Archivos comprimidos de entregas
+*.ziparreglar_xbox_series_x.ps1
+corregir_imagenes_equivocadas_biggame.ps1
+corregir_imagenes_pendientes_v2.ps1
+descargar_imagenes_biggame.ps1
+arreglar_xbox_series_x.ps1
+corregir_imagenes_equivocadas_biggame.ps1
+corregir_imagenes_pendientes_v2.ps1
+descargar_imagenes_biggame.ps1

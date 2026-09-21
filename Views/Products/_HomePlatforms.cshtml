@@ -1,0 +1,1462 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    EcommerceApp.Models.Product? FindProduct(
+        params string[] terms)
+    {
+        return products.FirstOrDefault(
+            product =>
+            {
+                var name =
+                    (product.Name ?? string.Empty)
+                    .ToLowerInvariant();
+
+                return terms.Any(
+                    term =>
+                        name.Contains(
+                            term.ToLowerInvariant()
+                        )
+                );
+            }
+        );
+    }
+
+    var playStationProduct =
+        FindProduct(
+            "PlayStation 5 Slim"
+        );
+
+    var xboxProduct =
+        FindProduct(
+            "Xbox Series X"
+        );
+
+    var nintendoProduct =
+        FindProduct(
+            "Nintendo Switch 2"
+        )
+        ??
+        FindProduct(
+            "Nintendo Switch OLED"
+        );
+
+    var pcProduct =
+        FindProduct(
+            "Gaming Keyboard RGB"
+        )
+        ??
+        FindProduct(
+            "Gaming Headset"
+        );
+
+
+    var playStationCount =
+        products.Count(
+            product =>
+            {
+                var name =
+                    (product.Name ?? string.Empty)
+                    .ToLowerInvariant();
+
+                return
+                    name.Contains("playstation")
+                    || name.Contains("ps5")
+                    || name.Contains("dualsense");
+            }
+        );
+
+    var xboxCount =
+        products.Count(
+            product =>
+            {
+                var name =
+                    (product.Name ?? string.Empty)
+                    .ToLowerInvariant();
+
+                return
+                    name.Contains("xbox")
+                    || name.Contains("microsoft xbox");
+            }
+        );
+
+    var nintendoCount =
+        products.Count(
+            product =>
+            {
+                var name =
+                    (product.Name ?? string.Empty)
+                    .ToLowerInvariant();
+
+                return
+                    name.Contains("nintendo")
+                    || name.Contains("switch");
+            }
+        );
+
+    var pcCount =
+        products.Count(
+            product =>
+            {
+                var name =
+                    (product.Name ?? string.Empty)
+                    .ToLowerInvariant();
+
+                var category =
+                    (product.Category ?? string.Empty)
+                    .ToLowerInvariant();
+
+                return
+                    category.Contains("pc gaming")
+                    || name.Contains(" - pc")
+                    || name.Contains("gaming keyboard")
+                    || name.Contains("gaming headset")
+                    || name.Contains("gaming ssd");
+            }
+        );
+}
+
+<style>
+
+    /* =========================================================
+       PLATAFORMAS BIGGAME
+    ========================================================= */
+
+    .platforms-home {
+        width: 100%;
+
+        padding:
+            58px
+            0
+            66px;
+
+        background: #ffffff;
+
+        color: #111827;
+    }
+
+    .platforms-container {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       CABECERA
+    ========================================================= */
+
+    .platforms-heading {
+        margin-bottom: 27px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .platforms-heading-left {
+        min-width: 0;
+    }
+
+    .platforms-kicker {
+        margin-bottom: 6px;
+
+        color: #7c3aed;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .platforms-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.08;
+
+        font-weight: 900;
+
+        letter-spacing: -0.8px;
+    }
+
+    .platforms-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color: #64748b;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .platforms-all {
+        flex: 0 0 auto;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .platforms-all:hover {
+        color: #7c3aed;
+    }
+
+
+    /* =========================================================
+       GRID
+    ========================================================= */
+
+    .platforms-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 18px;
+    }
+
+
+    /* =========================================================
+       TARJETA BASE
+    ========================================================= */
+
+    .platform-card {
+        position: relative;
+
+        min-height: 365px;
+
+        overflow: hidden;
+
+        border-radius: 13px;
+
+        color: #ffffff;
+
+        box-shadow:
+            0
+            12px
+            30px
+            rgba(15, 23, 42, 0.13);
+
+        isolation: isolate;
+    }
+
+    .platform-card::before {
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        z-index: -3;
+    }
+
+    .platform-card::after {
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        z-index: -2;
+
+        background:
+            linear-gradient(
+                90deg,
+                rgba(0, 0, 0, 0.80) 0%,
+                rgba(0, 0, 0, 0.52) 48%,
+                rgba(0, 0, 0, 0.08) 100%
+            );
+    }
+
+
+    /* =========================================================
+       PLAYSTATION
+    ========================================================= */
+
+    .platform-playstation::before {
+        background:
+            radial-gradient(
+                circle at 85% 35%,
+                rgba(75, 158, 255, 0.42),
+                transparent 25%
+            ),
+            linear-gradient(
+                120deg,
+                #020617 0%,
+                #071e4f 48%,
+                #0b5ac7 100%
+            );
+    }
+
+
+    /* =========================================================
+       XBOX
+    ========================================================= */
+
+    .platform-xbox::before {
+        background:
+            radial-gradient(
+                circle at 82% 37%,
+                rgba(119, 255, 139, 0.25),
+                transparent 26%
+            ),
+            linear-gradient(
+                120deg,
+                #031008 0%,
+                #073d1b 50%,
+                #107c10 100%
+            );
+    }
+
+
+    /* =========================================================
+       NINTENDO
+    ========================================================= */
+
+    .platform-nintendo::before {
+        background:
+            radial-gradient(
+                circle at 84% 34%,
+                rgba(255, 255, 255, 0.18),
+                transparent 27%
+            ),
+            linear-gradient(
+                120deg,
+                #340304 0%,
+                #b30813 48%,
+                #e60012 100%
+            );
+    }
+
+
+    /* =========================================================
+       PC
+    ========================================================= */
+
+    .platform-pc::before {
+        background:
+            radial-gradient(
+                circle at 84% 35%,
+                rgba(199, 125, 255, 0.30),
+                transparent 24%
+            ),
+            linear-gradient(
+                120deg,
+                #0d0616 0%,
+                #34105c 47%,
+                #6d28d9 100%
+            );
+    }
+
+
+    /* =========================================================
+       CONTENIDO
+    ========================================================= */
+
+    .platform-content {
+        position: relative;
+
+        z-index: 4;
+
+        min-height: 365px;
+
+        padding:
+            34px
+            35px;
+
+        display: flex;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .platform-info {
+        width: 54%;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .platform-brand {
+        margin-bottom: 7px;
+
+        color:
+            rgba(255,255,255,0.72);
+
+        font-size: 10px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .platform-name {
+        margin: 0;
+
+        font-size: 34px;
+        line-height: 1.02;
+
+        font-weight: 900;
+
+        letter-spacing: -1px;
+    }
+
+    .platform-description {
+        max-width: 390px;
+
+        margin:
+            13px
+            0
+            17px;
+
+        color:
+            rgba(255,255,255,0.82);
+
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       ESTADÍSTICA
+    ========================================================= */
+
+    .platform-count {
+        margin-bottom: 18px;
+
+        display: inline-flex;
+        align-items: center;
+
+        gap: 7px;
+
+        padding:
+            7px
+            10px;
+
+        border:
+            1px solid
+            rgba(255,255,255,0.18);
+
+        border-radius: 5px;
+
+        background:
+            rgba(255,255,255,0.09);
+
+        color: #ffffff;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .platform-count-number {
+        font-size: 13px;
+        font-weight: 900;
+    }
+
+
+    /* =========================================================
+       BOTONES
+    ========================================================= */
+
+    .platform-buttons {
+        margin-top: auto;
+
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 8px;
+    }
+
+    .platform-button {
+        min-height: 42px;
+
+        padding:
+            0
+            16px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 4px;
+
+        background: #ffffff;
+
+        color: #111827;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition:
+            transform 0.18s ease,
+            background 0.18s ease;
+    }
+
+    .platform-button:hover {
+        transform:
+            translateY(-2px);
+
+        background: #f1f5f9;
+
+        color: #111827;
+    }
+
+    .platform-button-secondary {
+        background:
+            rgba(255,255,255,0.10);
+
+        color: #ffffff;
+
+        border:
+            1px solid
+            rgba(255,255,255,0.23);
+    }
+
+    .platform-button-secondary:hover {
+        background:
+            rgba(255,255,255,0.18);
+
+        color: #ffffff;
+    }
+
+
+    /* =========================================================
+       PRODUCTO PRINCIPAL
+    ========================================================= */
+
+    .platform-product {
+        position: relative;
+
+        width: 42%;
+        min-width: 210px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .platform-product-glow {
+        position: absolute;
+
+        width: 230px;
+        height: 230px;
+
+        border-radius: 50%;
+
+        background:
+            rgba(255,255,255,0.12);
+
+        filter:
+            blur(7px);
+    }
+
+    .platform-product-image {
+        position: relative;
+
+        z-index: 3;
+
+        width: 100%;
+        height: 250px;
+
+        object-fit: contain;
+
+        filter:
+            drop-shadow(
+                0
+                18px
+                18px
+                rgba(0,0,0,0.30)
+            );
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .platform-card:hover
+    .platform-product-image {
+        transform:
+            scale(1.05)
+            translateY(-3px);
+    }
+
+    .platform-product-placeholder {
+        position: relative;
+
+        z-index: 3;
+
+        width: 180px;
+        height: 180px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border:
+            2px solid
+            rgba(255,255,255,0.18);
+
+        border-radius: 50%;
+
+        background:
+            rgba(0,0,0,0.15);
+
+        font-size: 78px;
+
+        backdrop-filter:
+            blur(5px);
+    }
+
+
+    /* =========================================================
+       PRODUCTO DESTACADO ABAJO
+    ========================================================= */
+
+    .platform-featured {
+        position: absolute;
+
+        z-index: 6;
+
+        right: 18px;
+        bottom: 15px;
+
+        max-width: 245px;
+
+        padding:
+            8px
+            11px;
+
+        border:
+            1px solid
+            rgba(255,255,255,0.15);
+
+        border-radius: 5px;
+
+        background:
+            rgba(0,0,0,0.28);
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 800;
+
+        line-height: 1.35;
+
+        backdrop-filter:
+            blur(5px);
+    }
+
+
+    /* =========================================================
+       BARRA INFERIOR
+    ========================================================= */
+
+    .platforms-bottom {
+        margin-top: 19px;
+
+        min-height: 100px;
+
+        padding:
+            20px
+            26px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 20px;
+
+        border:
+            1px solid #dbe1e9;
+
+        border-radius: 10px;
+
+        background:
+            linear-gradient(
+                100deg,
+                #f8fafc 0%,
+                #eef2ff 100%
+            );
+    }
+
+    .platforms-bottom-left {
+        display: flex;
+        align-items: center;
+
+        gap: 16px;
+    }
+
+    .platforms-bottom-icon {
+        width: 58px;
+        height: 58px;
+
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 9px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        font-size: 28px;
+    }
+
+    .platforms-bottom-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 17px;
+        font-weight: 900;
+    }
+
+    .platforms-bottom-text {
+        margin:
+            4px
+            0
+            0;
+
+        color: #64748b;
+
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+    .platforms-bottom-button {
+        flex: 0 0 auto;
+
+        min-height: 42px;
+
+        padding:
+            0
+            18px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+    }
+
+    .platforms-bottom-button:hover {
+        background: #174fc7;
+
+        color: #ffffff;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 1000px) {
+
+        .platform-card {
+            min-height: 340px;
+        }
+
+        .platform-content {
+            min-height: 340px;
+
+            padding:
+                29px
+                27px;
+        }
+
+        .platform-name {
+            font-size: 29px;
+        }
+
+        .platform-product-image {
+            height: 220px;
+        }
+
+        .platform-product {
+            min-width: 180px;
+        }
+    }
+
+
+    @@media (max-width: 800px) {
+
+        .platforms-grid {
+            grid-template-columns:
+                1fr;
+        }
+
+        .platform-card {
+            min-height: 350px;
+        }
+
+        .platform-content {
+            min-height: 350px;
+        }
+    }
+
+
+    @@media (max-width: 600px) {
+
+        .platforms-home {
+            padding:
+                44px
+                0
+                50px;
+        }
+
+        .platforms-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .platforms-heading {
+            flex-direction: column;
+
+            align-items: flex-start;
+        }
+
+        .platforms-title {
+            font-size: 25px;
+        }
+
+        .platform-card {
+            min-height: 420px;
+        }
+
+        .platform-content {
+            min-height: 420px;
+
+            padding:
+                26px
+                22px;
+
+            flex-direction: column;
+        }
+
+        .platform-info {
+            width: 100%;
+        }
+
+        .platform-product {
+            position: absolute;
+
+            right: 13px;
+            bottom: 45px;
+
+            width: 160px;
+            min-width: 160px;
+
+            opacity: 0.62;
+        }
+
+        .platform-product-image {
+            height: 155px;
+        }
+
+        .platform-product-placeholder {
+            width: 120px;
+            height: 120px;
+
+            font-size: 55px;
+        }
+
+        .platform-featured {
+            display: none;
+        }
+
+        .platform-buttons {
+            position: relative;
+
+            z-index: 8;
+        }
+
+        .platforms-bottom {
+            align-items: flex-start;
+
+            flex-direction: column;
+        }
+    }
+
+</style>
+
+
+<section class="platforms-home"
+         id="plataformas">
+
+    <div class="platforms-container">
+
+
+        <!-- =====================================================
+             ENCABEZADO
+        ====================================================== -->
+
+        <div class="platforms-heading">
+
+            <div class="platforms-heading-left">
+
+                <div class="platforms-kicker">
+                    PLATAFORMAS
+                </div>
+
+                <h2 class="platforms-title">
+                    Juega a tu manera
+                </h2>
+
+                <p class="platforms-subtitle">
+                    Explora consolas, videojuegos y accesorios
+                    para tus plataformas favoritas.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="platforms-all">
+
+                Explorar tienda →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             GRID DE PLATAFORMAS
+        ====================================================== -->
+
+        <div class="platforms-grid">
+
+
+            <!-- =================================================
+                 PLAYSTATION
+            ================================================== -->
+
+            <article class="platform-card platform-playstation">
+
+                <div class="platform-content">
+
+                    <div class="platform-info">
+
+                        <div class="platform-brand">
+                            SONY
+                        </div>
+
+                        <h3 class="platform-name">
+                            PlayStation
+                        </h3>
+
+                        <p class="platform-description">
+                            Descubre consolas PlayStation 5,
+                            videojuegos, controles DualSense
+                            y accesorios para completar tu setup.
+                        </p>
+
+                        <div class="platform-count">
+
+                            <span class="platform-count-number">
+                                @playStationCount
+                            </span>
+
+                            productos relacionados
+
+                        </div>
+
+
+                        <div class="platform-buttons">
+
+                            <a asp-controller="Products"
+                               asp-action="Index"
+                               asp-route-search="PlayStation"
+                               class="platform-button">
+
+                                Comprar PlayStation
+
+                            </a>
+
+
+                            @if (playStationProduct != null)
+                            {
+                                <a asp-controller="Products"
+                                   asp-action="Details"
+                                   asp-route-id="@playStationProduct.Id"
+                                   class="platform-button platform-button-secondary">
+
+                                    Ver PS5
+
+                                </a>
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="platform-product">
+
+                        <div class="platform-product-glow">
+                        </div>
+
+                        @if (
+                            playStationProduct != null
+                            &&
+                            !string.IsNullOrWhiteSpace(
+                                playStationProduct.ImageUrl
+                            )
+                        )
+                        {
+                            <img src="@playStationProduct.ImageUrl"
+                                 alt="@playStationProduct.Name"
+                                 class="platform-product-image"
+                                 loading="lazy"
+                                 onerror="
+                                    this.style.display='none';
+                                    this.nextElementSibling.style.display='flex';
+                                 " />
+
+                            <div class="platform-product-placeholder"
+                                 style="display:none;">
+                                🎮
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="platform-product-placeholder">
+                                🎮
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+
+                @if (playStationProduct != null)
+                {
+                    <div class="platform-featured">
+                        Destacado:
+                        @playStationProduct.Name
+                    </div>
+                }
+
+            </article>
+
+
+            <!-- =================================================
+                 XBOX
+            ================================================== -->
+
+            <article class="platform-card platform-xbox">
+
+                <div class="platform-content">
+
+                    <div class="platform-info">
+
+                        <div class="platform-brand">
+                            MICROSOFT
+                        </div>
+
+                        <h3 class="platform-name">
+                            Xbox
+                        </h3>
+
+                        <p class="platform-description">
+                            Potencia tu experiencia con
+                            Xbox Series X|S, videojuegos,
+                            controles y accesorios compatibles.
+                        </p>
+
+                        <div class="platform-count">
+
+                            <span class="platform-count-number">
+                                @xboxCount
+                            </span>
+
+                            productos relacionados
+
+                        </div>
+
+
+                        <div class="platform-buttons">
+
+                            <a asp-controller="Products"
+                               asp-action="Index"
+                               asp-route-search="Xbox"
+                               class="platform-button">
+
+                                Comprar Xbox
+
+                            </a>
+
+
+                            @if (xboxProduct != null)
+                            {
+                                <a asp-controller="Products"
+                                   asp-action="Details"
+                                   asp-route-id="@xboxProduct.Id"
+                                   class="platform-button platform-button-secondary">
+
+                                    Ver Series X
+
+                                </a>
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="platform-product">
+
+                        <div class="platform-product-glow">
+                        </div>
+
+                        @if (
+                            xboxProduct != null
+                            &&
+                            !string.IsNullOrWhiteSpace(
+                                xboxProduct.ImageUrl
+                            )
+                        )
+                        {
+                            <img src="@xboxProduct.ImageUrl"
+                                 alt="@xboxProduct.Name"
+                                 class="platform-product-image"
+                                 loading="lazy"
+                                 onerror="
+                                    this.style.display='none';
+                                    this.nextElementSibling.style.display='flex';
+                                 " />
+
+                            <div class="platform-product-placeholder"
+                                 style="display:none;">
+                                🟢
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="platform-product-placeholder">
+                                🟢
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+
+                @if (xboxProduct != null)
+                {
+                    <div class="platform-featured">
+                        Destacado:
+                        @xboxProduct.Name
+                    </div>
+                }
+
+            </article>
+
+
+            <!-- =================================================
+                 NINTENDO
+            ================================================== -->
+
+            <article class="platform-card platform-nintendo">
+
+                <div class="platform-content">
+
+                    <div class="platform-info">
+
+                        <div class="platform-brand">
+                            NINTENDO
+                        </div>
+
+                        <h3 class="platform-name">
+                            Nintendo
+                        </h3>
+
+                        <p class="platform-description">
+                            Juega donde quieras con Nintendo Switch,
+                            Switch OLED, Switch 2, controles
+                            y videojuegos para la familia Nintendo.
+                        </p>
+
+                        <div class="platform-count">
+
+                            <span class="platform-count-number">
+                                @nintendoCount
+                            </span>
+
+                            productos relacionados
+
+                        </div>
+
+
+                        <div class="platform-buttons">
+
+                            <a asp-controller="Products"
+                               asp-action="Index"
+                               asp-route-search="Nintendo"
+                               class="platform-button">
+
+                                Comprar Nintendo
+
+                            </a>
+
+
+                            @if (nintendoProduct != null)
+                            {
+                                <a asp-controller="Products"
+                                   asp-action="Details"
+                                   asp-route-id="@nintendoProduct.Id"
+                                   class="platform-button platform-button-secondary">
+
+                                    Ver consola
+
+                                </a>
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="platform-product">
+
+                        <div class="platform-product-glow">
+                        </div>
+
+                        @if (
+                            nintendoProduct != null
+                            &&
+                            !string.IsNullOrWhiteSpace(
+                                nintendoProduct.ImageUrl
+                            )
+                        )
+                        {
+                            <img src="@nintendoProduct.ImageUrl"
+                                 alt="@nintendoProduct.Name"
+                                 class="platform-product-image"
+                                 loading="lazy"
+                                 onerror="
+                                    this.style.display='none';
+                                    this.nextElementSibling.style.display='flex';
+                                 " />
+
+                            <div class="platform-product-placeholder"
+                                 style="display:none;">
+                                🔴
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="platform-product-placeholder">
+                                🔴
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+
+                @if (nintendoProduct != null)
+                {
+                    <div class="platform-featured">
+                        Destacado:
+                        @nintendoProduct.Name
+                    </div>
+                }
+
+            </article>
+
+
+            <!-- =================================================
+                 PC GAMING
+            ================================================== -->
+
+            <article class="platform-card platform-pc">
+
+                <div class="platform-content">
+
+                    <div class="platform-info">
+
+                        <div class="platform-brand">
+                            BIGGAME PC
+                        </div>
+
+                        <h3 class="platform-name">
+                            PC Gaming
+                        </h3>
+
+                        <p class="platform-description">
+                            Teclados, auriculares, almacenamiento
+                            y videojuegos para llevar tu escritorio
+                            gaming a otro nivel.
+                        </p>
+
+                        <div class="platform-count">
+
+                            <span class="platform-count-number">
+                                @pcCount
+                            </span>
+
+                            productos relacionados
+
+                        </div>
+
+
+                        <div class="platform-buttons">
+
+                            <a asp-controller="Products"
+                               asp-action="Index"
+                               asp-route-search="Gaming"
+                               class="platform-button">
+
+                                Comprar PC Gaming
+
+                            </a>
+
+
+                            @if (pcProduct != null)
+                            {
+                                <a asp-controller="Products"
+                                   asp-action="Details"
+                                   asp-route-id="@pcProduct.Id"
+                                   class="platform-button platform-button-secondary">
+
+                                    Ver destacado
+
+                                </a>
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="platform-product">
+
+                        <div class="platform-product-glow">
+                        </div>
+
+                        @if (
+                            pcProduct != null
+                            &&
+                            !string.IsNullOrWhiteSpace(
+                                pcProduct.ImageUrl
+                            )
+                        )
+                        {
+                            <img src="@pcProduct.ImageUrl"
+                                 alt="@pcProduct.Name"
+                                 class="platform-product-image"
+                                 loading="lazy"
+                                 onerror="
+                                    this.style.display='none';
+                                    this.nextElementSibling.style.display='flex';
+                                 " />
+
+                            <div class="platform-product-placeholder"
+                                 style="display:none;">
+                                💻
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="platform-product-placeholder">
+                                💻
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+
+                @if (pcProduct != null)
+                {
+                    <div class="platform-featured">
+                        Destacado:
+                        @pcProduct.Name
+                    </div>
+                }
+
+            </article>
+
+        </div>
+
+
+        <!-- =====================================================
+             BARRA INFERIOR
+        ====================================================== -->
+
+        <div class="platforms-bottom">
+
+            <div class="platforms-bottom-left">
+
+                <div class="platforms-bottom-icon">
+                    🎮
+                </div>
+
+                <div>
+
+                    <h3 class="platforms-bottom-title">
+                        ¿Todavía no sabes qué plataforma elegir?
+                    </h3>
+
+                    <p class="platforms-bottom-text">
+                        Explora el catálogo completo y compara
+                        consolas, juegos y accesorios disponibles
+                        en BigGame.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="platforms-bottom-button">
+
+                Ver catálogo completo
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>

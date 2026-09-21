@@ -1,0 +1,1602 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    bool IsVideoGame(EcommerceApp.Models.Product product)
+    {
+        var category =
+            (product.Category ?? string.Empty)
+            .ToLowerInvariant();
+
+        return category.Contains("videojuego");
+    }
+
+    bool IsSportsGame(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        return
+            name.Contains("nba")
+            || name.Contains("2k27")
+            || name.Contains("fifa")
+            || name.Contains("fc 27")
+            || name.Contains("fc27")
+            || name.Contains("madden")
+            || name.Contains("nhl")
+            || name.Contains("mlb")
+            || name.Contains("baseball")
+            || name.Contains("football")
+            || name.Contains("soccer");
+    }
+
+    string VideoGamePlatform(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (
+            name.Contains("nintendo switch 2")
+            || name.Contains("switch 2")
+        )
+        {
+            return "switch2";
+        }
+
+        if (
+            name.Contains("nintendo switch")
+            || name.Contains("switch oled")
+        )
+        {
+            return "switch";
+        }
+
+        if (
+            name.Contains("playstation 5")
+            || name.Contains("ps5")
+        )
+        {
+            return "ps5";
+        }
+
+        if (
+            name.Contains("xbox series")
+            || name.Contains("xbox")
+        )
+        {
+            return "xbox";
+        }
+
+        if (
+            name.Contains(" - pc")
+            || name.EndsWith("pc")
+            || name.Contains(" pc ")
+        )
+        {
+            return "pc";
+        }
+
+        return "otros";
+    }
+
+    string VideoGamePlatformLabel(
+        EcommerceApp.Models.Product product)
+    {
+        return VideoGamePlatform(product) switch
+        {
+            "ps5" => "PlayStation 5",
+            "xbox" => "Xbox Series X|S",
+            "switch2" => "Nintendo Switch 2",
+            "switch" => "Nintendo Switch",
+            "pc" => "PC",
+            _ => "Videojuegos"
+        };
+    }
+
+    string PlatformIcon(
+        EcommerceApp.Models.Product product)
+    {
+        return VideoGamePlatform(product) switch
+        {
+            "ps5" => "🎮",
+            "xbox" => "🟢",
+            "switch2" => "🔴",
+            "switch" => "🕹️",
+            "pc" => "💻",
+            _ => "🎮"
+        };
+    }
+
+    var videoGames =
+        products
+            .Where(IsVideoGame)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(30)
+            .ToList();
+}
+
+<style>
+
+    /* =========================================================
+       VIDEOJUEGOS BIGGAME
+    ========================================================= */
+
+    .videogames-home {
+        width: 100%;
+
+        padding:
+            56px
+            0
+            64px;
+
+        background: #f5f6f8;
+
+        color: #111111;
+    }
+
+    .videogames-container {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       ENCABEZADO
+    ========================================================= */
+
+    .videogames-heading {
+        margin-bottom: 24px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .videogames-heading-left {
+        min-width: 0;
+    }
+
+    .videogames-kicker {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .videogames-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.08;
+
+        font-weight: 900;
+
+        letter-spacing: -0.8px;
+    }
+
+    .videogames-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color: #64748b;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .videogames-view-all {
+        flex: 0 0 auto;
+
+        color: #111111;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .videogames-view-all:hover {
+        color: #2563eb;
+    }
+
+
+    /* =========================================================
+       BANNER
+    ========================================================= */
+
+    .videogames-banner {
+        position: relative;
+
+        min-height: 235px;
+
+        margin-bottom: 26px;
+
+        overflow: hidden;
+
+        border-radius: 12px;
+
+        background:
+            radial-gradient(
+                circle at 80% 45%,
+                rgba(83, 182, 255, 0.30),
+                transparent 24%
+            ),
+            radial-gradient(
+                circle at 90% 70%,
+                rgba(139, 92, 246, 0.24),
+                transparent 22%
+            ),
+            linear-gradient(
+                110deg,
+                #050b16 0%,
+                #0b1d3b 48%,
+                #173f7a 100%
+            );
+
+        color: #ffffff;
+
+        box-shadow:
+            0
+            10px
+            30px
+            rgba(15, 23, 42, 0.13);
+    }
+
+    .videogames-banner-content {
+        position: relative;
+
+        z-index: 3;
+
+        min-height: 235px;
+
+        padding:
+            38px
+            42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 35px;
+    }
+
+    .videogames-banner-left {
+        max-width: 760px;
+    }
+
+    .videogames-banner-label {
+        margin-bottom: 9px;
+
+        color: #60c7ff;
+
+        font-size: 10px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .videogames-banner-title {
+        margin:
+            0
+            0
+            11px;
+
+        max-width: 650px;
+
+        font-size: 40px;
+        line-height: 1.02;
+
+        font-weight: 900;
+
+        letter-spacing: -1.2px;
+    }
+
+    .videogames-banner-description {
+        max-width: 650px;
+
+        margin: 0;
+
+        color:
+            rgba(255, 255, 255, 0.84);
+
+        font-size: 14px;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       DECORACIÓN BANNER
+    ========================================================= */
+
+    .videogames-banner-visual {
+        flex: 0 0 auto;
+
+        position: relative;
+
+        width: 310px;
+        height: 170px;
+    }
+
+    .videogames-controller {
+        position: absolute;
+
+        top: 50%;
+        left: 50%;
+
+        transform:
+            translate(-50%, -50%);
+
+        font-size: 108px;
+
+        filter:
+            drop-shadow(
+                0
+                15px
+                22px
+                rgba(0, 0, 0, 0.30)
+            );
+    }
+
+    .videogames-ring {
+        position: absolute;
+
+        border:
+            2px solid
+            rgba(255, 255, 255, 0.13);
+
+        border-radius: 50%;
+    }
+
+    .videogames-ring-one {
+        width: 170px;
+        height: 170px;
+
+        top: 0;
+        left: 70px;
+    }
+
+    .videogames-ring-two {
+        width: 115px;
+        height: 115px;
+
+        top: 27px;
+        left: 97px;
+    }
+
+
+    /* =========================================================
+       FILTROS
+    ========================================================= */
+
+    .videogames-tabs {
+        margin-bottom: 24px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        overflow-x: auto;
+
+        scrollbar-width: none;
+    }
+
+    .videogames-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .videogames-tab {
+        flex: 0 0 auto;
+
+        min-height: 40px;
+
+        padding:
+            0
+            17px;
+
+        border:
+            1px solid #cbd5e1;
+
+        border-radius: 5px;
+
+        background: #ffffff;
+
+        color: #111827;
+
+        cursor: pointer;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        white-space: nowrap;
+
+        transition:
+            background 0.18s ease,
+            color 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .videogames-tab:hover {
+        border-color: #111827;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .videogames-tab.active {
+        border-color: #111827;
+
+        background: #111827;
+
+        color: #ffffff;
+    }
+
+
+    /* =========================================================
+       CARRUSEL
+    ========================================================= */
+
+    .videogames-carousel {
+        position: relative;
+    }
+
+    .videogames-products {
+        display: flex;
+
+        gap: 15px;
+
+        overflow-x: auto;
+
+        padding:
+            3px
+            4px
+            20px;
+
+        scroll-behavior: smooth;
+
+        scroll-snap-type:
+            x proximity;
+
+        scrollbar-width: none;
+    }
+
+    .videogames-products::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =========================================================
+       TARJETA PRODUCTO
+    ========================================================= */
+
+    .videogames-card {
+        flex:
+            0
+            0
+            230px;
+
+        min-height: 480px;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        scroll-snap-align: start;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .videogames-card:hover {
+        transform:
+            translateY(-4px);
+
+        border-color: #b6c7df;
+
+        box-shadow:
+            0
+            12px
+            28px
+            rgba(15, 23, 42, 0.11);
+    }
+
+
+    /* =========================================================
+       IMAGEN
+    ========================================================= */
+
+    .videogames-image {
+        position: relative;
+
+        width: 100%;
+        height: 275px;
+
+        padding: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #ffffff;
+    }
+
+    .videogames-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .videogames-card:hover
+    .videogames-image img {
+        transform:
+            scale(1.04);
+    }
+
+    .videogames-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #132b5d,
+                #07142f
+            );
+
+        font-size: 62px;
+    }
+
+    .videogames-platform-badge {
+        position: absolute;
+
+        z-index: 5;
+
+        top: 10px;
+        left: 10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.45px;
+
+        text-transform: uppercase;
+    }
+
+    .videogames-sport-badge {
+        position: absolute;
+
+        z-index: 5;
+
+        top: 10px;
+        right: 10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius: 4px;
+
+        background: #ea580c;
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       INFORMACIÓN
+    ========================================================= */
+
+    .videogames-info {
+        flex: 1;
+
+        padding:
+            14px
+            15px
+            15px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .videogames-category {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.55px;
+
+        text-transform: uppercase;
+    }
+
+    .videogames-name {
+        min-height: 44px;
+
+        margin-bottom: 9px;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+    .videogames-price {
+        margin-top: auto;
+
+        color: #111827;
+
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .videogames-stock {
+        min-height: 18px;
+
+        margin-top: 4px;
+
+        color: #16a34a;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .videogames-stock.out {
+        color: #dc2626;
+    }
+
+
+    /* =========================================================
+       BOTONES
+    ========================================================= */
+
+    .videogames-actions {
+        margin-top: 12px;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            44px;
+
+        gap: 7px;
+    }
+
+    .videogames-details {
+        min-height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding:
+            0
+            12px;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .videogames-details:hover {
+        background: #174fc7;
+
+        color: #ffffff;
+    }
+
+    .videogames-cart-form {
+        margin: 0;
+    }
+
+    .videogames-cart {
+        width: 44px;
+        height: 42px;
+
+        border: none;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 17px;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .videogames-cart:hover {
+        background: #2563eb;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .videogames-cart:disabled {
+        background: #cbd5e1;
+
+        color: #64748b;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =========================================================
+       FLECHAS
+    ========================================================= */
+
+    .videogames-arrow {
+        position: absolute;
+
+        z-index: 10;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        width: 46px;
+        height: 64px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        background:
+            rgba(17, 24, 39, 0.94);
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 31px;
+
+        box-shadow:
+            0
+            6px
+            20px
+            rgba(15, 23, 42, 0.20);
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .videogames-arrow:hover {
+        background: #2563eb;
+    }
+
+    .videogames-arrow-left {
+        left: -15px;
+    }
+
+    .videogames-arrow-right {
+        right: -15px;
+    }
+
+
+    /* =========================================================
+       MENSAJE SIN RESULTADOS
+    ========================================================= */
+
+    .videogames-filter-empty {
+        display: none;
+
+        width: 100%;
+
+        margin-top: 5px;
+
+        padding:
+            38px
+            20px;
+
+        border:
+            1px dashed #cbd5e1;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        color: #64748b;
+
+        text-align: center;
+    }
+
+    .videogames-filter-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 16px;
+    }
+
+
+    /* =========================================================
+       VACÍO GENERAL
+    ========================================================= */
+
+    .videogames-empty {
+        width: 100%;
+
+        padding:
+            55px
+            20px;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        text-align: center;
+
+        color: #64748b;
+    }
+
+    .videogames-empty-icon {
+        margin-bottom: 12px;
+
+        font-size: 42px;
+    }
+
+    .videogames-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 18px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 950px) {
+
+        .videogames-banner-visual {
+            width: 230px;
+
+            transform:
+                scale(0.83);
+
+            transform-origin:
+                right center;
+        }
+
+        .videogames-title {
+            font-size: 27px;
+        }
+
+        .videogames-card {
+            flex-basis: 215px;
+        }
+
+        .videogames-arrow-left {
+            left: 2px;
+        }
+
+        .videogames-arrow-right {
+            right: 2px;
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .videogames-home {
+            padding:
+                42px
+                0
+                48px;
+        }
+
+        .videogames-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .videogames-heading {
+            flex-direction: column;
+
+            align-items: flex-start;
+        }
+
+        .videogames-title {
+            font-size: 25px;
+        }
+
+        .videogames-banner-content {
+            min-height: 255px;
+
+            padding:
+                30px
+                24px;
+        }
+
+        .videogames-banner-title {
+            font-size: 30px;
+        }
+
+        .videogames-banner-visual {
+            display: none;
+        }
+
+        .videogames-card {
+            flex-basis: 195px;
+
+            min-height: 445px;
+        }
+
+        .videogames-image {
+            height: 230px;
+        }
+
+        .videogames-arrow {
+            width: 38px;
+            height: 54px;
+
+            font-size: 26px;
+        }
+    }
+
+</style>
+
+
+<section class="videogames-home"
+         id="videojuegos">
+
+    <div class="videogames-container">
+
+
+        <!-- =====================================================
+             CABECERA
+        ====================================================== -->
+
+        <div class="videogames-heading">
+
+            <div class="videogames-heading-left">
+
+                <div class="videogames-kicker">
+                    VIDEOJUEGOS
+                </div>
+
+                <h2 class="videogames-title">
+                    Lo que todos están jugando
+                </h2>
+
+                <p class="videogames-subtitle">
+                    Explora videojuegos para PlayStation,
+                    Xbox, Nintendo y PC.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Videojuegos"
+               class="videogames-view-all">
+
+                Ver todos →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             BANNER
+        ====================================================== -->
+
+        <div class="videogames-banner">
+
+            <div class="videogames-banner-content">
+
+                <div class="videogames-banner-left">
+
+                    <div class="videogames-banner-label">
+                        BIGGAME
+                    </div>
+
+                    <h3 class="videogames-banner-title">
+                        Encuentra tu próxima aventura
+                    </h3>
+
+                    <p class="videogames-banner-description">
+                        Acción, aventura, RPG, deportes y mucho más.
+                        Descubre los videojuegos disponibles para
+                        tus plataformas favoritas.
+                    </p>
+
+                </div>
+
+
+                <div class="videogames-banner-visual">
+
+                    <div class="videogames-ring videogames-ring-one">
+                    </div>
+
+                    <div class="videogames-ring videogames-ring-two">
+                    </div>
+
+                    <div class="videogames-controller">
+                        🎮
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             FILTROS
+        ====================================================== -->
+
+        <div class="videogames-tabs"
+             id="videoGamesTabs">
+
+            <button type="button"
+                    class="videogames-tab active"
+                    data-videogame-filter="todos">
+
+                Todos
+
+            </button>
+
+
+            <button type="button"
+                    class="videogames-tab"
+                    data-videogame-filter="ps5">
+
+                PlayStation 5
+
+            </button>
+
+
+            <button type="button"
+                    class="videogames-tab"
+                    data-videogame-filter="xbox">
+
+                Xbox Series X|S
+
+            </button>
+
+
+            <button type="button"
+                    class="videogames-tab"
+                    data-videogame-filter="switch">
+
+                Nintendo Switch
+
+            </button>
+
+
+            <button type="button"
+                    class="videogames-tab"
+                    data-videogame-filter="switch2">
+
+                Nintendo Switch 2
+
+            </button>
+
+
+            <button type="button"
+                    class="videogames-tab"
+                    data-videogame-filter="pc">
+
+                PC
+
+            </button>
+
+
+            <button type="button"
+                    class="videogames-tab"
+                    data-videogame-filter="deportes">
+
+                Deportes
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             PRODUCTOS
+        ====================================================== -->
+
+        @if (videoGames.Any())
+        {
+            <div class="videogames-carousel">
+
+                <button type="button"
+                        class="videogames-arrow videogames-arrow-left"
+                        id="videoGamesPrevious"
+                        aria-label="Videojuegos anteriores">
+
+                    ‹
+
+                </button>
+
+
+                <div class="videogames-products"
+                     id="videoGamesProducts">
+
+                    @foreach (var product in videoGames)
+                    {
+                        var platform =
+                            VideoGamePlatform(product);
+
+                        var platformLabel =
+                            VideoGamePlatformLabel(product);
+
+                        var icon =
+                            PlatformIcon(product);
+
+                        var isSports =
+                            IsSportsGame(product);
+
+
+                        <article class="videogames-card"
+                                 data-videogame-platform="@platform"
+                                 data-videogame-sports="@(isSports ? "true" : "false")">
+
+
+                            <!-- IMAGEN -->
+
+                            <div class="videogames-image">
+
+                                <span class="videogames-platform-badge">
+                                    @platformLabel
+                                </span>
+
+
+                                @if (isSports)
+                                {
+                                    <span class="videogames-sport-badge">
+                                        Deporte
+                                    </span>
+                                }
+
+
+                                @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl"
+                                         alt="@product.Name"
+                                         loading="lazy"
+                                         onerror="
+                                            this.style.display='none';
+                                            this.nextElementSibling.style.display='flex';
+                                         " />
+
+                                    <div class="videogames-placeholder"
+                                         style="display:none;">
+                                        @icon
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="videogames-placeholder">
+                                        @icon
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <!-- INFORMACIÓN -->
+
+                            <div class="videogames-info">
+
+                                <div class="videogames-category">
+                                    @platformLabel
+                                </div>
+
+
+                                <div class="videogames-name">
+                                    @product.Name
+                                </div>
+
+
+                                <div class="videogames-price">
+
+                                    Bs @product.Price.ToString("N2")
+
+                                </div>
+
+
+                                @if (product.Stock > 0)
+                                {
+                                    <div class="videogames-stock">
+
+                                        @product.Stock disponibles
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="videogames-stock out">
+
+                                        Agotado
+
+                                    </div>
+                                }
+
+
+                                <!-- BOTONES -->
+
+                                <div class="videogames-actions">
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="videogames-details">
+
+                                        Ver producto
+
+                                    </a>
+
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-controller="Cart"
+                                              asp-action="Add"
+                                              method="post"
+                                              class="videogames-cart-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@product.Id" />
+
+                                            <button type="submit"
+                                                    class="videogames-cart"
+                                                    title="Agregar al carrito"
+                                                    aria-label="Agregar @product.Name al carrito">
+
+                                                🛒
+
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="videogames-cart"
+                                                disabled
+                                                title="Producto agotado">
+
+                                            🛒
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
+
+
+                <button type="button"
+                        class="videogames-arrow videogames-arrow-right"
+                        id="videoGamesNext"
+                        aria-label="Más videojuegos">
+
+                    ›
+
+                </button>
+
+            </div>
+
+
+            <div class="videogames-filter-empty"
+                 id="videoGamesFilterEmpty">
+
+                <strong>
+                    No hay videojuegos en esta categoría
+                </strong>
+
+                <span>
+                    Prueba con otra plataforma.
+                </span>
+
+            </div>
+        }
+        else
+        {
+            <div class="videogames-empty">
+
+                <div class="videogames-empty-icon">
+                    🎮
+                </div>
+
+                <strong>
+                    Próximamente más videojuegos
+                </strong>
+
+                <span>
+                    Estamos preparando nuevos títulos para BigGame.
+                </span>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const row =
+            document.getElementById(
+                "videoGamesProducts"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "videoGamesPrevious"
+            );
+
+        const nextButton =
+            document.getElementById(
+                "videoGamesNext"
+            );
+
+        const tabs =
+            Array.from(
+                document.querySelectorAll(
+                    ".videogames-tab"
+                )
+            );
+
+        const emptyMessage =
+            document.getElementById(
+                "videoGamesFilterEmpty"
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        /* =====================================================
+           FLECHAS
+        ====================================================== */
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: -735,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: 735,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FILTROS
+        ====================================================== */
+
+        tabs.forEach(
+            function (tab) {
+
+                tab.addEventListener(
+                    "click",
+                    function () {
+
+                        tabs.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+
+                        tab.classList.add(
+                            "active"
+                        );
+
+
+                        const filter =
+                            tab.dataset.videogameFilter
+                            || "todos";
+
+
+                        const cards =
+                            Array.from(
+                                row.querySelectorAll(
+                                    ".videogames-card"
+                                )
+                            );
+
+
+                        let visibleCount = 0;
+
+
+                        cards.forEach(
+                            function (card) {
+
+                                const platform =
+                                    card.dataset.videogamePlatform
+                                    || "";
+
+                                const isSports =
+                                    card.dataset.videogameSports
+                                    === "true";
+
+
+                                let visible = false;
+
+
+                                if (filter === "todos")
+                                {
+                                    visible = true;
+                                }
+                                else if (filter === "deportes")
+                                {
+                                    visible = isSports;
+                                }
+                                else
+                                {
+                                    visible =
+                                        platform === filter;
+                                }
+
+
+                                card.style.display =
+                                    visible
+                                    ? "flex"
+                                    : "none";
+
+
+                                if (visible) {
+                                    visibleCount++;
+                                }
+
+                            }
+                        );
+
+
+                        if (emptyMessage) {
+
+                            emptyMessage.style.display =
+                                visibleCount === 0
+                                ? "block"
+                                : "none";
+
+                        }
+
+
+                        row.scrollTo({
+                            left: 0,
+                            behavior: "smooth"
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+    })();
+
+</script>

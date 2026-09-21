@@ -1,0 +1,2210 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    bool IsReleaseProduct(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        var category =
+            (product.Category ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (!category.Contains("videojuego"))
+        {
+            return false;
+        }
+
+        return
+            name.Contains("grand theft auto vi")
+            || name.Contains("gta vi")
+            || name.Contains("wolverine")
+            || name.Contains("onimusha")
+            || name.Contains("blood of dawnwalker")
+            || name.Contains("star wars zero company")
+            || name.Contains("final fantasy vii rebirth")
+            || name.Contains("zelda")
+            || name.Contains("ocarina of time");
+    }
+
+    string ReleasePlatform(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (
+            name.Contains("playstation 5")
+            || name.Contains("ps5")
+        )
+        {
+            return "playstation";
+        }
+
+        if (
+            name.Contains("xbox")
+            || name.Contains("series x")
+            || name.Contains("series s")
+        )
+        {
+            return "xbox";
+        }
+
+        if (
+            name.Contains("nintendo")
+            || name.Contains("switch")
+        )
+        {
+            return "nintendo";
+        }
+
+        if (
+            name.Contains(" - pc")
+            || name.EndsWith("pc")
+            || name.Contains(" pc ")
+        )
+        {
+            return "pc";
+        }
+
+        return "otros";
+    }
+
+    string ReleasePlatformLabel(
+        EcommerceApp.Models.Product product)
+    {
+        return ReleasePlatform(product) switch
+        {
+            "playstation" => "PlayStation 5",
+            "xbox" => "Xbox Series X|S",
+            "nintendo" => "Nintendo",
+            "pc" => "PC",
+            _ => "Videojuegos"
+        };
+    }
+
+    string ReleaseGenre(
+        EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (
+            name.Contains("final fantasy")
+            || name.Contains("dawnwalker")
+        )
+        {
+            return "rpg";
+        }
+
+        if (
+            name.Contains("star wars zero company")
+        )
+        {
+            return "estrategia";
+        }
+
+        if (
+            name.Contains("zelda")
+            || name.Contains("ocarina")
+        )
+        {
+            return "aventura";
+        }
+
+        return "accion";
+    }
+
+    string ReleaseGenreLabel(
+        EcommerceApp.Models.Product product)
+    {
+        return ReleaseGenre(product) switch
+        {
+            "rpg" => "RPG",
+            "estrategia" => "Estrategia",
+            "aventura" => "Aventura",
+            _ => "Acción"
+        };
+    }
+
+    string ReleaseIcon(
+        EcommerceApp.Models.Product product)
+    {
+        return ReleaseGenre(product) switch
+        {
+            "rpg" => "⚔️",
+            "estrategia" => "🧠",
+            "aventura" => "🗺️",
+            _ => "🔥"
+        };
+    }
+
+    var releaseProducts =
+        products
+            .Where(IsReleaseProduct)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(18)
+            .ToList();
+
+    var mainRelease =
+        releaseProducts.FirstOrDefault(
+            p =>
+                (p.Name ?? string.Empty)
+                .Contains(
+                    "Grand Theft Auto VI",
+                    StringComparison.OrdinalIgnoreCase
+                )
+        )
+        ??
+        releaseProducts.FirstOrDefault();
+}
+
+<style>
+
+    /* =========================================================
+       NUEVOS Y PRÓXIMOS BIGGAME
+    ========================================================= */
+
+    .releases-home {
+        width: 100%;
+
+        padding:
+            60px
+            0
+            68px;
+
+        background:
+            #f6f7f9;
+
+        color:
+            #111827;
+    }
+
+    .releases-container {
+        width:
+            calc(100% - 40px);
+
+        max-width:
+            1460px;
+
+        margin:
+            0 auto;
+    }
+
+
+    /* =========================================================
+       CABECERA
+    ========================================================= */
+
+    .releases-heading {
+        margin-bottom:
+            25px;
+
+        display:
+            flex;
+
+        align-items:
+            flex-end;
+
+        justify-content:
+            space-between;
+
+        gap:
+            20px;
+    }
+
+    .releases-heading-left {
+        min-width:
+            0;
+    }
+
+    .releases-kicker {
+        margin-bottom:
+            6px;
+
+        color:
+            #dc2626;
+
+        font-size:
+            11px;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            1px;
+
+        text-transform:
+            uppercase;
+    }
+
+    .releases-title {
+        margin:
+            0;
+
+        color:
+            #111827;
+
+        font-size:
+            32px;
+
+        line-height:
+            1.08;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            -0.8px;
+    }
+
+    .releases-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color:
+            #64748b;
+
+        font-size:
+            13px;
+
+        line-height:
+            1.5;
+    }
+
+    .releases-view-all {
+        flex:
+            0 0 auto;
+
+        color:
+            #111827;
+
+        font-size:
+            13px;
+
+        font-weight:
+            900;
+
+        text-decoration:
+            underline;
+
+        text-underline-offset:
+            4px;
+    }
+
+    .releases-view-all:hover {
+        color:
+            #dc2626;
+    }
+
+
+    /* =========================================================
+       HERO DESTACADO
+    ========================================================= */
+
+    .releases-feature {
+        position:
+            relative;
+
+        min-height:
+            330px;
+
+        margin-bottom:
+            26px;
+
+        overflow:
+            hidden;
+
+        border-radius:
+            14px;
+
+        background:
+            radial-gradient(
+                circle at 83% 36%,
+                rgba(255, 90, 31, 0.30),
+                transparent 27%
+            ),
+            radial-gradient(
+                circle at 91% 80%,
+                rgba(239, 68, 68, 0.22),
+                transparent 25%
+            ),
+            linear-gradient(
+                110deg,
+                #070707 0%,
+                #23100c 48%,
+                #7f1d1d 100%
+            );
+
+        color:
+            #ffffff;
+
+        box-shadow:
+            0
+            13px
+            34px
+            rgba(15, 23, 42, 0.15);
+    }
+
+    .releases-feature::after {
+        content:
+            "";
+
+        position:
+            absolute;
+
+        width:
+            420px;
+
+        height:
+            420px;
+
+        right:
+            -130px;
+
+        top:
+            -150px;
+
+        border:
+            2px solid
+            rgba(255,255,255,0.08);
+
+        border-radius:
+            50%;
+    }
+
+    .releases-feature-content {
+        position:
+            relative;
+
+        z-index:
+            4;
+
+        min-height:
+            330px;
+
+        padding:
+            42px
+            46px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            space-between;
+
+        gap:
+            35px;
+    }
+
+    .releases-feature-info {
+        width:
+            55%;
+
+        max-width:
+            700px;
+    }
+
+    .releases-feature-label {
+        margin-bottom:
+            8px;
+
+        color:
+            #fca5a5;
+
+        font-size:
+            10px;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            1px;
+
+        text-transform:
+            uppercase;
+    }
+
+    .releases-feature-title {
+        margin:
+            0
+            0
+            12px;
+
+        font-size:
+            42px;
+
+        line-height:
+            1.02;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            -1.3px;
+    }
+
+    .releases-feature-description {
+        margin:
+            0
+            0
+            18px;
+
+        max-width:
+            610px;
+
+        color:
+            rgba(255,255,255,0.82);
+
+        font-size:
+            13px;
+
+        line-height:
+            1.6;
+    }
+
+
+    /* =========================================================
+       BOTONES HERO
+    ========================================================= */
+
+    .releases-feature-actions {
+        display:
+            flex;
+
+        flex-wrap:
+            wrap;
+
+        gap:
+            9px;
+    }
+
+    .releases-feature-button {
+        min-height:
+            43px;
+
+        padding:
+            0
+            18px;
+
+        display:
+            inline-flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            4px;
+
+        background:
+            #ffffff;
+
+        color:
+            #111827;
+
+        text-decoration:
+            none;
+
+        font-size:
+            11px;
+
+        font-weight:
+            900;
+
+        transition:
+            transform 0.18s ease,
+            background 0.18s ease;
+    }
+
+    .releases-feature-button:hover {
+        transform:
+            translateY(-2px);
+
+        background:
+            #f1f5f9;
+
+        color:
+            #111827;
+    }
+
+    .releases-feature-button-secondary {
+        border:
+            1px solid
+            rgba(255,255,255,0.22);
+
+        background:
+            rgba(255,255,255,0.08);
+
+        color:
+            #ffffff;
+    }
+
+    .releases-feature-button-secondary:hover {
+        background:
+            rgba(255,255,255,0.15);
+
+        color:
+            #ffffff;
+    }
+
+
+    /* =========================================================
+       IMAGEN HERO
+    ========================================================= */
+
+    .releases-feature-visual {
+        position:
+            relative;
+
+        width:
+            40%;
+
+        min-width:
+            300px;
+
+        height:
+            270px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+    }
+
+    .releases-feature-glow {
+        position:
+            absolute;
+
+        width:
+            245px;
+
+        height:
+            245px;
+
+        border-radius:
+            50%;
+
+        background:
+            rgba(239,68,68,0.18);
+
+        filter:
+            blur(8px);
+    }
+
+    .releases-feature-image {
+        position:
+            relative;
+
+        z-index:
+            4;
+
+        width:
+            100%;
+
+        height:
+            270px;
+
+        object-fit:
+            contain;
+
+        filter:
+            drop-shadow(
+                0
+                18px
+                23px
+                rgba(0,0,0,0.42)
+            );
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .releases-feature:hover
+    .releases-feature-image {
+        transform:
+            scale(1.045)
+            translateY(-3px);
+    }
+
+    .releases-feature-placeholder {
+        position:
+            relative;
+
+        z-index:
+            4;
+
+        width:
+            190px;
+
+        height:
+            190px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border:
+            2px solid
+            rgba(255,255,255,0.16);
+
+        border-radius:
+            50%;
+
+        background:
+            rgba(0,0,0,0.18);
+
+        font-size:
+            80px;
+    }
+
+
+    /* =========================================================
+       FILTROS
+    ========================================================= */
+
+    .releases-tabs {
+        margin-bottom:
+            24px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        gap:
+            8px;
+
+        overflow-x:
+            auto;
+
+        scrollbar-width:
+            none;
+    }
+
+    .releases-tabs::-webkit-scrollbar {
+        display:
+            none;
+    }
+
+    .releases-tab {
+        flex:
+            0 0 auto;
+
+        min-height:
+            40px;
+
+        padding:
+            0
+            17px;
+
+        border:
+            1px solid
+            #cbd5e1;
+
+        border-radius:
+            5px;
+
+        background:
+            #ffffff;
+
+        color:
+            #111827;
+
+        cursor:
+            pointer;
+
+        font-size:
+            11px;
+
+        font-weight:
+            900;
+
+        white-space:
+            nowrap;
+
+        transition:
+            background 0.18s ease,
+            color 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .releases-tab:hover {
+        border-color:
+            #dc2626;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .releases-tab.active {
+        border-color:
+            #111827;
+
+        background:
+            #111827;
+
+        color:
+            #ffffff;
+    }
+
+
+    /* =========================================================
+       CARRUSEL
+    ========================================================= */
+
+    .releases-carousel {
+        position:
+            relative;
+    }
+
+    .releases-products {
+        display:
+            flex;
+
+        gap:
+            15px;
+
+        overflow-x:
+            auto;
+
+        padding:
+            4px
+            4px
+            22px;
+
+        scroll-behavior:
+            smooth;
+
+        scroll-snap-type:
+            x proximity;
+
+        scrollbar-width:
+            none;
+    }
+
+    .releases-products::-webkit-scrollbar {
+        display:
+            none;
+    }
+
+
+    /* =========================================================
+       TARJETAS
+    ========================================================= */
+
+    .release-card {
+        flex:
+            0 0
+            230px;
+
+        min-height:
+            480px;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+
+        overflow:
+            hidden;
+
+        scroll-snap-align:
+            start;
+
+        border:
+            1px solid
+            #d8dee7;
+
+        border-radius:
+            8px;
+
+        background:
+            #ffffff;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .release-card:hover {
+        transform:
+            translateY(-4px);
+
+        border-color:
+            #fca5a5;
+
+        box-shadow:
+            0
+            12px
+            28px
+            rgba(15,23,42,0.11);
+    }
+
+
+    /* =========================================================
+       IMAGEN CARD
+    ========================================================= */
+
+    .release-image {
+        position:
+            relative;
+
+        width:
+            100%;
+
+        height:
+            275px;
+
+        padding:
+            18px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        background:
+            #ffffff;
+    }
+
+    .release-image img {
+        width:
+            100%;
+
+        height:
+            100%;
+
+        object-fit:
+            contain;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .release-card:hover
+    .release-image img {
+        transform:
+            scale(1.045);
+    }
+
+    .release-placeholder {
+        width:
+            100%;
+
+        height:
+            100%;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            7px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #260606,
+                #7f1d1d
+            );
+
+        color:
+            #ffffff;
+
+        font-size:
+            65px;
+    }
+
+
+    /* =========================================================
+       BADGES
+    ========================================================= */
+
+    .release-platform-badge {
+        position:
+            absolute;
+
+        z-index:
+            5;
+
+        top:
+            10px;
+
+        left:
+            10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius:
+            4px;
+
+        background:
+            #111827;
+
+        color:
+            #ffffff;
+
+        font-size:
+            8px;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            0.4px;
+
+        text-transform:
+            uppercase;
+    }
+
+    .release-new-badge {
+        position:
+            absolute;
+
+        z-index:
+            5;
+
+        top:
+            10px;
+
+        right:
+            10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius:
+            4px;
+
+        background:
+            #dc2626;
+
+        color:
+            #ffffff;
+
+        font-size:
+            8px;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            0.4px;
+
+        text-transform:
+            uppercase;
+    }
+
+
+    /* =========================================================
+       INFORMACIÓN
+    ========================================================= */
+
+    .release-info {
+        flex:
+            1;
+
+        padding:
+            14px
+            15px
+            15px;
+
+        display:
+            flex;
+
+        flex-direction:
+            column;
+    }
+
+    .release-genre {
+        margin-bottom:
+            6px;
+
+        color:
+            #dc2626;
+
+        font-size:
+            9px;
+
+        font-weight:
+            900;
+
+        letter-spacing:
+            0.55px;
+
+        text-transform:
+            uppercase;
+    }
+
+    .release-name {
+        min-height:
+            44px;
+
+        margin-bottom:
+            9px;
+
+        color:
+            #111827;
+
+        font-size:
+            13px;
+
+        font-weight:
+            800;
+
+        line-height:
+            1.3;
+    }
+
+    .release-price {
+        margin-top:
+            auto;
+
+        color:
+            #111827;
+
+        font-size:
+            20px;
+
+        font-weight:
+            900;
+    }
+
+    .release-stock {
+        min-height:
+            18px;
+
+        margin-top:
+            4px;
+
+        color:
+            #16a34a;
+
+        font-size:
+            10px;
+
+        font-weight:
+            800;
+    }
+
+    .release-stock.out {
+        color:
+            #dc2626;
+    }
+
+
+    /* =========================================================
+       ACCIONES
+    ========================================================= */
+
+    .release-actions {
+        margin-top:
+            12px;
+
+        display:
+            grid;
+
+        grid-template-columns:
+            1fr
+            44px;
+
+        gap:
+            7px;
+    }
+
+    .release-details {
+        min-height:
+            42px;
+
+        padding:
+            0
+            12px;
+
+        display:
+            flex;
+
+        align-items:
+            center;
+
+        justify-content:
+            center;
+
+        border-radius:
+            4px;
+
+        background:
+            #2563eb;
+
+        color:
+            #ffffff;
+
+        text-decoration:
+            none;
+
+        font-size:
+            11px;
+
+        font-weight:
+            900;
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .release-details:hover {
+        background:
+            #174fc7;
+
+        color:
+            #ffffff;
+    }
+
+    .release-cart-form {
+        margin:
+            0;
+    }
+
+    .release-cart {
+        width:
+            44px;
+
+        height:
+            42px;
+
+        border:
+            none;
+
+        border-radius:
+            4px;
+
+        background:
+            #111827;
+
+        color:
+            #ffffff;
+
+        cursor:
+            pointer;
+
+        font-size:
+            17px;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .release-cart:hover {
+        background:
+            #dc2626;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .release-cart:disabled {
+        background:
+            #cbd5e1;
+
+        color:
+            #64748b;
+
+        cursor:
+            not-allowed;
+
+        transform:
+            none;
+    }
+
+
+    /* =========================================================
+       FLECHAS
+    ========================================================= */
+
+    .releases-arrow {
+        position:
+            absolute;
+
+        z-index:
+            10;
+
+        top:
+            50%;
+
+        transform:
+            translateY(-50%);
+
+        width:
+            46px;
+
+        height:
+            64px;
+
+        border:
+            none;
+
+        border-radius:
+            5px;
+
+        background:
+            rgba(17,24,39,0.95);
+
+        color:
+            #ffffff;
+
+        cursor:
+            pointer;
+
+        font-size:
+            31px;
+
+        box-shadow:
+            0
+            6px
+            20px
+            rgba(15,23,42,0.20);
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .releases-arrow:hover {
+        background:
+            #dc2626;
+    }
+
+    .releases-arrow-left {
+        left:
+            -15px;
+    }
+
+    .releases-arrow-right {
+        right:
+            -15px;
+    }
+
+
+    /* =========================================================
+       SIN RESULTADOS
+    ========================================================= */
+
+    .releases-filter-empty {
+        display:
+            none;
+
+        width:
+            100%;
+
+        margin-top:
+            5px;
+
+        padding:
+            40px
+            20px;
+
+        border:
+            1px dashed
+            #cbd5e1;
+
+        border-radius:
+            8px;
+
+        background:
+            #ffffff;
+
+        color:
+            #64748b;
+
+        text-align:
+            center;
+    }
+
+    .releases-filter-empty strong {
+        display:
+            block;
+
+        margin-bottom:
+            6px;
+
+        color:
+            #111827;
+
+        font-size:
+            16px;
+    }
+
+
+    /* =========================================================
+       VACÍO GENERAL
+    ========================================================= */
+
+    .releases-empty {
+        width:
+            100%;
+
+        padding:
+            55px
+            20px;
+
+        border:
+            1px solid
+            #d8dee7;
+
+        border-radius:
+            8px;
+
+        background:
+            #ffffff;
+
+        color:
+            #64748b;
+
+        text-align:
+            center;
+    }
+
+    .releases-empty-icon {
+        margin-bottom:
+            12px;
+
+        font-size:
+            44px;
+    }
+
+    .releases-empty strong {
+        display:
+            block;
+
+        margin-bottom:
+            6px;
+
+        color:
+            #111827;
+
+        font-size:
+            18px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 950px) {
+
+        .releases-feature-info {
+            width:
+                60%;
+        }
+
+        .releases-feature-visual {
+            width:
+                35%;
+
+            min-width:
+                220px;
+        }
+
+        .releases-feature-title {
+            font-size:
+                35px;
+        }
+
+        .release-card {
+            flex-basis:
+                215px;
+        }
+
+        .releases-arrow-left {
+            left:
+                2px;
+        }
+
+        .releases-arrow-right {
+            right:
+                2px;
+        }
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .releases-home {
+            padding:
+                44px
+                0
+                52px;
+        }
+
+        .releases-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .releases-heading {
+            flex-direction:
+                column;
+
+            align-items:
+                flex-start;
+        }
+
+        .releases-title {
+            font-size:
+                25px;
+        }
+
+        .releases-feature-content {
+            min-height:
+                340px;
+
+            padding:
+                30px
+                24px;
+        }
+
+        .releases-feature-info {
+            width:
+                100%;
+        }
+
+        .releases-feature-title {
+            font-size:
+                30px;
+        }
+
+        .releases-feature-visual {
+            position:
+                absolute;
+
+            width:
+                180px;
+
+            min-width:
+                180px;
+
+            height:
+                180px;
+
+            right:
+                10px;
+
+            bottom:
+                10px;
+
+            opacity:
+                0.32;
+        }
+
+        .releases-feature-image {
+            height:
+                180px;
+        }
+
+        .release-card {
+            flex-basis:
+                195px;
+
+            min-height:
+                445px;
+        }
+
+        .release-image {
+            height:
+                230px;
+        }
+
+        .releases-arrow {
+            width:
+                38px;
+
+            height:
+                54px;
+
+            font-size:
+                26px;
+        }
+    }
+
+</style>
+
+
+<section class="releases-home"
+         id="nuevos-proximos">
+
+    <div class="releases-container">
+
+
+        <!-- =====================================================
+             CABECERA
+        ====================================================== -->
+
+        <div class="releases-heading">
+
+            <div class="releases-heading-left">
+
+                <div class="releases-kicker">
+                    NUEVOS Y PRÓXIMOS
+                </div>
+
+                <h2 class="releases-title">
+                    Juegos para tener en el radar
+                </h2>
+
+                <p class="releases-subtitle">
+                    Explora novedades y títulos destacados
+                    disponibles en el catálogo de BigGame.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="Videojuegos"
+               class="releases-view-all">
+
+                Explorar videojuegos →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             DESTACADO
+        ====================================================== -->
+
+        @if (mainRelease != null)
+        {
+            <div class="releases-feature">
+
+                <div class="releases-feature-content">
+
+                    <div class="releases-feature-info">
+
+                        <div class="releases-feature-label">
+                            DESTACADO BIGGAME
+                        </div>
+
+                        <h3 class="releases-feature-title">
+                            @mainRelease.Name
+                        </h3>
+
+                        <p class="releases-feature-description">
+                            @if (!string.IsNullOrWhiteSpace(mainRelease.Description))
+                            {
+                                @mainRelease.Description
+                            }
+                            else
+                            {
+                                @:Descubre uno de los títulos destacados disponibles en BigGame.
+                            }
+                        </p>
+
+
+                        <div class="releases-feature-actions">
+
+                            <a asp-controller="Products"
+                               asp-action="Details"
+                               asp-route-id="@mainRelease.Id"
+                               class="releases-feature-button">
+
+                                Ver producto
+
+                            </a>
+
+
+                            <a href="#catalogo-lanzamientos"
+                               class="releases-feature-button releases-feature-button-secondary">
+
+                                Ver más títulos
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="releases-feature-visual">
+
+                        <div class="releases-feature-glow">
+                        </div>
+
+
+                        @if (!string.IsNullOrWhiteSpace(mainRelease.ImageUrl))
+                        {
+                            <img src="@mainRelease.ImageUrl"
+                                 alt="@mainRelease.Name"
+                                 class="releases-feature-image"
+                                 loading="lazy"
+                                 onerror="
+                                    this.style.display='none';
+                                    this.nextElementSibling.style.display='flex';
+                                 " />
+
+                            <div class="releases-feature-placeholder"
+                                 style="display:none;">
+
+                                🔥
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="releases-feature-placeholder">
+                                🔥
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+
+        <!-- =====================================================
+             FILTROS
+        ====================================================== -->
+
+        <div class="releases-tabs"
+             id="releasesTabs">
+
+            <button type="button"
+                    class="releases-tab active"
+                    data-release-filter="todos">
+
+                Todos
+
+            </button>
+
+
+            <button type="button"
+                    class="releases-tab"
+                    data-release-filter="playstation">
+
+                PlayStation 5
+
+            </button>
+
+
+            <button type="button"
+                    class="releases-tab"
+                    data-release-filter="xbox">
+
+                Xbox
+
+            </button>
+
+
+            <button type="button"
+                    class="releases-tab"
+                    data-release-filter="nintendo">
+
+                Nintendo
+
+            </button>
+
+
+            <button type="button"
+                    class="releases-tab"
+                    data-release-filter="pc">
+
+                PC
+
+            </button>
+
+
+            <button type="button"
+                    class="releases-tab"
+                    data-release-filter="accion">
+
+                Acción
+
+            </button>
+
+
+            <button type="button"
+                    class="releases-tab"
+                    data-release-filter="rpg">
+
+                RPG
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             PRODUCTOS
+        ====================================================== -->
+
+        <div id="catalogo-lanzamientos">
+
+            @if (releaseProducts.Any())
+            {
+                <div class="releases-carousel">
+
+                    <button type="button"
+                            class="releases-arrow releases-arrow-left"
+                            id="releasesPrevious"
+                            aria-label="Productos anteriores">
+
+                        ‹
+
+                    </button>
+
+
+                    <div class="releases-products"
+                         id="releasesProducts">
+
+                        @foreach (var product in releaseProducts)
+                        {
+                            var platform =
+                                ReleasePlatform(product);
+
+                            var platformLabel =
+                                ReleasePlatformLabel(product);
+
+                            var genre =
+                                ReleaseGenre(product);
+
+                            var genreLabel =
+                                ReleaseGenreLabel(product);
+
+                            var icon =
+                                ReleaseIcon(product);
+
+
+                            <article class="release-card"
+                                     data-release-platform="@platform"
+                                     data-release-genre="@genre">
+
+
+                                <!-- IMAGEN -->
+
+                                <div class="release-image">
+
+                                    <span class="release-platform-badge">
+                                        @platformLabel
+                                    </span>
+
+
+                                    <span class="release-new-badge">
+                                        Destacado
+                                    </span>
+
+
+                                    @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl"
+                                             alt="@product.Name"
+                                             loading="lazy"
+                                             onerror="
+                                                this.style.display='none';
+                                                this.nextElementSibling.style.display='flex';
+                                             " />
+
+                                        <div class="release-placeholder"
+                                             style="display:none;">
+
+                                            @icon
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="release-placeholder">
+                                            @icon
+                                        </div>
+                                    }
+
+                                </div>
+
+
+                                <!-- INFORMACIÓN -->
+
+                                <div class="release-info">
+
+                                    <div class="release-genre">
+                                        @genreLabel
+                                    </div>
+
+
+                                    <div class="release-name">
+                                        @product.Name
+                                    </div>
+
+
+                                    <div class="release-price">
+                                        Bs @product.Price.ToString("N2")
+                                    </div>
+
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <div class="release-stock">
+
+                                            @product.Stock disponibles
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="release-stock out">
+                                            Agotado
+                                        </div>
+                                    }
+
+
+                                    <!-- ACCIONES -->
+
+                                    <div class="release-actions">
+
+                                        <a asp-controller="Products"
+                                           asp-action="Details"
+                                           asp-route-id="@product.Id"
+                                           class="release-details">
+
+                                            Ver producto
+
+                                        </a>
+
+
+                                        @if (product.Stock > 0)
+                                        {
+                                            <form asp-controller="Cart"
+                                                  asp-action="Add"
+                                                  method="post"
+                                                  class="release-cart-form">
+
+                                                @Html.AntiForgeryToken()
+
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@product.Id" />
+
+                                                <button type="submit"
+                                                        class="release-cart"
+                                                        title="Agregar al carrito"
+                                                        aria-label="Agregar @product.Name al carrito">
+
+                                                    🛒
+
+                                                </button>
+
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <button type="button"
+                                                    class="release-cart"
+                                                    disabled
+                                                    title="Producto agotado">
+
+                                                🛒
+
+                                            </button>
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+                        }
+
+                    </div>
+
+
+                    <button type="button"
+                            class="releases-arrow releases-arrow-right"
+                            id="releasesNext"
+                            aria-label="Más productos">
+
+                        ›
+
+                    </button>
+
+                </div>
+
+
+                <div class="releases-filter-empty"
+                     id="releasesFilterEmpty">
+
+                    <strong>
+                        No hay títulos en esta categoría
+                    </strong>
+
+                    <span>
+                        Prueba con otra plataforma o género.
+                    </span>
+
+                </div>
+            }
+            else
+            {
+                <div class="releases-empty">
+
+                    <div class="releases-empty-icon">
+                        🔥
+                    </div>
+
+                    <strong>
+                        Próximamente más novedades
+                    </strong>
+
+                    <span>
+                        Estamos preparando nuevos títulos para BigGame.
+                    </span>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const row =
+            document.getElementById(
+                "releasesProducts"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "releasesPrevious"
+            );
+
+        const nextButton =
+            document.getElementById(
+                "releasesNext"
+            );
+
+        const tabs =
+            Array.from(
+                document.querySelectorAll(
+                    ".releases-tab"
+                )
+            );
+
+        const emptyMessage =
+            document.getElementById(
+                "releasesFilterEmpty"
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        /* =====================================================
+           FLECHA IZQUIERDA
+        ====================================================== */
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: -735,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FLECHA DERECHA
+        ====================================================== */
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: 735,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FILTROS
+        ====================================================== */
+
+        tabs.forEach(
+            function (tab) {
+
+                tab.addEventListener(
+                    "click",
+                    function () {
+
+                        tabs.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+
+                        tab.classList.add(
+                            "active"
+                        );
+
+
+                        const filter =
+                            tab.dataset.releaseFilter
+                            || "todos";
+
+
+                        const cards =
+                            Array.from(
+                                row.querySelectorAll(
+                                    ".release-card"
+                                )
+                            );
+
+
+                        let visibleCount =
+                            0;
+
+
+                        cards.forEach(
+                            function (card) {
+
+                                const platform =
+                                    card.dataset.releasePlatform
+                                    || "";
+
+                                const genre =
+                                    card.dataset.releaseGenre
+                                    || "";
+
+
+                                let visible =
+                                    false;
+
+
+                                if (filter === "todos")
+                                {
+                                    visible =
+                                        true;
+                                }
+                                else if (
+                                    filter === "playstation"
+                                    || filter === "xbox"
+                                    || filter === "nintendo"
+                                    || filter === "pc"
+                                )
+                                {
+                                    visible =
+                                        platform === filter;
+                                }
+                                else
+                                {
+                                    visible =
+                                        genre === filter;
+                                }
+
+
+                                card.style.display =
+                                    visible
+                                    ? "flex"
+                                    : "none";
+
+
+                                if (visible) {
+                                    visibleCount++;
+                                }
+
+                            }
+                        );
+
+
+                        if (emptyMessage) {
+
+                            emptyMessage.style.display =
+                                visibleCount === 0
+                                ? "block"
+                                : "none";
+
+                        }
+
+
+                        row.scrollTo({
+                            left: 0,
+                            behavior: "smooth"
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+    })();
+
+</script>

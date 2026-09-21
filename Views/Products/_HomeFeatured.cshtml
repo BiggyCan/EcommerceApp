@@ -1,0 +1,1018 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    var featuredProducts =
+        products
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(18)
+            .ToList();
+
+    string ProductImage(EcommerceApp.Models.Product product)
+    {
+        if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+        {
+            return product.ImageUrl;
+        }
+
+        return "";
+    }
+
+    string ProductGroup(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        var category =
+            (product.Category ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (
+            category.Contains("trading")
+            || category.Contains("card")
+            || name.Contains("pokémon")
+            || name.Contains("pokemon")
+            || name.Contains("yu-gi-oh")
+        )
+        {
+            return "cartas";
+        }
+
+        if (
+            category.Contains("console")
+            || name.Contains("playstation 5 slim")
+            || name.Contains("xbox series")
+            || name.Contains("nintendo switch 2")
+        )
+        {
+            return "consolas";
+        }
+
+        if (
+            category.Contains("access")
+            || name.Contains("controller")
+            || name.Contains("control")
+            || name.Contains("headset")
+            || name.Contains("dualsense")
+        )
+        {
+            return "accesorios";
+        }
+
+        if (
+            category.Contains("collect")
+            || name.Contains("funko")
+            || name.Contains("figure")
+            || name.Contains("figura")
+            || name.Contains("plush")
+        )
+        {
+            return "coleccionables";
+        }
+
+        return "videojuegos";
+    }
+
+    string GroupLabel(EcommerceApp.Models.Product product)
+    {
+        return ProductGroup(product) switch
+        {
+            "cartas" => "Cartas coleccionables",
+            "consolas" => "Consolas",
+            "accesorios" => "Accesorios",
+            "coleccionables" => "Coleccionables",
+            _ => "Videojuegos"
+        };
+    }
+}
+
+<style>
+
+    .featured-home {
+        width: 100%;
+        padding: 52px 0 58px;
+        background: #ffffff;
+        color: #111111;
+    }
+
+    .featured-container {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+        margin: 0 auto;
+    }
+
+    .featured-heading {
+        margin-bottom: 22px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .featured-heading-left {
+        min-width: 0;
+    }
+
+    .featured-kicker {
+        margin-bottom: 6px;
+
+        color: #e11d2e;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .featured-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.08;
+
+        font-weight: 900;
+
+        letter-spacing: -0.8px;
+    }
+
+    .featured-subtitle {
+        margin: 8px 0 0;
+
+        color: #64748b;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .featured-view-all {
+        flex: 0 0 auto;
+
+        color: #111111;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .featured-view-all:hover {
+        color: #e11d2e;
+    }
+
+    .featured-tabs {
+        margin-bottom: 23px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+
+        overflow-x: auto;
+
+        scrollbar-width: none;
+    }
+
+    .featured-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .featured-tab {
+        flex: 0 0 auto;
+
+        min-height: 39px;
+
+        padding: 0 17px;
+
+        border: 1px solid #cbd5e1;
+        border-radius: 5px;
+
+        background: #ffffff;
+
+        color: #111827;
+
+        cursor: pointer;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        white-space: nowrap;
+
+        transition:
+            background 0.18s ease,
+            color 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .featured-tab:hover {
+        border-color: #111827;
+
+        transform: translateY(-1px);
+    }
+
+    .featured-tab.active {
+        border-color: #111827;
+
+        background: #111827;
+
+        color: #ffffff;
+    }
+
+    .featured-carousel {
+        position: relative;
+    }
+
+    .featured-products {
+        display: flex;
+
+        gap: 15px;
+
+        overflow-x: auto;
+
+        padding: 3px 4px 20px;
+
+        scroll-behavior: smooth;
+        scroll-snap-type: x proximity;
+
+        scrollbar-width: none;
+    }
+
+    .featured-products::-webkit-scrollbar {
+        display: none;
+    }
+
+    .featured-card {
+        flex: 0 0 230px;
+
+        min-height: 475px;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        scroll-snap-align: start;
+
+        border: 1px solid #d8dee7;
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .featured-card:hover {
+        transform: translateY(-4px);
+
+        border-color: #b7c2d0;
+
+        box-shadow:
+            0 12px 28px
+            rgba(15, 23, 42, 0.11);
+    }
+
+    .featured-image {
+        position: relative;
+
+        width: 100%;
+        height: 270px;
+
+        padding: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #f8fafc;
+    }
+
+    .featured-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition: transform 0.25s ease;
+    }
+
+    .featured-card:hover .featured-image img {
+        transform: scale(1.035);
+    }
+
+    .featured-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #14284e,
+                #071126
+            );
+
+        font-size: 60px;
+    }
+
+    .featured-badge {
+        position: absolute;
+
+        top: 10px;
+        left: 10px;
+
+        padding: 6px 9px;
+
+        border-radius: 4px;
+
+        background: #e11d2e;
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.5px;
+
+        text-transform: uppercase;
+    }
+
+    .featured-info {
+        flex: 1;
+
+        padding: 14px 15px 15px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .featured-category {
+        margin-bottom: 6px;
+
+        color: #2563eb;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.55px;
+
+        text-transform: uppercase;
+    }
+
+    .featured-name {
+        min-height: 43px;
+
+        margin-bottom: 10px;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+    .featured-price {
+        margin-top: auto;
+
+        color: #111827;
+
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .featured-stock {
+        min-height: 18px;
+
+        margin-top: 4px;
+
+        color: #16a34a;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .featured-stock.out {
+        color: #dc2626;
+    }
+
+    .featured-actions {
+        margin-top: 12px;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            44px;
+
+        gap: 7px;
+    }
+
+    .featured-details {
+        min-height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 12px;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition: background 0.18s ease;
+    }
+
+    .featured-details:hover {
+        background: #174fc7;
+        color: #ffffff;
+    }
+
+    .featured-cart-form {
+        margin: 0;
+    }
+
+    .featured-cart {
+        width: 44px;
+        height: 42px;
+
+        border: none;
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 17px;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .featured-cart:hover {
+        background: #e11d2e;
+
+        transform: translateY(-1px);
+    }
+
+    .featured-cart:disabled {
+        background: #cbd5e1;
+
+        color: #64748b;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+    .featured-arrow {
+        position: absolute;
+
+        z-index: 10;
+
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        width: 46px;
+        height: 64px;
+
+        border: none;
+        border-radius: 5px;
+
+        background:
+            rgba(17, 24, 39, 0.94);
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 31px;
+
+        box-shadow:
+            0 6px 20px
+            rgba(15, 23, 42, 0.20);
+
+        transition: background 0.18s ease;
+    }
+
+    .featured-arrow:hover {
+        background: #e11d2e;
+    }
+
+    .featured-arrow-left {
+        left: -15px;
+    }
+
+    .featured-arrow-right {
+        right: -15px;
+    }
+
+    .featured-empty {
+        width: 100%;
+
+        padding: 55px 20px;
+
+        border: 1px solid #d8dee7;
+        border-radius: 8px;
+
+        background: #f8fafc;
+
+        text-align: center;
+
+        color: #64748b;
+    }
+
+    .featured-empty-icon {
+        margin-bottom: 12px;
+
+        font-size: 42px;
+    }
+
+    .featured-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 18px;
+    }
+
+    @@media (max-width: 900px) {
+
+        .featured-title {
+            font-size: 27px;
+        }
+
+        .featured-card {
+            flex-basis: 215px;
+        }
+
+        .featured-arrow-left {
+            left: 2px;
+        }
+
+        .featured-arrow-right {
+            right: 2px;
+        }
+    }
+
+    @@media (max-width: 650px) {
+
+        .featured-home {
+            padding: 40px 0 48px;
+        }
+
+        .featured-container {
+            width: calc(100% - 22px);
+        }
+
+        .featured-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .featured-title {
+            font-size: 25px;
+        }
+
+        .featured-card {
+            flex-basis: 195px;
+
+            min-height: 440px;
+        }
+
+        .featured-image {
+            height: 230px;
+        }
+
+        .featured-arrow {
+            width: 38px;
+            height: 54px;
+
+            font-size: 26px;
+        }
+    }
+
+</style>
+
+
+<section class="featured-home"
+         id="productos-destacados">
+
+    <div class="featured-container">
+
+        <div class="featured-heading">
+
+            <div class="featured-heading-left">
+
+                <div class="featured-kicker">
+                    BIGGAME
+                </div>
+
+                <h2 class="featured-title">
+                    Productos destacados
+                </h2>
+
+                <p class="featured-subtitle">
+                    Descubre videojuegos, consolas, accesorios,
+                    cartas y coleccionables seleccionados.
+                </p>
+
+            </div>
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               class="featured-view-all">
+
+                Ver todos →
+
+            </a>
+
+        </div>
+
+        <div class="featured-tabs"
+             id="featuredTabs">
+
+            <button type="button"
+                    class="featured-tab active"
+                    data-featured-filter="todos">
+
+                Todos
+
+            </button>
+
+            <button type="button"
+                    class="featured-tab"
+                    data-featured-filter="videojuegos">
+
+                Videojuegos
+
+            </button>
+
+            <button type="button"
+                    class="featured-tab"
+                    data-featured-filter="consolas">
+
+                Consolas
+
+            </button>
+
+            <button type="button"
+                    class="featured-tab"
+                    data-featured-filter="accesorios">
+
+                Accesorios
+
+            </button>
+
+            <button type="button"
+                    class="featured-tab"
+                    data-featured-filter="cartas">
+
+                Cartas
+
+            </button>
+
+            <button type="button"
+                    class="featured-tab"
+                    data-featured-filter="coleccionables">
+
+                Coleccionables
+
+            </button>
+
+        </div>
+
+        @if (featuredProducts.Any())
+        {
+            <div class="featured-carousel">
+
+                <button type="button"
+                        class="featured-arrow featured-arrow-left"
+                        id="featuredPrevious"
+                        aria-label="Productos anteriores">
+
+                    ‹
+
+                </button>
+
+                <div class="featured-products"
+                     id="featuredProducts">
+
+                    @foreach (var product in featuredProducts)
+                    {
+                        var image =
+                            ProductImage(product);
+
+                        var group =
+                            ProductGroup(product);
+
+                        var groupLabel =
+                            GroupLabel(product);
+
+                        <article class="featured-card"
+                                 data-featured-group="@group">
+
+                            <div class="featured-image">
+
+                                <span class="featured-badge">
+                                    Destacado
+                                </span>
+
+                                @if (!string.IsNullOrWhiteSpace(image))
+                                {
+                                    <img src="@image"
+                                         alt="@product.Name"
+                                         loading="lazy"
+                                         onerror="
+                                            this.style.display='none';
+                                            this.nextElementSibling.style.display='flex';
+                                         " />
+
+                                    <div class="featured-placeholder"
+                                         style="display:none;">
+                                        🎮
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="featured-placeholder">
+                                        🎮
+                                    </div>
+                                }
+
+                            </div>
+
+                            <div class="featured-info">
+
+                                <div class="featured-category">
+                                    @groupLabel
+                                </div>
+
+                                <div class="featured-name">
+                                    @product.Name
+                                </div>
+
+                                <div class="featured-price">
+                                    Bs @product.Price.ToString("N2")
+                                </div>
+
+                                @if (product.Stock > 0)
+                                {
+                                    <div class="featured-stock">
+                                        @product.Stock disponibles
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="featured-stock out">
+                                        Agotado
+                                    </div>
+                                }
+
+                                <div class="featured-actions">
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="featured-details">
+
+                                        Ver producto
+
+                                    </a>
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-controller="Cart"
+                                              asp-action="Add"
+                                              method="post"
+                                              class="featured-cart-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@product.Id" />
+
+                                            <button type="submit"
+                                                    class="featured-cart"
+                                                    title="Agregar al carrito"
+                                                    aria-label="Agregar @product.Name al carrito">
+
+                                                🛒
+
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="featured-cart"
+                                                disabled
+                                                title="Producto agotado">
+
+                                            🛒
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
+
+                <button type="button"
+                        class="featured-arrow featured-arrow-right"
+                        id="featuredNext"
+                        aria-label="Más productos">
+
+                    ›
+
+                </button>
+
+            </div>
+        }
+        else
+        {
+            <div class="featured-empty">
+
+                <div class="featured-empty-icon">
+                    🎮
+                </div>
+
+                <strong>
+                    Estamos preparando más productos
+                </strong>
+
+                <span>
+                    Próximamente encontrarás nuevos artículos destacados.
+                </span>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const row =
+            document.getElementById(
+                "featuredProducts"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "featuredPrevious"
+            );
+
+        const nextButton =
+            document.getElementById(
+                "featuredNext"
+            );
+
+        const tabs =
+            Array.from(
+                document.querySelectorAll(
+                    ".featured-tab"
+                )
+            );
+
+        if (!row) {
+            return;
+        }
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: -735,
+                        behavior: "smooth"
+                    });
+                }
+            );
+        }
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: 735,
+                        behavior: "smooth"
+                    });
+                }
+            );
+        }
+
+        tabs.forEach(
+            function (tab) {
+
+                tab.addEventListener(
+                    "click",
+                    function () {
+
+                        tabs.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+                            }
+                        );
+
+                        tab.classList.add(
+                            "active"
+                        );
+
+                        const filter =
+                            tab.dataset.featuredFilter
+                            || "todos";
+
+                        const cards =
+                            Array.from(
+                                row.querySelectorAll(
+                                    ".featured-card"
+                                )
+                            );
+
+                        cards.forEach(
+                            function (card) {
+
+                                const group =
+                                    card.dataset.featuredGroup
+                                    || "";
+
+                                if (
+                                    filter === "todos"
+                                    ||
+                                    group === filter
+                                )
+                                {
+                                    card.style.display =
+                                        "flex";
+                                }
+                                else
+                                {
+                                    card.style.display =
+                                        "none";
+                                }
+                            }
+                        );
+
+                        row.scrollTo({
+                            left: 0,
+                            behavior: "smooth"
+                        });
+                    }
+                );
+            }
+        );
+
+    })();
+
+</script>

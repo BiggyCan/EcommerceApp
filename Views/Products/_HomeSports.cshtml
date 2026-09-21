@@ -1,0 +1,1431 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    bool IsSportsProduct(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        var category =
+            (product.Category ?? string.Empty)
+            .ToLowerInvariant();
+
+        return
+            category.Contains("sport")
+            || name.Contains("nba")
+            || name.Contains("fifa")
+            || name.Contains("fc 27")
+            || name.Contains("fc27")
+            || name.Contains("madden")
+            || name.Contains("nhl")
+            || name.Contains("football")
+            || name.Contains("soccer")
+            || name.Contains("basketball")
+            || name.Contains("baseball")
+            || name.Contains("mlb")
+            || name.Contains("2k27");
+    }
+
+    string SportsGroup(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (
+            name.Contains("nba")
+            || name.Contains("basket")
+            || name.Contains("2k27")
+        )
+        {
+            return "basket";
+        }
+
+        if (
+            name.Contains("fc")
+            || name.Contains("fifa")
+            || name.Contains("soccer")
+        )
+        {
+            return "futbol";
+        }
+
+        if (
+            name.Contains("madden")
+            || name.Contains("football")
+        )
+        {
+            return "americano";
+        }
+
+        if (
+            name.Contains("nhl")
+            || name.Contains("hockey")
+        )
+        {
+            return "hockey";
+        }
+
+        if (
+            name.Contains("baseball")
+            || name.Contains("mlb")
+        )
+        {
+            return "baseball";
+        }
+
+        return "otros";
+    }
+
+    string SportsLabel(EcommerceApp.Models.Product product)
+    {
+        return SportsGroup(product) switch
+        {
+            "basket" => "Baloncesto",
+            "futbol" => "Fútbol",
+            "americano" => "Fútbol americano",
+            "hockey" => "Hockey",
+            "baseball" => "Béisbol",
+            _ => "Deportes"
+        };
+    }
+
+    string SportsIcon(EcommerceApp.Models.Product product)
+    {
+        return SportsGroup(product) switch
+        {
+            "basket" => "🏀",
+            "futbol" => "⚽",
+            "americano" => "🏈",
+            "hockey" => "🏒",
+            "baseball" => "⚾",
+            _ => "🏆"
+        };
+    }
+
+    var sportsProducts =
+        products
+            .Where(IsSportsProduct)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(18)
+            .ToList();
+}
+
+<style>
+
+    /* =========================================================
+       DEPORTES BIGGAME
+    ========================================================= */
+
+    .sports-home {
+        width: 100%;
+        padding: 56px 0 62px;
+        background: #ffffff;
+        color: #111111;
+    }
+
+    .sports-container {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       CABECERA
+    ========================================================= */
+
+    .sports-heading {
+        margin-bottom: 24px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .sports-heading-left {
+        min-width: 0;
+    }
+
+    .sports-kicker {
+        margin-bottom: 6px;
+
+        color: #ea580c;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .sports-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.08;
+
+        font-weight: 900;
+        letter-spacing: -0.8px;
+    }
+
+    .sports-subtitle {
+        margin: 8px 0 0;
+
+        color: #64748b;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .sports-view-all {
+        flex: 0 0 auto;
+
+        color: #111111;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .sports-view-all:hover {
+        color: #ea580c;
+    }
+
+
+    /* =========================================================
+       CATEGORÍAS
+    ========================================================= */
+
+    .sports-categories {
+        margin-bottom: 25px;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(6, 1fr);
+
+        gap: 12px;
+    }
+
+    .sports-category {
+        min-height: 112px;
+
+        padding: 15px;
+
+        border: 1px solid #dbe1e9;
+        border-radius: 8px;
+
+        background: #f8fafc;
+
+        color: #111827;
+
+        cursor: pointer;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 8px;
+
+        transition:
+            transform 0.18s ease,
+            border-color 0.18s ease,
+            background 0.18s ease,
+            box-shadow 0.18s ease;
+    }
+
+    .sports-category:hover {
+        transform: translateY(-3px);
+
+        background: #ffffff;
+
+        border-color: #fdba74;
+
+        box-shadow:
+            0 9px 24px
+            rgba(15, 23, 42, 0.08);
+    }
+
+    .sports-category.active {
+        background: #fff7ed;
+        border-color: #ea580c;
+    }
+
+    .sports-category-icon {
+        font-size: 32px;
+    }
+
+    .sports-category-name {
+        font-size: 11px;
+        font-weight: 900;
+        text-align: center;
+    }
+
+
+    /* =========================================================
+       BANNER
+    ========================================================= */
+
+    .sports-banner {
+        position: relative;
+
+        min-height: 210px;
+
+        margin-bottom: 27px;
+
+        overflow: hidden;
+
+        border-radius: 11px;
+
+        background:
+            radial-gradient(
+                circle at 82% 50%,
+                rgba(255, 255, 255, 0.18),
+                transparent 27%
+            ),
+            linear-gradient(
+                110deg,
+                #421006 0%,
+                #c2410c 50%,
+                #f97316 100%
+            );
+
+        color: #ffffff;
+
+        box-shadow:
+            0 10px 28px
+            rgba(15, 23, 42, 0.12);
+    }
+
+    .sports-banner-content {
+        position: relative;
+
+        z-index: 3;
+
+        min-height: 210px;
+
+        padding:
+            34px
+            40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 30px;
+    }
+
+    .sports-banner-left {
+        max-width: 700px;
+    }
+
+    .sports-banner-label {
+        margin-bottom: 8px;
+
+        color: #fed7aa;
+
+        font-size: 10px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .sports-banner-title {
+        margin:
+            0
+            0
+            10px;
+
+        font-size: 36px;
+        line-height: 1.04;
+
+        font-weight: 900;
+        letter-spacing: -1px;
+    }
+
+    .sports-banner-description {
+        margin: 0;
+
+        color:
+            rgba(255,255,255,0.86);
+
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .sports-banner-icons {
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+
+        gap: 13px;
+
+        padding-right: 30px;
+    }
+
+    .sports-banner-icon {
+        width: 85px;
+        height: 85px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border:
+            2px solid
+            rgba(255,255,255,0.20);
+
+        border-radius: 50%;
+
+        background:
+            rgba(0,0,0,0.10);
+
+        font-size: 42px;
+
+        backdrop-filter: blur(4px);
+    }
+
+
+    /* =========================================================
+       CARRUSEL
+    ========================================================= */
+
+    .sports-carousel {
+        position: relative;
+    }
+
+    .sports-products {
+        display: flex;
+
+        gap: 15px;
+
+        overflow-x: auto;
+
+        padding:
+            3px
+            4px
+            20px;
+
+        scroll-behavior: smooth;
+
+        scroll-snap-type:
+            x proximity;
+
+        scrollbar-width: none;
+    }
+
+    .sports-products::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =========================================================
+       CARD
+    ========================================================= */
+
+    .sports-card {
+        flex:
+            0
+            0
+            230px;
+
+        min-height: 475px;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        scroll-snap-align: start;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .sports-card:hover {
+        transform: translateY(-4px);
+
+        border-color: #f1c39e;
+
+        box-shadow:
+            0
+            12px
+            28px
+            rgba(15,23,42,0.11);
+    }
+
+
+    /* =========================================================
+       IMAGEN
+    ========================================================= */
+
+    .sports-image {
+        position: relative;
+
+        width: 100%;
+        height: 270px;
+
+        padding: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #f8fafc;
+    }
+
+    .sports-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .sports-card:hover .sports-image img {
+        transform: scale(1.04);
+    }
+
+    .sports-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        background:
+            linear-gradient(
+                145deg,
+                #4c1d08,
+                #1f0c03
+            );
+
+        font-size: 62px;
+    }
+
+    .sports-badge {
+        position: absolute;
+
+        z-index: 4;
+
+        top: 10px;
+        left: 10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius: 4px;
+
+        background: #ea580c;
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       INFO
+    ========================================================= */
+
+    .sports-info {
+        flex: 1;
+
+        padding:
+            14px
+            15px
+            15px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sports-category-label {
+        margin-bottom: 6px;
+
+        color: #ea580c;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.55px;
+        text-transform: uppercase;
+    }
+
+    .sports-name {
+        min-height: 43px;
+
+        margin-bottom: 9px;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+    .sports-price {
+        margin-top: auto;
+
+        color: #111827;
+
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .sports-stock {
+        min-height: 18px;
+
+        margin-top: 4px;
+
+        color: #16a34a;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .sports-stock.out {
+        color: #dc2626;
+    }
+
+
+    /* =========================================================
+       ACCIONES
+    ========================================================= */
+
+    .sports-actions {
+        margin-top: 12px;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            44px;
+
+        gap: 7px;
+    }
+
+    .sports-details {
+        min-height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 12px;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .sports-details:hover {
+        background: #174fc7;
+
+        color: #ffffff;
+    }
+
+    .sports-cart-form {
+        margin: 0;
+    }
+
+    .sports-cart {
+        width: 44px;
+        height: 42px;
+
+        border: none;
+
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 17px;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .sports-cart:hover {
+        background: #ea580c;
+
+        transform: translateY(-1px);
+    }
+
+    .sports-cart:disabled {
+        background: #cbd5e1;
+
+        color: #64748b;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =========================================================
+       FLECHAS
+    ========================================================= */
+
+    .sports-arrow {
+        position: absolute;
+
+        z-index: 10;
+
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        width: 46px;
+        height: 64px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        background:
+            rgba(17,24,39,0.94);
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 31px;
+
+        box-shadow:
+            0
+            6px
+            20px
+            rgba(15,23,42,0.20);
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .sports-arrow:hover {
+        background: #ea580c;
+    }
+
+    .sports-arrow-left {
+        left: -15px;
+    }
+
+    .sports-arrow-right {
+        right: -15px;
+    }
+
+
+    /* =========================================================
+       VACÍO
+    ========================================================= */
+
+    .sports-empty {
+        width: 100%;
+
+        padding:
+            55px
+            20px;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #f8fafc;
+
+        text-align: center;
+
+        color: #64748b;
+    }
+
+    .sports-empty-icon {
+        margin-bottom: 12px;
+
+        font-size: 42px;
+    }
+
+    .sports-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 18px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 1000px) {
+
+        .sports-categories {
+            grid-template-columns:
+                repeat(3, 1fr);
+        }
+    }
+
+    @@media (max-width: 900px) {
+
+        .sports-title {
+            font-size: 27px;
+        }
+
+        .sports-card {
+            flex-basis: 215px;
+        }
+
+        .sports-arrow-left {
+            left: 2px;
+        }
+
+        .sports-arrow-right {
+            right: 2px;
+        }
+
+        .sports-banner-icons {
+            transform: scale(0.8);
+
+            transform-origin:
+                right center;
+        }
+    }
+
+    @@media (max-width: 650px) {
+
+        .sports-home {
+            padding:
+                42px
+                0
+                48px;
+        }
+
+        .sports-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .sports-heading {
+            flex-direction: column;
+
+            align-items: flex-start;
+        }
+
+        .sports-title {
+            font-size: 25px;
+        }
+
+        .sports-categories {
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+
+        .sports-banner-content {
+            min-height: 230px;
+
+            padding:
+                28px
+                24px;
+        }
+
+        .sports-banner-title {
+            font-size: 28px;
+        }
+
+        .sports-banner-icons {
+            display: none;
+        }
+
+        .sports-card {
+            flex-basis: 195px;
+
+            min-height: 440px;
+        }
+
+        .sports-image {
+            height: 230px;
+        }
+
+        .sports-arrow {
+            width: 38px;
+            height: 54px;
+
+            font-size: 26px;
+        }
+    }
+
+</style>
+
+
+<section class="sports-home"
+         id="deportes">
+
+    <div class="sports-container">
+
+        <div class="sports-heading">
+
+            <div class="sports-heading-left">
+
+                <div class="sports-kicker">
+                    DEPORTES
+                </div>
+
+                <h2 class="sports-title">
+                    Vive la emoción del deporte
+                </h2>
+
+                <p class="sports-subtitle">
+                    Fútbol, baloncesto, fútbol americano,
+                    hockey y otros títulos deportivos.
+                </p>
+
+            </div>
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="sports"
+               class="sports-view-all">
+
+                Ver todos →
+
+            </a>
+
+        </div>
+
+
+        <!-- CATEGORÍAS -->
+
+        <div class="sports-categories">
+
+            <button type="button"
+                    class="sports-category active"
+                    data-sports-filter="todos">
+
+                <span class="sports-category-icon">
+                    🏆
+                </span>
+
+                <span class="sports-category-name">
+                    Todos
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="sports-category"
+                    data-sports-filter="futbol">
+
+                <span class="sports-category-icon">
+                    ⚽
+                </span>
+
+                <span class="sports-category-name">
+                    Fútbol
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="sports-category"
+                    data-sports-filter="basket">
+
+                <span class="sports-category-icon">
+                    🏀
+                </span>
+
+                <span class="sports-category-name">
+                    Baloncesto
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="sports-category"
+                    data-sports-filter="americano">
+
+                <span class="sports-category-icon">
+                    🏈
+                </span>
+
+                <span class="sports-category-name">
+                    Fútbol americano
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="sports-category"
+                    data-sports-filter="hockey">
+
+                <span class="sports-category-icon">
+                    🏒
+                </span>
+
+                <span class="sports-category-name">
+                    Hockey
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="sports-category"
+                    data-sports-filter="baseball">
+
+                <span class="sports-category-icon">
+                    ⚾
+                </span>
+
+                <span class="sports-category-name">
+                    Béisbol
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- BANNER -->
+
+        <div class="sports-banner">
+
+            <div class="sports-banner-content">
+
+                <div class="sports-banner-left">
+
+                    <div class="sports-banner-label">
+                        BIGGAME SPORTS
+                    </div>
+
+                    <h3 class="sports-banner-title">
+                        Del estadio a tu pantalla
+                    </h3>
+
+                    <p class="sports-banner-description">
+                        Compite, crea tu equipo y disfruta
+                        los títulos deportivos disponibles
+                        en BigGame.
+                    </p>
+
+                </div>
+
+
+                <div class="sports-banner-icons">
+
+                    <div class="sports-banner-icon">
+                        ⚽
+                    </div>
+
+                    <div class="sports-banner-icon">
+                        🏀
+                    </div>
+
+                    <div class="sports-banner-icon">
+                        🏈
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PRODUCTOS -->
+
+        @if (sportsProducts.Any())
+        {
+            <div class="sports-carousel">
+
+                <button type="button"
+                        class="sports-arrow sports-arrow-left"
+                        id="sportsPrevious"
+                        aria-label="Productos anteriores">
+
+                    ‹
+
+                </button>
+
+
+                <div class="sports-products"
+                     id="sportsProducts">
+
+                    @foreach (var product in sportsProducts)
+                    {
+                        var group =
+                            SportsGroup(product);
+
+                        var label =
+                            SportsLabel(product);
+
+                        var icon =
+                            SportsIcon(product);
+
+
+                        <article class="sports-card"
+                                 data-sports-group="@group">
+
+                            <div class="sports-image">
+
+                                <span class="sports-badge">
+                                    @label
+                                </span>
+
+
+                                @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl"
+                                         alt="@product.Name"
+                                         loading="lazy"
+                                         onerror="
+                                            this.style.display='none';
+                                            this.nextElementSibling.style.display='flex';
+                                         " />
+
+                                    <div class="sports-placeholder"
+                                         style="display:none;">
+                                        @icon
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="sports-placeholder">
+                                        @icon
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div class="sports-info">
+
+                                <div class="sports-category-label">
+                                    @label
+                                </div>
+
+                                <div class="sports-name">
+                                    @product.Name
+                                </div>
+
+                                <div class="sports-price">
+                                    Bs @product.Price.ToString("N2")
+                                </div>
+
+
+                                @if (product.Stock > 0)
+                                {
+                                    <div class="sports-stock">
+                                        @product.Stock disponibles
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="sports-stock out">
+                                        Agotado
+                                    </div>
+                                }
+
+
+                                <div class="sports-actions">
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="sports-details">
+
+                                        Ver producto
+
+                                    </a>
+
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-controller="Cart"
+                                              asp-action="Add"
+                                              method="post"
+                                              class="sports-cart-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@product.Id" />
+
+                                            <button type="submit"
+                                                    class="sports-cart"
+                                                    title="Agregar al carrito"
+                                                    aria-label="Agregar @product.Name al carrito">
+
+                                                🛒
+
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="sports-cart"
+                                                disabled
+                                                title="Producto agotado">
+
+                                            🛒
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
+
+
+                <button type="button"
+                        class="sports-arrow sports-arrow-right"
+                        id="sportsNext"
+                        aria-label="Más productos">
+
+                    ›
+
+                </button>
+
+            </div>
+        }
+        else
+        {
+            <div class="sports-empty">
+
+                <div class="sports-empty-icon">
+                    🏆
+                </div>
+
+                <strong>
+                    Próximamente más juegos deportivos
+                </strong>
+
+                <span>
+                    Estamos preparando nuevos títulos para esta sección.
+                </span>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const row =
+            document.getElementById(
+                "sportsProducts"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "sportsPrevious"
+            );
+
+        const nextButton =
+            document.getElementById(
+                "sportsNext"
+            );
+
+        const buttons =
+            Array.from(
+                document.querySelectorAll(
+                    ".sports-category"
+                )
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        /* =====================================================
+           FLECHA IZQUIERDA
+        ====================================================== */
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: -735,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FLECHA DERECHA
+        ====================================================== */
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: 735,
+                        behavior: "smooth"
+                    });
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           FILTROS
+        ====================================================== */
+
+        buttons.forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        buttons.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                            }
+                        );
+
+
+                        button.classList.add(
+                            "active"
+                        );
+
+
+                        const filter =
+                            button.dataset.sportsFilter
+                            || "todos";
+
+
+                        const cards =
+                            Array.from(
+                                row.querySelectorAll(
+                                    ".sports-card"
+                                )
+                            );
+
+
+                        cards.forEach(
+                            function (card) {
+
+                                const group =
+                                    card.dataset.sportsGroup
+                                    || "";
+
+
+                                if (
+                                    filter === "todos"
+                                    ||
+                                    group === filter
+                                )
+                                {
+                                    card.style.display =
+                                        "flex";
+                                }
+                                else
+                                {
+                                    card.style.display =
+                                        "none";
+                                }
+
+                            }
+                        );
+
+
+                        row.scrollTo({
+                            left: 0,
+                            behavior: "smooth"
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+    })();
+
+</script>

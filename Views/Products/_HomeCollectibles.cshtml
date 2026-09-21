@@ -1,0 +1,1401 @@
+@model List<EcommerceApp.Models.Product>
+
+@{
+    var products =
+        Model ?? new List<EcommerceApp.Models.Product>();
+
+    bool IsCollectible(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        var category =
+            (product.Category ?? string.Empty)
+            .ToLowerInvariant();
+
+        return
+            category.Contains("collect")
+            || category.Contains("toy")
+            || category.Contains("figure")
+            || category.Contains("funko")
+            || category.Contains("plush")
+            || category.Contains("board")
+            || category.Contains("trading")
+            || category.Contains("card")
+            || name.Contains("funko")
+            || name.Contains("figure")
+            || name.Contains("figura")
+            || name.Contains("plush")
+            || name.Contains("peluche")
+            || name.Contains("pokémon")
+            || name.Contains("pokemon")
+            || name.Contains("yu-gi-oh")
+            || name.Contains("marvel legends")
+            || name.Contains("collectible")
+            || name.Contains("coleccionable");
+    }
+
+    string CollectibleGroup(EcommerceApp.Models.Product product)
+    {
+        var name =
+            (product.Name ?? string.Empty)
+            .ToLowerInvariant();
+
+        var category =
+            (product.Category ?? string.Empty)
+            .ToLowerInvariant();
+
+        if (
+            name.Contains("pokémon")
+            || name.Contains("pokemon")
+            || category.Contains("trading")
+            || category.Contains("card")
+        )
+        {
+            return "cartas";
+        }
+
+        if (
+            name.Contains("funko")
+        )
+        {
+            return "funko";
+        }
+
+        if (
+            name.Contains("plush")
+            || name.Contains("peluche")
+        )
+        {
+            return "peluches";
+        }
+
+        if (
+            name.Contains("board")
+            || name.Contains("juego de mesa")
+            || category.Contains("board")
+        )
+        {
+            return "mesa";
+        }
+
+        return "figuras";
+    }
+
+    string CollectibleLabel(EcommerceApp.Models.Product product)
+    {
+        return CollectibleGroup(product) switch
+        {
+            "cartas" => "Cartas coleccionables",
+            "funko" => "Funko",
+            "peluches" => "Peluches",
+            "mesa" => "Juegos de mesa",
+            _ => "Figuras"
+        };
+    }
+
+    string CollectibleIcon(EcommerceApp.Models.Product product)
+    {
+        return CollectibleGroup(product) switch
+        {
+            "cartas" => "🃏",
+            "funko" => "🧸",
+            "peluches" => "🐻",
+            "mesa" => "🎲",
+            _ => "🦸"
+        };
+    }
+
+    var collectibles =
+        products
+            .Where(IsCollectible)
+            .OrderByDescending(p => p.CreatedAt)
+            .Take(20)
+            .ToList();
+}
+
+<style>
+
+    /* =========================================================
+       COLECCIONABLES BIGGAME
+    ========================================================= */
+
+    .collectibles-home {
+        width: 100%;
+
+        padding:
+            55px
+            0
+            62px;
+
+        background: #ffffff;
+
+        color: #111111;
+    }
+
+    .collectibles-container {
+        width: calc(100% - 40px);
+        max-width: 1460px;
+
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+       ENCABEZADO
+    ========================================================= */
+
+    .collectibles-heading {
+        margin-bottom: 24px;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .collectibles-heading-left {
+        min-width: 0;
+    }
+
+    .collectibles-kicker {
+        margin-bottom: 6px;
+
+        color: #7c3aed;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .collectibles-title {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 32px;
+        line-height: 1.08;
+
+        font-weight: 900;
+
+        letter-spacing: -0.8px;
+    }
+
+    .collectibles-subtitle {
+        margin:
+            8px
+            0
+            0;
+
+        color: #64748b;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .collectibles-view-all {
+        flex: 0 0 auto;
+
+        color: #111111;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    .collectibles-view-all:hover {
+        color: #7c3aed;
+    }
+
+
+    /* =========================================================
+       CATEGORÍAS GRANDES
+    ========================================================= */
+
+    .collectibles-categories {
+        margin-bottom: 28px;
+
+        display: grid;
+
+        grid-template-columns:
+            repeat(5, 1fr);
+
+        gap: 12px;
+    }
+
+    .collectibles-category-card {
+        min-height: 125px;
+
+        padding:
+            18px
+            14px;
+
+        border:
+            1px solid #dbe1e9;
+
+        border-radius: 8px;
+
+        background: #f8fafc;
+
+        color: #111827;
+
+        cursor: pointer;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        gap: 9px;
+
+        text-align: center;
+
+        transition:
+            transform 0.18s ease,
+            border-color 0.18s ease,
+            box-shadow 0.18s ease,
+            background 0.18s ease;
+    }
+
+    .collectibles-category-card:hover {
+        transform:
+            translateY(-3px);
+
+        border-color: #b8a5f7;
+
+        background: #ffffff;
+
+        box-shadow:
+            0 9px 24px
+            rgba(15, 23, 42, 0.08);
+    }
+
+    .collectibles-category-card.active {
+        border-color: #7c3aed;
+
+        background: #f3e8ff;
+    }
+
+    .collectibles-category-icon {
+        font-size: 34px;
+        line-height: 1;
+    }
+
+    .collectibles-category-name {
+        font-size: 12px;
+        font-weight: 900;
+    }
+
+
+    /* =========================================================
+       BANNER
+    ========================================================= */
+
+    .collectibles-banner {
+        position: relative;
+
+        min-height: 190px;
+
+        margin-bottom: 28px;
+
+        overflow: hidden;
+
+        border-radius: 10px;
+
+        background:
+            radial-gradient(
+                circle at 84% 50%,
+                rgba(255,255,255,0.16),
+                transparent 27%
+            ),
+            linear-gradient(
+                110deg,
+                #1c0b38 0%,
+                #5521a7 48%,
+                #8b36dc 100%
+            );
+
+        color: #ffffff;
+    }
+
+    .collectibles-banner-content {
+        position: relative;
+
+        z-index: 3;
+
+        min-height: 190px;
+
+        padding:
+            32px
+            38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 30px;
+    }
+
+    .collectibles-banner-left {
+        max-width: 720px;
+    }
+
+    .collectibles-banner-label {
+        margin-bottom: 8px;
+
+        color: #d8b4fe;
+
+        font-size: 10px;
+        font-weight: 900;
+
+        letter-spacing: 1px;
+
+        text-transform: uppercase;
+    }
+
+    .collectibles-banner-title {
+        margin:
+            0
+            0
+            9px;
+
+        font-size: 34px;
+        line-height: 1.04;
+
+        font-weight: 900;
+
+        letter-spacing: -0.8px;
+    }
+
+    .collectibles-banner-description {
+        margin: 0;
+
+        color:
+            rgba(255,255,255,0.85);
+
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .collectibles-banner-symbol {
+        flex: 0 0 auto;
+
+        padding-right: 40px;
+
+        font-size: 88px;
+
+        filter:
+            drop-shadow(
+                0 12px 20px
+                rgba(0,0,0,0.20)
+            );
+    }
+
+
+    /* =========================================================
+       CARRUSEL
+    ========================================================= */
+
+    .collectibles-carousel {
+        position: relative;
+    }
+
+    .collectibles-products {
+        display: flex;
+
+        gap: 15px;
+
+        overflow-x: auto;
+
+        padding:
+            3px
+            4px
+            20px;
+
+        scroll-behavior: smooth;
+
+        scroll-snap-type:
+            x proximity;
+
+        scrollbar-width: none;
+    }
+
+    .collectibles-products::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    /* =========================================================
+       PRODUCTOS
+    ========================================================= */
+
+    .collectibles-product-card {
+        flex:
+            0
+            0
+            230px;
+
+        min-height: 475px;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        scroll-snap-align: start;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #ffffff;
+
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .collectibles-product-card:hover {
+        transform:
+            translateY(-4px);
+
+        border-color: #c1b0ed;
+
+        box-shadow:
+            0
+            12px
+            28px
+            rgba(15, 23, 42, 0.11);
+    }
+
+
+    /* =========================================================
+       IMAGEN
+    ========================================================= */
+
+    .collectibles-product-image {
+        position: relative;
+
+        width: 100%;
+        height: 270px;
+
+        padding: 18px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #f8fafc;
+    }
+
+    .collectibles-product-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .collectibles-product-card:hover
+    .collectibles-product-image img {
+        transform:
+            scale(1.04);
+    }
+
+    .collectibles-placeholder {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 7px;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2b164d,
+                #10081d
+            );
+
+        font-size: 60px;
+    }
+
+    .collectibles-badge {
+        position: absolute;
+
+        z-index: 4;
+
+        top: 10px;
+        left: 10px;
+
+        padding:
+            6px
+            9px;
+
+        border-radius: 4px;
+
+        background: #7c3aed;
+
+        color: #ffffff;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.5px;
+
+        text-transform: uppercase;
+    }
+
+
+    /* =========================================================
+       INFO
+    ========================================================= */
+
+    .collectibles-product-info {
+        flex: 1;
+
+        padding:
+            14px
+            15px
+            15px;
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    .collectibles-product-category {
+        margin-bottom: 6px;
+
+        color: #7c3aed;
+
+        font-size: 9px;
+        font-weight: 900;
+
+        letter-spacing: 0.55px;
+
+        text-transform: uppercase;
+    }
+
+    .collectibles-product-name {
+        min-height: 43px;
+
+        margin-bottom: 9px;
+
+        color: #111827;
+
+        font-size: 13px;
+        font-weight: 800;
+
+        line-height: 1.3;
+    }
+
+    .collectibles-product-price {
+        margin-top: auto;
+
+        color: #111827;
+
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .collectibles-product-stock {
+        min-height: 18px;
+
+        margin-top: 4px;
+
+        color: #16a34a;
+
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .collectibles-product-stock.out {
+        color: #dc2626;
+    }
+
+
+    /* =========================================================
+       ACCIONES
+    ========================================================= */
+
+    .collectibles-actions {
+        margin-top: 12px;
+
+        display: grid;
+
+        grid-template-columns:
+            1fr
+            44px;
+
+        gap: 7px;
+    }
+
+    .collectibles-details {
+        min-height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding:
+            0
+            12px;
+
+        border-radius: 4px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        text-decoration: none;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .collectibles-details:hover {
+        background: #174fc7;
+
+        color: #ffffff;
+    }
+
+    .collectibles-cart-form {
+        margin: 0;
+    }
+
+    .collectibles-cart {
+        width: 44px;
+        height: 42px;
+
+        border: none;
+        border-radius: 4px;
+
+        background: #111827;
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 17px;
+
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+    }
+
+    .collectibles-cart:hover {
+        background: #7c3aed;
+
+        transform:
+            translateY(-1px);
+    }
+
+    .collectibles-cart:disabled {
+        background: #cbd5e1;
+
+        color: #64748b;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =========================================================
+       FLECHAS
+    ========================================================= */
+
+    .collectibles-arrow {
+        position: absolute;
+
+        z-index: 10;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        width: 46px;
+        height: 64px;
+
+        border: none;
+
+        border-radius: 5px;
+
+        background:
+            rgba(17, 24, 39, 0.94);
+
+        color: #ffffff;
+
+        cursor: pointer;
+
+        font-size: 31px;
+
+        box-shadow:
+            0
+            6px
+            20px
+            rgba(15, 23, 42, 0.20);
+
+        transition:
+            background 0.18s ease;
+    }
+
+    .collectibles-arrow:hover {
+        background: #7c3aed;
+    }
+
+    .collectibles-arrow-left {
+        left: -15px;
+    }
+
+    .collectibles-arrow-right {
+        right: -15px;
+    }
+
+
+    /* =========================================================
+       VACÍO
+    ========================================================= */
+
+    .collectibles-empty {
+        width: 100%;
+
+        padding:
+            55px
+            20px;
+
+        border:
+            1px solid #d8dee7;
+
+        border-radius: 8px;
+
+        background: #f8fafc;
+
+        text-align: center;
+
+        color: #64748b;
+    }
+
+    .collectibles-empty-icon {
+        margin-bottom: 12px;
+
+        font-size: 42px;
+    }
+
+    .collectibles-empty strong {
+        display: block;
+
+        margin-bottom: 6px;
+
+        color: #111827;
+
+        font-size: 18px;
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @@media (max-width: 1000px) {
+
+        .collectibles-categories {
+            grid-template-columns:
+                repeat(3, 1fr);
+        }
+    }
+
+    @@media (max-width: 900px) {
+
+        .collectibles-title {
+            font-size: 27px;
+        }
+
+        .collectibles-product-card {
+            flex-basis: 215px;
+        }
+
+        .collectibles-arrow-left {
+            left: 2px;
+        }
+
+        .collectibles-arrow-right {
+            right: 2px;
+        }
+    }
+
+    @@media (max-width: 650px) {
+
+        .collectibles-home {
+            padding:
+                42px
+                0
+                48px;
+        }
+
+        .collectibles-container {
+            width:
+                calc(100% - 22px);
+        }
+
+        .collectibles-heading {
+            flex-direction: column;
+
+            align-items: flex-start;
+        }
+
+        .collectibles-title {
+            font-size: 25px;
+        }
+
+        .collectibles-categories {
+            grid-template-columns:
+                repeat(2, 1fr);
+        }
+
+        .collectibles-banner-content {
+            min-height: 230px;
+
+            padding:
+                28px
+                24px;
+        }
+
+        .collectibles-banner-title {
+            font-size: 28px;
+        }
+
+        .collectibles-banner-symbol {
+            display: none;
+        }
+
+        .collectibles-product-card {
+            flex-basis: 195px;
+
+            min-height: 440px;
+        }
+
+        .collectibles-product-image {
+            height: 230px;
+        }
+
+        .collectibles-arrow {
+            width: 38px;
+            height: 54px;
+
+            font-size: 26px;
+        }
+    }
+
+</style>
+
+
+<section class="collectibles-home"
+         id="coleccionables">
+
+    <div class="collectibles-container">
+
+
+        <!-- =====================================================
+             ENCABEZADO
+        ====================================================== -->
+
+        <div class="collectibles-heading">
+
+            <div class="collectibles-heading-left">
+
+                <div class="collectibles-kicker">
+                    COLECCIONABLES BIGGAME
+                </div>
+
+                <h2 class="collectibles-title">
+                    El poder de coleccionar
+                </h2>
+
+                <p class="collectibles-subtitle">
+                    Figuras, Funko, peluches, cartas y otros
+                    productos para llevar tus universos favoritos contigo.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Products"
+               asp-action="Index"
+               asp-route-search="coleccionable"
+               class="collectibles-view-all">
+
+                Ver todos →
+
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             CATEGORÍAS
+        ====================================================== -->
+
+        <div class="collectibles-categories"
+             id="collectiblesCategories">
+
+            <button type="button"
+                    class="collectibles-category-card active"
+                    data-collectible-filter="todos">
+
+                <span class="collectibles-category-icon">
+                    ✨
+                </span>
+
+                <span class="collectibles-category-name">
+                    Todos
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="collectibles-category-card"
+                    data-collectible-filter="figuras">
+
+                <span class="collectibles-category-icon">
+                    🦸
+                </span>
+
+                <span class="collectibles-category-name">
+                    Figuras
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="collectibles-category-card"
+                    data-collectible-filter="funko">
+
+                <span class="collectibles-category-icon">
+                    🧸
+                </span>
+
+                <span class="collectibles-category-name">
+                    Funko
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="collectibles-category-card"
+                    data-collectible-filter="peluches">
+
+                <span class="collectibles-category-icon">
+                    🐻
+                </span>
+
+                <span class="collectibles-category-name">
+                    Peluches
+                </span>
+
+            </button>
+
+
+            <button type="button"
+                    class="collectibles-category-card"
+                    data-collectible-filter="cartas">
+
+                <span class="collectibles-category-icon">
+                    🃏
+                </span>
+
+                <span class="collectibles-category-name">
+                    Cartas
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             BANNER
+        ====================================================== -->
+
+        <div class="collectibles-banner">
+
+            <div class="collectibles-banner-content">
+
+                <div class="collectibles-banner-left">
+
+                    <div class="collectibles-banner-label">
+                        DESCUBRE TU PRÓXIMA PIEZA
+                    </div>
+
+                    <h3 class="collectibles-banner-title">
+                        De los videojuegos a tu colección
+                    </h3>
+
+                    <p class="collectibles-banner-description">
+                        Explora personajes, cartas y figuras inspiradas
+                        en videojuegos, anime y grandes franquicias.
+                    </p>
+
+                </div>
+
+                <div class="collectibles-banner-symbol">
+                    🏆
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             PRODUCTOS
+        ====================================================== -->
+
+        @if (collectibles.Any())
+        {
+            <div class="collectibles-carousel">
+
+                <button type="button"
+                        class="collectibles-arrow collectibles-arrow-left"
+                        id="collectiblesPrevious"
+                        aria-label="Coleccionables anteriores">
+
+                    ‹
+
+                </button>
+
+
+                <div class="collectibles-products"
+                     id="collectiblesProducts">
+
+                    @foreach (var product in collectibles)
+                    {
+                        var group =
+                            CollectibleGroup(product);
+
+                        var label =
+                            CollectibleLabel(product);
+
+                        var icon =
+                            CollectibleIcon(product);
+
+                        <article class="collectibles-product-card"
+                                 data-collectible-group="@group">
+
+                            <div class="collectibles-product-image">
+
+                                <span class="collectibles-badge">
+                                    @label
+                                </span>
+
+
+                                @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl"
+                                         alt="@product.Name"
+                                         loading="lazy"
+                                         onerror="
+                                            this.style.display='none';
+                                            this.nextElementSibling.style.display='flex';
+                                         " />
+
+                                    <div class="collectibles-placeholder"
+                                         style="display:none;">
+                                        @icon
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="collectibles-placeholder">
+                                        @icon
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div class="collectibles-product-info">
+
+                                <div class="collectibles-product-category">
+                                    @label
+                                </div>
+
+                                <div class="collectibles-product-name">
+                                    @product.Name
+                                </div>
+
+                                <div class="collectibles-product-price">
+                                    Bs @product.Price.ToString("N2")
+                                </div>
+
+
+                                @if (product.Stock > 0)
+                                {
+                                    <div class="collectibles-product-stock">
+                                        @product.Stock disponibles
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="collectibles-product-stock out">
+                                        Agotado
+                                    </div>
+                                }
+
+
+                                <div class="collectibles-actions">
+
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@product.Id"
+                                       class="collectibles-details">
+
+                                        Ver producto
+
+                                    </a>
+
+
+                                    @if (product.Stock > 0)
+                                    {
+                                        <form asp-controller="Cart"
+                                              asp-action="Add"
+                                              method="post"
+                                              class="collectibles-cart-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@product.Id" />
+
+                                            <button type="submit"
+                                                    class="collectibles-cart"
+                                                    title="Agregar al carrito"
+                                                    aria-label="Agregar @product.Name al carrito">
+
+                                                🛒
+
+                                            </button>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button type="button"
+                                                class="collectibles-cart"
+                                                disabled
+                                                title="Producto agotado">
+
+                                            🛒
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </article>
+                    }
+
+                </div>
+
+
+                <button type="button"
+                        class="collectibles-arrow collectibles-arrow-right"
+                        id="collectiblesNext"
+                        aria-label="Más coleccionables">
+
+                    ›
+
+                </button>
+
+            </div>
+        }
+        else
+        {
+            <div class="collectibles-empty">
+
+                <div class="collectibles-empty-icon">
+                    🏆
+                </div>
+
+                <strong>
+                    Próximamente más coleccionables
+                </strong>
+
+                <span>
+                    Estamos preparando nuevos productos para esta sección.
+                </span>
+
+            </div>
+        }
+
+    </div>
+
+</section>
+
+
+<script>
+
+    (function () {
+
+        const row =
+            document.getElementById(
+                "collectiblesProducts"
+            );
+
+        const previousButton =
+            document.getElementById(
+                "collectiblesPrevious"
+            );
+
+        const nextButton =
+            document.getElementById(
+                "collectiblesNext"
+            );
+
+        const categoryButtons =
+            Array.from(
+                document.querySelectorAll(
+                    ".collectibles-category-card"
+                )
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        /* =====================================================
+           FLECHAS
+        ====================================================== */
+
+        if (previousButton) {
+
+            previousButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: -735,
+                        behavior: "smooth"
+                    });
+                }
+            );
+        }
+
+
+        if (nextButton) {
+
+            nextButton.addEventListener(
+                "click",
+                function () {
+
+                    row.scrollBy({
+                        left: 735,
+                        behavior: "smooth"
+                    });
+                }
+            );
+        }
+
+
+        /* =====================================================
+           FILTROS
+        ====================================================== */
+
+        categoryButtons.forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        categoryButtons.forEach(
+                            function (item) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+                            }
+                        );
+
+                        button.classList.add(
+                            "active"
+                        );
+
+
+                        const filter =
+                            button.dataset.collectibleFilter
+                            || "todos";
+
+
+                        const cards =
+                            Array.from(
+                                row.querySelectorAll(
+                                    ".collectibles-product-card"
+                                )
+                            );
+
+
+                        cards.forEach(
+                            function (card) {
+
+                                const group =
+                                    card.dataset.collectibleGroup
+                                    || "";
+
+
+                                if (
+                                    filter === "todos"
+                                    ||
+                                    group === filter
+                                )
+                                {
+                                    card.style.display =
+                                        "flex";
+                                }
+                                else
+                                {
+                                    card.style.display =
+                                        "none";
+                                }
+                            }
+                        );
+
+
+                        row.scrollTo({
+                            left: 0,
+                            behavior: "smooth"
+                        });
+                    }
+                );
+            }
+        );
+
+    })();
+
+</script>

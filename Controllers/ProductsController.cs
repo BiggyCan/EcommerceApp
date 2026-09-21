@@ -27,9 +27,51 @@ namespace EcommerceApp.Controllers
             string? search = null,
             string? category = null)
         {
-            var query =
+            search =
+                string.IsNullOrWhiteSpace(search)
+                    ? null
+                    : search.Trim();
+
+            category =
+                string.IsNullOrWhiteSpace(category)
+                    ? null
+                    : category.Trim();
+
+
+            var isSearch =
+                !string.IsNullOrWhiteSpace(search)
+                ||
+                !string.IsNullOrWhiteSpace(category);
+
+
+            // ======================================
+            // CONSULTA BASE
+            // ======================================
+
+            var catalogQuery =
                 _context.Products
-                    .AsQueryable();
+                    .AsNoTracking();
+
+
+            // ======================================
+            // CARGAR CATÁLOGO COMPLETO
+            // ======================================
+
+            var allProducts =
+                await catalogQuery
+                    .OrderByDescending(
+                        p => p.CreatedAt
+                    )
+                    .ToListAsync();
+
+
+            // ======================================
+            // CONSULTA DE RESULTADOS
+            // ======================================
+
+            IQueryable<Product> query =
+                _context.Products
+                    .AsNoTracking();
 
 
             // ======================================
@@ -39,37 +81,37 @@ namespace EcommerceApp.Controllers
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                search = search.Trim();
-
                 var searchPattern =
                     $"%{search}%";
 
 
-                query = query.Where(p =>
+                query =
+                    query.Where(
+                        p =>
 
-                    EF.Functions.ILike(
-                        p.Name,
-                        searchPattern
-                    )
+                            EF.Functions.ILike(
+                                p.Name,
+                                searchPattern
+                            )
 
-                    ||
+                            ||
 
-                    EF.Functions.ILike(
-                        p.Description,
-                        searchPattern
-                    )
+                            EF.Functions.ILike(
+                                p.Description,
+                                searchPattern
+                            )
 
-                    ||
+                            ||
 
-                    (
-                        p.Category != null
-                        &&
-                        EF.Functions.ILike(
-                            p.Category,
-                            searchPattern
-                        )
-                    )
-                );
+                            (
+                                p.Category != null
+                                &&
+                                EF.Functions.ILike(
+                                    p.Category,
+                                    searchPattern
+                                )
+                            )
+                    );
             }
 
 
@@ -79,25 +121,40 @@ namespace EcommerceApp.Controllers
 
             if (!string.IsNullOrWhiteSpace(category))
             {
-                category = category.Trim();
-
-                query = query.Where(p =>
-                    p.Category != null
-                    &&
-                    EF.Functions.ILike(
-                        p.Category,
-                        category
-                    )
-                );
+                query =
+                    query.Where(
+                        p =>
+                            p.Category != null
+                            &&
+                            EF.Functions.ILike(
+                                p.Category,
+                                category
+                            )
+                    );
             }
 
 
-            var products =
-                await query
-                    .OrderByDescending(
-                        p => p.CreatedAt
-                    )
-                    .ToListAsync();
+            // ======================================
+            // RESULTADOS
+            // ======================================
+
+            List<Product> products;
+
+
+            if (isSearch)
+            {
+                products =
+                    await query
+                        .OrderByDescending(
+                            p => p.CreatedAt
+                        )
+                        .ToListAsync();
+            }
+            else
+            {
+                products =
+                    allProducts;
+            }
 
 
             // ======================================
@@ -105,23 +162,111 @@ namespace EcommerceApp.Controllers
             // ======================================
 
             var categories =
-                await _context.Products
-                    .Where(p =>
-                        p.Category != null
-                        &&
-                        p.Category != "")
-                    .Select(p => p.Category!)
-                    .Distinct()
-                    .OrderBy(c => c)
-                    .ToListAsync();
+                allProducts
+                    .Where(
+                        p =>
+                            !string.IsNullOrWhiteSpace(
+                                p.Category
+                            )
+                    )
+                    .Select(
+                        p => p.Category!
+                    )
+                    .Distinct(
+                        StringComparer.OrdinalIgnoreCase
+                    )
+                    .OrderBy(
+                        c => c
+                    )
+                    .ToList();
 
 
-            ViewBag.Search = search;
-            ViewBag.Category = category;
-            ViewBag.Categories = categories;
+            // ======================================
+            // PRODUCTOS RELACIONADOS
+            //
+            // No se muestran como resultados de
+            // búsqueda. Se usarán en la sección
+            // "También te puede gustar".
+            // ======================================
+
+            var resultIds =
+                products
+                    .Select(
+                        p => p.Id
+                    )
+                    .ToHashSet();
 
 
-            return View(products);
+            var resultCategories =
+                products
+                    .Where(
+                        p =>
+                            !string.IsNullOrWhiteSpace(
+                                p.Category
+                            )
+                    )
+                    .Select(
+                        p => p.Category!
+                    )
+                    .ToHashSet(
+                        StringComparer.OrdinalIgnoreCase
+                    );
+
+
+            var relatedProducts =
+                allProducts
+                    .Where(
+                        p =>
+                            !resultIds.Contains(
+                                p.Id
+                            )
+                    )
+                    .OrderByDescending(
+                        p =>
+                            !string.IsNullOrWhiteSpace(
+                                p.Category
+                            )
+                            &&
+                            resultCategories.Contains(
+                                p.Category
+                            )
+                    )
+                    .ThenByDescending(
+                        p => p.CreatedAt
+                    )
+                    .Take(12)
+                    .ToList();
+
+
+            // ======================================
+            // INFORMACIÓN PARA LAS VISTAS
+            // ======================================
+
+            ViewBag.Search =
+                search;
+
+            ViewBag.Category =
+                category;
+
+            ViewBag.Categories =
+                categories;
+
+            ViewBag.AllProducts =
+                allProducts;
+
+            ViewBag.RelatedProducts =
+                relatedProducts;
+
+            ViewBag.SearchResultCount =
+                products.Count;
+
+            ViewBag.TotalCatalogProducts =
+                allProducts.Count;
+
+
+            return View(
+                products
+            );
         }
 
 
@@ -141,6 +286,7 @@ namespace EcommerceApp.Controllers
 
             var product =
                 await _context.Products
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(
                         p => p.Id == id
                     );
@@ -152,7 +298,9 @@ namespace EcommerceApp.Controllers
             }
 
 
-            return View(product);
+            return View(
+                product
+            );
         }
 
 
@@ -180,7 +328,9 @@ namespace EcommerceApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(product);
+                return View(
+                    product
+                );
             }
 
 
@@ -188,7 +338,9 @@ namespace EcommerceApp.Controllers
                 DateTime.UtcNow;
 
 
-            _context.Products.Add(product);
+            _context.Products.Add(
+                product
+            );
 
 
             await _context.SaveChangesAsync();
@@ -218,7 +370,9 @@ namespace EcommerceApp.Controllers
 
             var product =
                 await _context.Products
-                    .FindAsync(id);
+                    .FindAsync(
+                        id
+                    );
 
 
             if (product == null)
@@ -227,7 +381,9 @@ namespace EcommerceApp.Controllers
             }
 
 
-            return View(product);
+            return View(
+                product
+            );
         }
 
 
@@ -250,7 +406,9 @@ namespace EcommerceApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(product);
+                return View(
+                    product
+                );
             }
 
 
@@ -258,7 +416,9 @@ namespace EcommerceApp.Controllers
             {
                 var existingProduct =
                     await _context.Products
-                        .FindAsync(id);
+                        .FindAsync(
+                            id
+                        );
 
 
                 if (existingProduct == null)
@@ -289,14 +449,18 @@ namespace EcommerceApp.Controllers
                     DateTime.UtcNow;
 
 
-                await _context.SaveChangesAsync();
+                await _context
+                    .SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
                 var exists =
                     await _context.Products
                         .AnyAsync(
-                            p => p.Id == product.Id
+                            p =>
+                                p.Id
+                                ==
+                                product.Id
                         );
 
 
@@ -334,6 +498,7 @@ namespace EcommerceApp.Controllers
 
             var product =
                 await _context.Products
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(
                         p => p.Id == id
                     );
@@ -345,7 +510,9 @@ namespace EcommerceApp.Controllers
             }
 
 
-            return View(product);
+            return View(
+                product
+            );
         }
 
 
@@ -362,14 +529,20 @@ namespace EcommerceApp.Controllers
         {
             var product =
                 await _context.Products
-                    .FindAsync(id);
+                    .FindAsync(
+                        id
+                    );
 
 
             if (product != null)
             {
-                _context.Products.Remove(product);
+                _context.Products.Remove(
+                    product
+                );
 
-                await _context.SaveChangesAsync();
+
+                await _context
+                    .SaveChangesAsync();
             }
 
 
