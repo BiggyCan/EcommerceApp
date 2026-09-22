@@ -2,8 +2,17 @@ using EcommerceApp.Data;
 using EcommerceApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// ==========================================
+// QUESTPDF
+// ==========================================
+
+QuestPDF.Settings.License =
+    LicenseType.Community;
 
 
 // ==========================================

@@ -12,45 +12,77 @@ namespace EcommerceApp.Controllers
     public class CartController : Controller
     {
         private readonly ApplicationDbContext _context;
+
         private readonly UserManager<ApplicationUser> _userManager;
 
-        private const string CartSessionKey = "BigGameCart";
+        private const string CartSessionKey =
+            "BigGameCart";
+
 
         public CartController(
             ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
-            _context = context;
-            _userManager = userManager;
+            _context =
+                context;
+
+            _userManager =
+                userManager;
         }
 
+
+        // ==========================================
+        // CARRITO
+        // ==========================================
 
         public IActionResult Index()
         {
-            var cart = GetCart();
+            var cart =
+                GetCart();
+
 
             ViewBag.TotalItems =
-                cart.Sum(item => item.Quantity);
+                cart.Sum(
+                    item =>
+                        item.Quantity
+                );
+
 
             ViewBag.Total =
-                cart.Sum(item => item.Subtotal);
+                cart.Sum(
+                    item =>
+                        item.Subtotal
+                );
 
-            return View(cart);
+
+            return View(
+                cart
+            );
         }
 
 
+        // ==========================================
+        // AGREGAR PRODUCTO
+        // ==========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add(int id)
+        public async Task<IActionResult> Add(
+            int id)
         {
             var product =
                 await _context.Products
-                    .FirstOrDefaultAsync(p => p.Id == id);
+                    .FirstOrDefaultAsync(
+                        product =>
+                            product.Id == id
+                    );
+
 
             if (product == null)
             {
                 TempData["CartError"] =
                     "El producto no existe.";
+
 
                 return RedirectToAction(
                     "Index",
@@ -64,19 +96,28 @@ namespace EcommerceApp.Controllers
                 TempData["CartError"] =
                     "Este producto está agotado.";
 
+
                 return RedirectToAction(
                     "Details",
                     "Products",
-                    new { id = product.Id }
+                    new
+                    {
+                        id = product.Id
+                    }
                 );
             }
 
 
-            var cart = GetCart();
+            var cart =
+                GetCart();
+
 
             var item =
                 cart.FirstOrDefault(
-                    item => item.ProductId == product.Id
+                    item =>
+                        item.ProductId
+                        ==
+                        product.Id
                 );
 
 
@@ -85,39 +126,75 @@ namespace EcommerceApp.Controllers
                 cart.Add(
                     new CartItem
                     {
-                        ProductId = product.Id,
-                        Name = product.Name,
-                        ImageUrl = product.ImageUrl,
-                        Category = product.Category,
-                        Price = product.Price,
-                        Quantity = 1,
-                        Stock = product.Stock
+                        ProductId =
+                            product.Id,
+
+                        Name =
+                            product.Name,
+
+                        ImageUrl =
+                            product.ImageUrl,
+
+                        Category =
+                            product.Category,
+
+                        Price =
+                            product.Price,
+
+                        Quantity =
+                            1,
+
+                        Stock =
+                            product.Stock
                     }
                 );
             }
             else
             {
-                if (item.Quantity >= product.Stock)
+                if (
+                    item.Quantity
+                    >=
+                    product.Stock
+                )
                 {
                     TempData["CartError"] =
                         $"Solo existen {product.Stock} unidades disponibles.";
+
 
                     return RedirectToAction(
                         nameof(Index)
                     );
                 }
 
+
                 item.Quantity++;
 
-                item.Price = product.Price;
-                item.Stock = product.Stock;
-                item.ImageUrl = product.ImageUrl;
-                item.Category = product.Category;
-                item.Name = product.Name;
+
+                item.Price =
+                    product.Price;
+
+                item.Stock =
+                    product.Stock;
+
+                item.ImageUrl =
+                    product.ImageUrl;
+
+                item.Category =
+                    product.Category;
+
+                item.Name =
+                    product.Name;
             }
 
 
-            SaveCart(cart);
+            SaveCart(
+                cart
+            );
+
+
+            await SyncTrackedCartAsync(
+                cart
+            );
 
 
             TempData["CartSuccess"] =
@@ -130,18 +207,28 @@ namespace EcommerceApp.Controllers
         }
 
 
+        // ==========================================
+        // AUMENTAR CANTIDAD
+        // ==========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Increase(int id)
+        public async Task<IActionResult> Increase(
+            int id)
         {
             var product =
                 await _context.Products
-                    .FirstOrDefaultAsync(p => p.Id == id);
+                    .FirstOrDefaultAsync(
+                        product =>
+                            product.Id == id
+                    );
+
 
             if (product == null)
             {
                 TempData["CartError"] =
                     "El producto ya no existe.";
+
 
                 return RedirectToAction(
                     nameof(Index)
@@ -149,11 +236,14 @@ namespace EcommerceApp.Controllers
             }
 
 
-            var cart = GetCart();
+            var cart =
+                GetCart();
+
 
             var item =
                 cart.FirstOrDefault(
-                    item => item.ProductId == id
+                    item =>
+                        item.ProductId == id
                 );
 
 
@@ -165,10 +255,15 @@ namespace EcommerceApp.Controllers
             }
 
 
-            if (item.Quantity >= product.Stock)
+            if (
+                item.Quantity
+                >=
+                product.Stock
+            )
             {
                 TempData["CartError"] =
                     $"No puedes agregar más. Stock disponible: {product.Stock}.";
+
 
                 return RedirectToAction(
                     nameof(Index)
@@ -178,10 +273,22 @@ namespace EcommerceApp.Controllers
 
             item.Quantity++;
 
-            item.Stock = product.Stock;
-            item.Price = product.Price;
 
-            SaveCart(cart);
+            item.Stock =
+                product.Stock;
+
+            item.Price =
+                product.Price;
+
+
+            SaveCart(
+                cart
+            );
+
+
+            await SyncTrackedCartAsync(
+                cart
+            );
 
 
             return RedirectToAction(
@@ -190,15 +297,23 @@ namespace EcommerceApp.Controllers
         }
 
 
+        // ==========================================
+        // DISMINUIR CANTIDAD
+        // ==========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Decrease(int id)
+        public async Task<IActionResult> Decrease(
+            int id)
         {
-            var cart = GetCart();
+            var cart =
+                GetCart();
+
 
             var item =
                 cart.FirstOrDefault(
-                    item => item.ProductId == id
+                    item =>
+                        item.ProductId == id
                 );
 
 
@@ -216,11 +331,20 @@ namespace EcommerceApp.Controllers
             }
             else
             {
-                cart.Remove(item);
+                cart.Remove(
+                    item
+                );
             }
 
 
-            SaveCart(cart);
+            SaveCart(
+                cart
+            );
+
+
+            await SyncTrackedCartAsync(
+                cart
+            );
 
 
             return RedirectToAction(
@@ -229,23 +353,42 @@ namespace EcommerceApp.Controllers
         }
 
 
+        // ==========================================
+        // ELIMINAR PRODUCTO
+        // ==========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove(int id)
+        public async Task<IActionResult> Remove(
+            int id)
         {
-            var cart = GetCart();
+            var cart =
+                GetCart();
+
 
             var item =
                 cart.FirstOrDefault(
-                    item => item.ProductId == id
+                    item =>
+                        item.ProductId == id
                 );
 
 
             if (item != null)
             {
-                cart.Remove(item);
+                cart.Remove(
+                    item
+                );
 
-                SaveCart(cart);
+
+                SaveCart(
+                    cart
+                );
+
+
+                await SyncTrackedCartAsync(
+                    cart
+                );
+
 
                 TempData["CartSuccess"] =
                     "Producto eliminado del carrito.";
@@ -258,13 +401,20 @@ namespace EcommerceApp.Controllers
         }
 
 
+        // ==========================================
+        // VACIAR CARRITO
+        // ==========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Clear()
+        public async Task<IActionResult> Clear()
         {
             HttpContext.Session.Remove(
                 CartSessionKey
             );
+
+
+            await RemoveActiveTrackedCartAsync();
 
 
             TempData["CartSuccess"] =
@@ -285,13 +435,15 @@ namespace EcommerceApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout()
         {
-            var cart = GetCart();
+            var cart =
+                GetCart();
 
 
             if (!cart.Any())
             {
                 TempData["CartError"] =
                     "Tu carrito está vacío.";
+
 
                 return RedirectToAction(
                     nameof(Index)
@@ -300,7 +452,10 @@ namespace EcommerceApp.Controllers
 
 
             var user =
-                await _userManager.GetUserAsync(User);
+                await _userManager
+                    .GetUserAsync(
+                        User
+                    );
 
 
             if (user == null)
@@ -311,22 +466,37 @@ namespace EcommerceApp.Controllers
 
             var productIds =
                 cart
-                    .Select(item => item.ProductId)
+                    .Select(
+                        item =>
+                            item.ProductId
+                    )
                     .Distinct()
                     .ToList();
 
 
             var products =
                 await _context.Products
-                    .Where(p => productIds.Contains(p.Id))
+                    .Where(
+                        product =>
+                            productIds.Contains(
+                                product.Id
+                            )
+                    )
                     .ToListAsync();
 
+
+            // ======================================
+            // VALIDAR PRODUCTOS Y STOCK
+            // ======================================
 
             foreach (var item in cart)
             {
                 var product =
                     products.FirstOrDefault(
-                        p => p.Id == item.ProductId
+                        product =>
+                            product.Id
+                            ==
+                            item.ProductId
                     );
 
 
@@ -335,17 +505,23 @@ namespace EcommerceApp.Controllers
                     TempData["CartError"] =
                         $"El producto {item.Name} ya no está disponible.";
 
+
                     return RedirectToAction(
                         nameof(Index)
                     );
                 }
 
 
-                if (product.Stock < item.Quantity)
+                if (
+                    product.Stock
+                    <
+                    item.Quantity
+                )
                 {
                     TempData["CartError"] =
                         $"No existe suficiente stock de {product.Name}. " +
                         $"Disponibles: {product.Stock}.";
+
 
                     return RedirectToAction(
                         nameof(Index)
@@ -361,37 +537,58 @@ namespace EcommerceApp.Controllers
 
             try
             {
+                // ==================================
+                // CREAR PEDIDO
+                // ==================================
+
                 var order =
                     new Order
                     {
-                        UserId = user.Id,
+                        UserId =
+                            user.Id,
 
                         CustomerName =
-                            string.IsNullOrWhiteSpace(user.FullName)
-                                ? user.Email ?? "Cliente BigGame"
+                            string.IsNullOrWhiteSpace(
+                                user.FullName
+                            )
+                                ? user.Email
+                                    ?? "Cliente BigGame"
                                 : user.FullName,
 
                         CustomerEmail =
-                            user.Email ?? string.Empty,
+                            user.Email
+                            ?? string.Empty,
 
                         ShippingAddress =
                             user.Address,
 
-                        Status = "Confirmado",
+                        Status =
+                            "Confirmado",
 
                         CreatedAt =
                             DateTime.UtcNow
                     };
 
 
-                decimal total = 0;
+                decimal total =
+                    0;
 
 
-                foreach (var cartItem in cart)
+                // ==================================
+                // ITEMS Y DESCUENTO DE STOCK
+                // ==================================
+
+                foreach (
+                    var cartItem
+                    in cart
+                )
                 {
                     var product =
                         products.First(
-                            p => p.Id == cartItem.ProductId
+                            product =>
+                                product.Id
+                                ==
+                                cartItem.ProductId
                         );
 
 
@@ -401,7 +598,8 @@ namespace EcommerceApp.Controllers
                         cartItem.Quantity;
 
 
-                    total += subtotal;
+                    total +=
+                        subtotal;
 
 
                     order.Items.Add(
@@ -425,6 +623,7 @@ namespace EcommerceApp.Controllers
                     product.Stock -=
                         cartItem.Quantity;
 
+
                     product.UpdatedAt =
                         DateTime.UtcNow;
                 }
@@ -434,14 +633,77 @@ namespace EcommerceApp.Controllers
                     total;
 
 
-                _context.Orders.Add(order);
+                _context.Orders.Add(
+                    order
+                );
 
 
-                await _context.SaveChangesAsync();
+                // ==================================
+                // GUARDAR PEDIDO
+                // ==================================
+
+                await _context
+                    .SaveChangesAsync();
 
 
-                await transaction.CommitAsync();
+                // ==================================
+                // CARRITO ACTIVO -> CONVERTIDO
+                // ==================================
 
+                var trackedCart =
+                    await _context
+                        .TrackedCarts
+                        .Where(
+                            tracked =>
+                                tracked.UserId
+                                ==
+                                user.Id
+                                &&
+                                tracked.Status
+                                ==
+                                "Activo"
+                        )
+                        .OrderByDescending(
+                            tracked =>
+                                tracked.LastActivityAt
+                        )
+                        .FirstOrDefaultAsync();
+
+
+                if (trackedCart != null)
+                {
+                    trackedCart.Status =
+                        "Convertido";
+
+
+                    trackedCart.ConvertedAt =
+                        DateTime.UtcNow;
+
+
+                    trackedCart.ConvertedOrderId =
+                        order.Id;
+
+
+                    trackedCart.LastActivityAt =
+                        DateTime.UtcNow;
+
+
+                    await _context
+                        .SaveChangesAsync();
+                }
+
+
+                // ==================================
+                // CONFIRMAR TRANSACCIÓN
+                // ==================================
+
+                await transaction
+                    .CommitAsync();
+
+
+                // ==================================
+                // LIMPIAR SESIÓN
+                // ==================================
 
                 HttpContext.Session.Remove(
                     CartSessionKey
@@ -450,12 +712,16 @@ namespace EcommerceApp.Controllers
 
                 return RedirectToAction(
                     nameof(Success),
-                    new { id = order.Id }
+                    new
+                    {
+                        id = order.Id
+                    }
                 );
             }
             catch
             {
-                await transaction.RollbackAsync();
+                await transaction
+                    .RollbackAsync();
 
 
                 TempData["CartError"] =
@@ -474,10 +740,14 @@ namespace EcommerceApp.Controllers
         // ==========================================
 
         [HttpGet]
-        public async Task<IActionResult> Success(int id)
+        public async Task<IActionResult> Success(
+            int id)
         {
             var user =
-                await _userManager.GetUserAsync(User);
+                await _userManager
+                    .GetUserAsync(
+                        User
+                    );
 
 
             if (user == null)
@@ -488,12 +758,17 @@ namespace EcommerceApp.Controllers
 
             var order =
                 await _context.Orders
-                    .Include(o => o.Items)
+                    .Include(
+                        order =>
+                            order.Items
+                    )
                     .FirstOrDefaultAsync(
-                        o =>
-                            o.Id == id
+                        order =>
+                            order.Id == id
                             &&
-                            o.UserId == user.Id
+                            order.UserId
+                            ==
+                            user.Id
                     );
 
 
@@ -503,18 +778,30 @@ namespace EcommerceApp.Controllers
             }
 
 
-            return View(order);
+            return View(
+                order
+            );
         }
 
+
+        // ==========================================
+        // OBTENER CARRITO DE SESIÓN
+        // ==========================================
 
         private List<CartItem> GetCart()
         {
             var cartJson =
                 HttpContext.Session
-                    .GetString(CartSessionKey);
+                    .GetString(
+                        CartSessionKey
+                    );
 
 
-            if (string.IsNullOrWhiteSpace(cartJson))
+            if (
+                string.IsNullOrWhiteSpace(
+                    cartJson
+                )
+            )
             {
                 return new List<CartItem>();
             }
@@ -526,7 +813,8 @@ namespace EcommerceApp.Controllers
                     .Deserialize<List<CartItem>>(
                         cartJson
                     )
-                    ?? new List<CartItem>();
+                    ??
+                    new List<CartItem>();
             }
             catch
             {
@@ -535,17 +823,254 @@ namespace EcommerceApp.Controllers
         }
 
 
+        // ==========================================
+        // GUARDAR CARRITO EN SESIÓN
+        // ==========================================
+
         private void SaveCart(
             List<CartItem> cart)
         {
             var cartJson =
-                JsonSerializer.Serialize(cart);
+                JsonSerializer.Serialize(
+                    cart
+                );
 
 
-            HttpContext.Session.SetString(
-                CartSessionKey,
-                cartJson
-            );
+            HttpContext.Session
+                .SetString(
+                    CartSessionKey,
+                    cartJson
+                );
+        }
+
+
+        // ==========================================
+        // SINCRONIZAR CARRITO CON POSTGRESQL
+        // ==========================================
+
+        private async Task SyncTrackedCartAsync(
+            List<CartItem> cart)
+        {
+            var user =
+                await _userManager
+                    .GetUserAsync(
+                        User
+                    );
+
+
+            if (user == null)
+            {
+                return;
+            }
+
+
+            var trackedCart =
+                await _context
+                    .TrackedCarts
+                    .Include(
+                        tracked =>
+                            tracked.Items
+                    )
+                    .Where(
+                        tracked =>
+                            tracked.UserId
+                            ==
+                            user.Id
+                            &&
+                            tracked.Status
+                            ==
+                            "Activo"
+                    )
+                    .OrderByDescending(
+                        tracked =>
+                            tracked.LastActivityAt
+                    )
+                    .FirstOrDefaultAsync();
+
+
+            // ======================================
+            // SI QUEDÓ VACÍO, ELIMINAR ACTIVO
+            // ======================================
+
+            if (!cart.Any())
+            {
+                if (trackedCart != null)
+                {
+                    _context
+                        .TrackedCarts
+                        .Remove(
+                            trackedCart
+                        );
+
+
+                    await _context
+                        .SaveChangesAsync();
+                }
+
+
+                return;
+            }
+
+
+            // ======================================
+            // CREAR CARRITO RASTREADO
+            // ======================================
+
+            if (trackedCart == null)
+            {
+                trackedCart =
+                    new TrackedCart
+                    {
+                        UserId =
+                            user.Id,
+
+                        Status =
+                            "Activo",
+
+                        CreatedAt =
+                            DateTime.UtcNow,
+
+                        LastActivityAt =
+                            DateTime.UtcNow
+                    };
+
+
+                _context
+                    .TrackedCarts
+                    .Add(
+                        trackedCart
+                    );
+            }
+            else
+            {
+                // ==================================
+                // QUITAR SNAPSHOT ANTERIOR
+                // ==================================
+
+                if (
+                    trackedCart.Items.Any()
+                )
+                {
+                    _context
+                        .TrackedCartItems
+                        .RemoveRange(
+                            trackedCart.Items
+                                .ToList()
+                        );
+
+
+                    trackedCart.Items.Clear();
+                }
+            }
+
+
+            // ======================================
+            // RESUMEN DEL CARRITO
+            // ======================================
+
+            trackedCart.TotalItems =
+                cart.Sum(
+                    item =>
+                        item.Quantity
+                );
+
+
+            trackedCart.TotalAmount =
+                cart.Sum(
+                    item =>
+                        item.Price
+                        *
+                        item.Quantity
+                );
+
+
+            trackedCart.LastActivityAt =
+                DateTime.UtcNow;
+
+
+            // ======================================
+            // SNAPSHOT DE PRODUCTOS
+            // ======================================
+
+            foreach (
+                var item
+                in cart
+            )
+            {
+                trackedCart.Items.Add(
+                    new TrackedCartItem
+                    {
+                        ProductId =
+                            item.ProductId,
+
+                        ProductName =
+                            item.Name,
+
+                        UnitPrice =
+                            item.Price,
+
+                        Quantity =
+                            item.Quantity
+                    }
+                );
+            }
+
+
+            await _context
+                .SaveChangesAsync();
+        }
+
+
+        // ==========================================
+        // ELIMINAR CARRITO ACTIVO
+        // ==========================================
+
+        private async Task RemoveActiveTrackedCartAsync()
+        {
+            var user =
+                await _userManager
+                    .GetUserAsync(
+                        User
+                    );
+
+
+            if (user == null)
+            {
+                return;
+            }
+
+
+            var trackedCarts =
+                await _context
+                    .TrackedCarts
+                    .Where(
+                        tracked =>
+                            tracked.UserId
+                            ==
+                            user.Id
+                            &&
+                            tracked.Status
+                            ==
+                            "Activo"
+                    )
+                    .ToListAsync();
+
+
+            if (!trackedCarts.Any())
+            {
+                return;
+            }
+
+
+            _context
+                .TrackedCarts
+                .RemoveRange(
+                    trackedCarts
+                );
+
+
+            await _context
+                .SaveChangesAsync();
         }
     }
 }

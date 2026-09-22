@@ -1,0 +1,871 @@
+@{
+    ViewData["Title"] = "Reportes";
+}
+
+<style>
+    .reports-page {
+        min-height: 72vh;
+        background: #f4f6f9;
+        padding: 42px 20px 70px;
+    }
+
+    .reports-container {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+    }
+
+    .reports-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 24px;
+        margin-bottom: 28px;
+    }
+
+    .reports-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #e7edff;
+        color: #1456d9;
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .reports-title {
+        margin: 0;
+        color: #081120;
+        font-size: clamp(30px, 4vw, 46px);
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+    }
+
+    .reports-subtitle {
+        margin: 12px 0 0;
+        max-width: 720px;
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .reports-back {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 7px;
+        background: #111827;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 13px;
+        white-space: nowrap;
+        transition: .2s ease;
+    }
+
+    .reports-back:hover {
+        background: #2563eb;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .reports-summary {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 30px;
+    }
+
+    .summary-card {
+        background: #fff;
+        border: 1px solid #dde3ec;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 6px 24px rgba(15, 23, 42, .05);
+    }
+
+    .summary-icon {
+        width: 46px;
+        height: 46px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: #edf4ff;
+        font-size: 23px;
+        margin-bottom: 14px;
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .summary-value {
+        margin-top: 4px;
+        color: #0f172a;
+        font-size: 22px;
+        font-weight: 900;
+    }
+
+    .reports-section-title {
+        margin: 0 0 16px;
+        color: #0f172a;
+        font-size: 21px;
+        font-weight: 900;
+    }
+
+    .reports-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .report-card {
+        position: relative;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #dbe2ea;
+        border-radius: 14px;
+        min-height: 285px;
+        padding: 24px;
+        box-shadow: 0 8px 30px rgba(15, 23, 42, .06);
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease,
+            border-color .2s ease;
+    }
+
+    .report-card.active:hover {
+        transform: translateY(-4px);
+        border-color: #aac7ff;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, .11);
+    }
+
+    .report-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 5px;
+        background: linear-gradient(
+            90deg,
+            #2563eb,
+            #17a8ff
+        );
+    }
+
+    .report-icon {
+        width: 58px;
+        height: 58px;
+        display: grid;
+        place-items: center;
+        border-radius: 13px;
+        background: #eef4ff;
+        font-size: 29px;
+        margin-bottom: 20px;
+    }
+
+    .report-name {
+        margin: 0;
+        color: #0f172a;
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .report-description {
+        margin: 9px 0 20px;
+        min-height: 60px;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.55;
+    }
+
+    .report-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-bottom: 18px;
+    }
+
+    .report-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #475569;
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .report-download {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 44px;
+        border-radius: 7px;
+        background: #2563eb;
+        color: #fff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 900;
+        transition: .2s ease;
+    }
+
+    .report-download:hover {
+        background: #174fc4;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .general-card {
+        background:
+            linear-gradient(
+                145deg,
+                #ffffff 0%,
+                #f4f8ff 100%
+            );
+    }
+
+    .general-card::before {
+        background:
+            linear-gradient(
+                90deg,
+                #7c3aed,
+                #2563eb,
+                #06b6d4
+            );
+    }
+
+    .general-card .report-icon {
+        background:
+            linear-gradient(
+                135deg,
+                #ede9fe,
+                #dbeafe
+            );
+    }
+
+    .general-card .report-download {
+        background:
+            linear-gradient(
+                90deg,
+                #6d28d9,
+                #2563eb
+            );
+    }
+
+    .general-card .report-download:hover {
+        background:
+            linear-gradient(
+                90deg,
+                #5b21b6,
+                #1d4ed8
+            );
+    }
+
+    .period-card::before {
+        background:
+            linear-gradient(
+                90deg,
+                #0891b2,
+                #2563eb
+            );
+    }
+
+    .period-card .report-icon {
+        background: #e0f2fe;
+    }
+
+    .ranking-card::before {
+        background:
+            linear-gradient(
+                90deg,
+                #f59e0b,
+                #f97316
+            );
+    }
+
+    .ranking-card .report-icon {
+        background: #fff7ed;
+    }
+
+    .ranking-card .report-download {
+        background:
+            linear-gradient(
+                90deg,
+                #ea580c,
+                #f59e0b
+            );
+    }
+
+    .ranking-card .report-download:hover {
+        background:
+            linear-gradient(
+                90deg,
+                #c2410c,
+                #d97706
+            );
+    }
+
+    .reports-info {
+        margin-top: 28px;
+        padding: 20px 22px;
+        border-radius: 12px;
+        background:
+            linear-gradient(
+                120deg,
+                #081426,
+                #112d69
+            );
+        color: #fff;
+    }
+
+    .reports-info strong {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 16px;
+    }
+
+    .reports-info p {
+        margin: 0;
+        max-width: 850px;
+        color: #dbeafe;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    @@media (max-width: 900px) {
+        .reports-summary,
+        .reports-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 650px) {
+        .reports-page {
+            padding: 28px 14px 50px;
+        }
+
+        .reports-top {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .reports-summary,
+        .reports-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .reports-back {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<section class="reports-page">
+
+    <div class="reports-container">
+
+        <div class="reports-top">
+
+            <div>
+
+                <div class="reports-eyebrow">
+                    📊 Administración BigGame
+                </div>
+
+                <h1 class="reports-title">
+                    Centro de reportes
+                </h1>
+
+                <p class="reports-subtitle">
+                    Consulta y descarga documentos PDF generados
+                    directamente con la información registrada en BigGame.
+                </p>
+
+            </div>
+
+            <a
+                asp-controller="Admin"
+                asp-action="Index"
+                class="reports-back"
+            >
+                ← Volver al panel
+            </a>
+
+        </div>
+
+
+        <div class="reports-summary">
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    📄
+                </div>
+
+                <div class="summary-label">
+                    Formato
+                </div>
+
+                <div class="summary-value">
+                    PDF
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    🔐
+                </div>
+
+                <div class="summary-label">
+                    Acceso
+                </div>
+
+                <div class="summary-value">
+                    Administrador
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    🗃️
+                </div>
+
+                <div class="summary-label">
+                    Fuente
+                </div>
+
+                <div class="summary-value">
+                    Base de datos
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <h2 class="reports-section-title">
+            Reportes disponibles
+        </h2>
+
+
+        <div class="reports-grid">
+
+
+            <!-- PRODUCTOS -->
+
+            <article class="report-card active">
+
+                <div class="report-icon">
+                    🎮
+                </div>
+
+                <h3 class="report-name">
+                    Productos
+                </h3>
+
+                <p class="report-description">
+                    Catálogo completo con nombre, categoría,
+                    precio, stock y valor de inventario.
+                </p>
+
+                <div class="report-meta">
+                    <span class="report-pill">Catálogo</span>
+                    <span class="report-pill">Precios</span>
+                    <span class="report-pill">Stock</span>
+                </div>
+
+                <a
+                    asp-controller="Reports"
+                    asp-action="ProductosPdf"
+                    class="report-download"
+                >
+                    📥 Descargar PDF
+                </a>
+
+            </article>
+
+
+            <!-- INVENTARIO -->
+
+            <article class="report-card active">
+
+                <div class="report-icon">
+                    📦
+                </div>
+
+                <h3 class="report-name">
+                    Inventario
+                </h3>
+
+                <p class="report-description">
+                    Estado actual del almacén con existencias,
+                    stock bajo, productos agotados y valoración.
+                </p>
+
+                <div class="report-meta">
+                    <span class="report-pill">Existencias</span>
+                    <span class="report-pill">Alertas</span>
+                    <span class="report-pill">Totales</span>
+                </div>
+
+                <a
+                    asp-controller="Reports"
+                    asp-action="InventarioPdf"
+                    class="report-download"
+                >
+                    📥 Descargar PDF
+                </a>
+
+            </article>
+
+
+            <!-- VENTAS -->
+
+            <article class="report-card active">
+
+                <div class="report-icon">
+                    💰
+                </div>
+
+                <h3 class="report-name">
+                    Ventas
+                </h3>
+
+                <p class="report-description">
+                    Historial de ventas con clientes, productos,
+                    cantidades, precios, subtotales e ingresos.
+                </p>
+
+                <div class="report-meta">
+                    <span class="report-pill">Ventas</span>
+                    <span class="report-pill">Ingresos</span>
+                    <span class="report-pill">Clientes</span>
+                </div>
+
+                <a
+                    asp-controller="SalesReports"
+                    asp-action="VentasPdf"
+                    class="report-download"
+                >
+                    📥 Descargar PDF
+                </a>
+
+            </article>
+
+
+            <!-- VENTAS POR PERIODO -->
+
+            <article class="report-card active period-card">
+
+                <div class="report-icon">
+                    📅
+                </div>
+
+                <h3 class="report-name">
+                    Ventas por período
+                </h3>
+
+                <p class="report-description">
+                    Selecciona una fecha inicial y final para consultar
+                    las ventas, unidades e ingresos de un período específico.
+                </p>
+
+                <div class="report-meta">
+                    <span class="report-pill">Fechas</span>
+                    <span class="report-pill">Ventas</span>
+                    <span class="report-pill">Promedios</span>
+                </div>
+
+                <a
+                    asp-controller="VentasPeriodoReports"
+                    asp-action="Index"
+                    class="report-download"
+                >
+                    📅 Seleccionar período
+                </a>
+
+            </article>
+
+
+            <!-- PRODUCTOS MAS VENDIDOS -->
+
+            <article class="report-card active ranking-card">
+
+                <div class="report-icon">
+                    🏆
+                </div>
+
+                <h3 class="report-name">
+                    Productos más vendidos
+                </h3>
+
+                <p class="report-description">
+                    Ranking de productos ordenados según la cantidad
+                    de unidades vendidas y los ingresos generados.
+                </p>
+
+                <div class="report-meta">
+                    <span class="report-pill">Ranking</span>
+                    <span class="report-pill">Unidades</span>
+                    <span class="report-pill">Ingresos</span>
+                </div>
+
+                <a
+                    asp-controller="ProductosMasVendidosReports"
+                    asp-action="DescargarPdf"
+                    class="report-download"
+                >
+                    🏆 Descargar ranking PDF
+                </a>
+
+            </article>
+
+
+                        <!-- INVENTARIO CON STOCK BAJO -->
+
+            <article class="report-card active">
+
+                <div class="report-icon">
+                    📉
+                </div>
+
+                <h3 class="report-name">
+                    Inventario con stock bajo
+                </h3>
+
+                <p class="report-description">
+                    Identifica productos con pocas existencias,
+                    niveles críticos, productos agotados y valor
+                    monetario del inventario en alerta.
+                </p>
+
+                <div class="report-meta">
+                    <span class="report-pill">Stock bajo</span>
+                    <span class="report-pill">Alertas</span>
+                    <span class="report-pill">Inventario</span>
+                </div>
+
+                <a
+                    asp-controller="InventarioStockBajoReports"
+                    asp-action="DescargarPdf"
+                    class="report-download"
+                >
+                    📉 Descargar stock bajo PDF
+                </a>
+
+            </article>
+
+
+            <!-- PEDIDOS -->
+
+            <article class="report-card active">
+
+                <div class="report-icon">
+                    🧾
+                </div>
+
+                <h3 class="report-name">
+                    Pedidos
+                </h3>
+
+                <p class="report-description">
+                    Listado de pedidos registrados con cliente,
+                    fecha, dirección, estado, productos y total de compra.
+                </p>
+
+                <div class="report-meta">
+                    <span class="report-pill">Pedidos</span>
+                    <span class="report-pill">Clientes</span>
+                    <span class="report-pill">Estados</span>
+                </div>
+
+                <a
+                    asp-controller="OrdersReports"
+                    asp-action="PedidosPdf"
+                    class="report-download"
+                >
+                    📥 Descargar PDF
+                </a>
+
+            </article>
+
+
+            <!-- USUARIOS -->
+
+            <article class="report-card active">
+
+                <div class="report-icon">
+                    👥
+                </div>
+
+                <h3 class="report-name">
+                    Usuarios
+                </h3>
+
+                <p class="report-description">
+                    Información de usuarios registrados,
+                    roles, correo, dirección y fecha de creación.
+                </p>
+
+                <div class="report-meta">
+                    <span class="report-pill">Usuarios</span>
+                    <span class="report-pill">Roles</span>
+                    <span class="report-pill">Registro</span>
+                </div>
+
+                <a
+                    asp-controller="UsersReports"
+                    asp-action="UsuariosPdf"
+                    class="report-download"
+                >
+                    📥 Descargar PDF
+                </a>
+
+            </article>
+
+
+            <!-- REPORTE GENERAL -->
+
+            <article class="report-card active general-card">
+
+                <div class="report-icon">
+                    📈
+                </div>
+
+                <h3 class="report-name">
+                    Reporte general
+                </h3>
+
+                <p class="report-description">
+                    Resumen ejecutivo de productos, inventario,
+                    ventas, pedidos y usuarios de BigGame.
+                </p>
+
+                <div class="report-meta">
+                    <span class="report-pill">Resumen</span>
+                    <span class="report-pill">Administración</span>
+                    <span class="report-pill">Indicadores</span>
+                </div>
+
+                <a
+                    asp-controller="GeneralReports"
+                    asp-action="ReporteGeneralPdf"
+                    class="report-download"
+                >
+                    📥 Descargar PDF
+                </a>
+
+            </article>
+
+        </div>
+
+
+        <!-- REPORTES FINALES BIGGAME -->
+
+<div class="reports-grid">
+
+    <article class="report-card">
+
+        <div class="report-icon">
+            🛒
+        </div>
+
+        <h3>
+            Carritos abandonados
+        </h3>
+
+        <p>
+            Detecta carritos que no fueron convertidos en compra,
+            muestra productos, tiempo de inactividad y valor potencial.
+        </p>
+
+        <div class="report-tags">
+            <span>Carritos</span>
+            <span>Abandono</span>
+            <span>Ventas perdidas</span>
+        </div>
+
+        <a
+            asp-controller="CarritosAbandonadosReports"
+            asp-action="DescargarPdf"
+            class="report-download"
+        >
+            📄 Descargar PDF
+        </a>
+
+    </article>
+
+
+    <article class="report-card">
+
+        <div class="report-icon">
+            💳
+        </div>
+
+        <h3>
+            Conciliación de pagos
+        </h3>
+
+        <p>
+            Resume ventas, comisión administrativa estimada,
+            importe bruto e importe neto por pedido.
+        </p>
+
+        <div class="report-tags">
+            <span>Pagos</span>
+            <span>Comisiones</span>
+            <span>Conciliación</span>
+        </div>
+
+        <a
+            asp-controller="ConciliacionPagosReports"
+            asp-action="DescargarPdf"
+            class="report-download"
+        >
+            📄 Descargar PDF
+        </a>
+
+    </article>
+
+</div>
+<div class="reports-info">
+
+            <strong>
+                📄 Reportes generados desde BigGame
+            </strong>
+
+            <p>
+                Los documentos se crean utilizando los datos
+                actuales almacenados en la base de datos.
+                Cada descarga incluye fecha de generación,
+                tablas organizadas, información resumida,
+                totales y numeración de páginas.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>

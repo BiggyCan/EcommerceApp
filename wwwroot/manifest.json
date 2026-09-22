@@ -1,0 +1,24 @@
+{
+  "name": "BigGame",
+  "short_name": "BigGame",
+  "description": "Tienda de videojuegos, consolas, accesorios y coleccionables.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#081120",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "lang": "es",
+  "categories": [
+    "shopping",
+    "games"
+  ],
+  "icons": [
+    {
+      "src": "/icons/biggame-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

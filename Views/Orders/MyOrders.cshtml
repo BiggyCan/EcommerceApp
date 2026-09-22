@@ -10,15 +10,22 @@
         orders.Count;
 
     var totalSpent =
-        orders.Sum(order => order.TotalAmount);
+        orders.Sum(
+            order =>
+                order.TotalAmount
+        );
 
     var totalProducts =
         orders.Sum(
             order =>
-                order.Items?.Sum(item => item.Quantity)
+                order.Items?.Sum(
+                    item =>
+                        item.Quantity
+                )
                 ?? 0
         );
 }
+
 
 <style>
 
@@ -28,11 +35,17 @@
         background: #f4f6f9;
     }
 
+
     .my-orders-container {
         width: calc(100% - 40px);
         max-width: 1050px;
         margin: auto;
     }
+
+
+    /* ==========================================
+       CABECERA
+       ========================================== */
 
     .my-orders-top {
         display: flex;
@@ -43,6 +56,7 @@
 
         margin-bottom: 25px;
     }
+
 
     .my-orders-badge {
         width: fit-content;
@@ -67,6 +81,7 @@
         text-transform: uppercase;
     }
 
+
     .my-orders-title {
         margin: 0;
 
@@ -76,6 +91,7 @@
         font-weight: 900;
     }
 
+
     .my-orders-subtitle {
         margin: 5px 0 0;
 
@@ -83,6 +99,7 @@
 
         font-size: 12px;
     }
+
 
     .store-button {
         min-height: 42px;
@@ -105,6 +122,7 @@
         transition: .2s;
     }
 
+
     .store-button:hover {
         color: white;
         background: #2563eb;
@@ -113,7 +131,9 @@
     }
 
 
-    /* RESUMEN */
+    /* ==========================================
+       RESUMEN
+       ========================================== */
 
     .orders-summary {
         display: grid;
@@ -125,6 +145,7 @@
 
         margin-bottom: 22px;
     }
+
 
     .summary-card {
         min-height: 112px;
@@ -141,8 +162,9 @@
         border-radius: 11px;
 
         box-shadow:
-            0 5px 16px rgba(15,23,42,.05);
+            0 5px 16px rgba(15, 23, 42, .05);
     }
+
 
     .summary-icon {
         position: absolute;
@@ -164,6 +186,7 @@
         font-size: 18px;
     }
 
+
     .summary-label {
         margin-bottom: 12px;
 
@@ -175,6 +198,7 @@
         text-transform: uppercase;
     }
 
+
     .summary-value {
         color: #111827;
 
@@ -182,13 +206,16 @@
         font-weight: 900;
     }
 
+
     .summary-value.money {
         color: #15803d;
     }
 
+
     .summary-value.products {
         color: #2563eb;
     }
+
 
     .summary-detail {
         margin-top: 4px;
@@ -199,7 +226,9 @@
     }
 
 
-    /* PEDIDOS */
+    /* ==========================================
+       PEDIDOS
+       ========================================== */
 
     .orders-card {
         overflow: hidden;
@@ -210,8 +239,9 @@
         border-radius: 12px;
 
         box-shadow:
-            0 6px 18px rgba(15,23,42,.06);
+            0 6px 18px rgba(15, 23, 42, .06);
     }
+
 
     .orders-card-header {
         padding: 19px 20px;
@@ -223,6 +253,7 @@
         border-bottom: 1px solid #e2e8f0;
     }
 
+
     .orders-card-header h2 {
         margin: 0;
 
@@ -232,6 +263,7 @@
         font-weight: 900;
     }
 
+
     .orders-card-header p {
         margin: 3px 0 0;
 
@@ -239,6 +271,7 @@
 
         font-size: 9px;
     }
+
 
     .order-count {
         padding: 6px 10px;
@@ -252,6 +285,7 @@
         font-weight: 900;
     }
 
+
     .order-row {
         padding: 18px 20px;
 
@@ -262,7 +296,7 @@
             1fr
             130px
             130px
-            115px;
+            165px;
 
         gap: 15px;
 
@@ -273,13 +307,16 @@
         transition: .15s;
     }
 
+
     .order-row:last-child {
         border-bottom: none;
     }
 
+
     .order-row:hover {
         background: #f8fafc;
     }
+
 
     .order-number {
         color: #2563eb;
@@ -288,6 +325,7 @@
         font-weight: 900;
     }
 
+
     .order-products {
         color: #111827;
 
@@ -295,13 +333,17 @@
         font-weight: 800;
     }
 
+
     .order-products-detail {
         margin-top: 4px;
 
         color: #64748b;
 
         font-size: 9px;
+
+        line-height: 1.4;
     }
+
 
     .order-date {
         color: #475569;
@@ -310,12 +352,16 @@
         line-height: 1.6;
     }
 
+
     .order-total {
+        margin-top: 5px;
+
         color: #111827;
 
         font-size: 14px;
         font-weight: 900;
     }
+
 
     .order-status {
         display: inline-flex;
@@ -333,10 +379,25 @@
         font-weight: 900;
     }
 
-    .order-detail-button {
-        min-height: 34px;
 
-        padding: 0 12px;
+    /* ==========================================
+       BOTONES DEL PEDIDO
+       ========================================== */
+
+    .order-actions {
+        display: flex;
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+
+    .order-detail-button,
+    .order-receipt-button {
+        width: 100%;
+        min-height: 35px;
+
+        padding: 0 10px;
 
         display: inline-flex;
         align-items: center;
@@ -344,22 +405,38 @@
 
         border-radius: 5px;
 
-        background:
-            linear-gradient(
-                135deg,
-                #06bfff,
-                #2563eb
-            );
-
         color: white;
 
         text-decoration: none;
+
+        text-align: center;
 
         font-size: 9px;
         font-weight: 900;
 
         transition: .2s;
     }
+
+
+    .order-detail-button {
+        background:
+            linear-gradient(
+                135deg,
+                #06bfff,
+                #2563eb
+            );
+    }
+
+
+    .order-receipt-button {
+        background:
+            linear-gradient(
+                135deg,
+                #111827,
+                #334155
+            );
+    }
+
 
     .order-detail-button:hover {
         color: white;
@@ -370,7 +447,23 @@
     }
 
 
-    /* SIN PEDIDOS */
+    .order-receipt-button:hover {
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #4f46e5
+            );
+
+        transform: translateY(-1px);
+    }
+
+
+    /* ==========================================
+       SIN PEDIDOS
+       ========================================== */
 
     .empty-orders {
         padding: 75px 20px;
@@ -378,11 +471,13 @@
         text-align: center;
     }
 
+
     .empty-icon {
         margin-bottom: 14px;
 
         font-size: 58px;
     }
+
 
     .empty-orders h3 {
         margin-bottom: 7px;
@@ -393,6 +488,7 @@
         font-weight: 900;
     }
 
+
     .empty-orders p {
         margin-bottom: 22px;
 
@@ -400,6 +496,7 @@
 
         font-size: 11px;
     }
+
 
     .empty-button {
         min-height: 43px;
@@ -427,6 +524,7 @@
         font-weight: 900;
     }
 
+
     .empty-button:hover {
         color: white;
 
@@ -434,20 +532,43 @@
     }
 
 
-    /* RESPONSIVE */
+    /* ==========================================
+       RESPONSIVE
+       ========================================== */
 
-    @@media (max-width: 900px) {
+    @@media (max-width: 1000px) {
+
+        .order-row {
+            grid-template-columns:
+                75px
+                1fr
+                110px
+                115px
+                150px;
+        }
+
+    }
+
+
+    @@media (max-width: 800px) {
 
         .order-row {
             grid-template-columns:
                 80px
                 1fr
-                120px;
+                130px;
 
             row-gap: 12px;
         }
 
+
+        .order-actions {
+            grid-column:
+                span 2;
+        }
+
     }
+
 
     @@media (max-width: 700px) {
 
@@ -455,17 +576,44 @@
             width: calc(100% - 24px);
         }
 
+
         .my-orders-top {
             flex-direction: column;
             align-items: flex-start;
         }
 
+
         .orders-summary {
             grid-template-columns: 1fr;
         }
 
+
         .order-row {
             grid-template-columns: 1fr;
+
+            gap: 10px;
+        }
+
+
+        .order-actions {
+            grid-column: auto;
+
+            flex-direction: row;
+        }
+
+
+        .order-detail-button,
+        .order-receipt-button {
+            flex: 1;
+        }
+
+    }
+
+
+    @@media (max-width: 440px) {
+
+        .order-actions {
+            flex-direction: column;
         }
 
     }
@@ -478,49 +626,46 @@
     <div class="my-orders-container">
 
 
-        <div class="my-orders-top">
+        <!-- ==========================================
+             CABECERA
+             ========================================== -->
 
+        <div class="my-orders-top">
 
             <div>
 
-
                 <div class="my-orders-badge">
-
                     🛍️ Mi cuenta
-
                 </div>
 
 
                 <h1 class="my-orders-title">
-
                     Mis pedidos
-
                 </h1>
 
 
                 <p class="my-orders-subtitle">
-
-                    Consulta tus compras realizadas en BigGame.
-
+                    Consulta tus compras realizadas en BigGame
+                    y descarga tus comprobantes.
                 </p>
-
 
             </div>
 
 
-
-            <a asp-controller="Products"
-               asp-action="Index"
-               class="store-button">
-
+            <a
+                asp-controller="Products"
+                asp-action="Index"
+                class="store-button"
+            >
                 🎮 Volver a la tienda
-
             </a>
-
 
         </div>
 
 
+        <!-- ==========================================
+             RESUMEN
+             ========================================== -->
 
         <div class="orders-summary">
 
@@ -531,26 +676,22 @@
                     🧾
                 </div>
 
+
                 <div class="summary-label">
-
                     Mis pedidos
-
                 </div>
+
 
                 <div class="summary-value">
-
                     @totalOrders
-
                 </div>
 
+
                 <div class="summary-detail">
-
                     Compras registradas
-
                 </div>
 
             </div>
-
 
 
             <div class="summary-card">
@@ -559,26 +700,22 @@
                     🎮
                 </div>
 
+
                 <div class="summary-label">
-
                     Productos comprados
-
                 </div>
+
 
                 <div class="summary-value products">
-
                     @totalProducts
-
                 </div>
 
+
                 <div class="summary-detail">
-
                     Unidades adquiridas
-
                 </div>
 
             </div>
-
 
 
             <div class="summary-card">
@@ -587,63 +724,54 @@
                     💰
                 </div>
 
+
                 <div class="summary-label">
-
                     Total comprado
-
                 </div>
+
 
                 <div class="summary-value money">
-
                     Bs @totalSpent.ToString("N2")
-
                 </div>
 
+
                 <div class="summary-detail">
-
                     Total histórico
-
                 </div>
 
             </div>
 
-
         </div>
 
 
+        <!-- ==========================================
+             HISTORIAL
+             ========================================== -->
 
         <div class="orders-card">
 
 
             <div class="orders-card-header">
 
-
                 <div>
 
                     <h2>
-
                         Historial de compras
-
                     </h2>
 
+
                     <p>
-
                         Pedidos registrados con tu cuenta.
-
                     </p>
 
                 </div>
 
 
                 <span class="order-count">
-
                     @totalOrders pedido@(totalOrders == 1 ? "" : "s")
-
                 </span>
 
-
             </div>
-
 
 
             @if (orders.Any())
@@ -651,18 +779,22 @@
 
                 @foreach (var order in orders)
                 {
-
                     var quantity =
                         order.Items?.Sum(
-                            item => item.Quantity
+                            item =>
+                                item.Quantity
                         ) ?? 0;
+
 
                     var productNames =
                         order.Items != null
                             ? string.Join(
                                 ", ",
                                 order.Items
-                                    .Select(item => item.ProductName)
+                                    .Select(
+                                        item =>
+                                            item.ProductName
+                                    )
                                     .Take(3)
                             )
                             : string.Empty;
@@ -671,86 +803,95 @@
                     <div class="order-row">
 
 
+                        <!-- PEDIDO -->
+
                         <div>
 
                             <div class="order-number">
-
                                 #@order.Id
-
                             </div>
 
                         </div>
 
 
+                        <!-- PRODUCTOS -->
 
                         <div>
 
                             <div class="order-products">
-
                                 @quantity producto@(quantity == 1 ? "" : "s")
-
                             </div>
 
+
                             <div class="order-products-detail">
-
                                 @productNames
-
                             </div>
 
                         </div>
 
 
+                        <!-- FECHA -->
 
                         <div class="order-date">
 
                             @(order.CreatedAt
-                                .ToLocalTime()
+                                .ToUniversalTime()
+                                .AddHours(-4)
                                 .ToString("dd/MM/yyyy"))
 
                             <br />
 
                             @(order.CreatedAt
-                                .ToLocalTime()
+                                .ToUniversalTime()
+                                .AddHours(-4)
                                 .ToString("HH:mm"))
 
                         </div>
 
 
+                        <!-- ESTADO / TOTAL -->
 
                         <div>
 
                             <span class="order-status">
-
                                 @order.Status
-
                             </span>
 
+
                             <div class="order-total">
-
                                 Bs @order.TotalAmount.ToString("N2")
-
                             </div>
 
                         </div>
 
 
+                        <!-- ACCIONES -->
 
-                        <div>
+                        <div class="order-actions">
 
-                            <a asp-controller="Orders"
-                               asp-action="Details"
-                               asp-route-id="@order.Id"
-                               class="order-detail-button">
-
+                            <a
+                                asp-controller="Orders"
+                                asp-action="Details"
+                                asp-route-id="@order.Id"
+                                class="order-detail-button"
+                            >
                                 Ver pedido
+                            </a>
 
+
+                            <a
+                                asp-controller="ComprobanteCompraReports"
+                                asp-action="DescargarPdf"
+                                asp-route-id="@order.Id"
+                                class="order-receipt-button"
+                            >
+                                🧾 Comprobante PDF
                             </a>
 
                         </div>
 
 
                     </div>
-
                 }
 
             }
@@ -761,33 +902,27 @@
 
 
                     <div class="empty-icon">
-
                         🛒
-
                     </div>
 
 
                     <h3>
-
                         Todavía no tienes pedidos
-
                     </h3>
 
 
                     <p>
-
                         Cuando realices una compra,
                         aparecerá aquí automáticamente.
-
                     </p>
 
 
-                    <a asp-controller="Products"
-                       asp-action="Index"
-                       class="empty-button">
-
+                    <a
+                        asp-controller="Products"
+                        asp-action="Index"
+                        class="empty-button"
+                    >
                         Explorar BigGame
-
                     </a>
 
 
