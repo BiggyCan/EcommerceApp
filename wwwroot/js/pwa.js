@@ -4,6 +4,19 @@
 
 
     // ==========================================
+    // CONFIGURACIÓN
+    // ==========================================
+
+    const SESSION_KEY =
+        "biggame_pwa_prompt_mostrado";
+
+
+    let deferredPrompt = null;
+
+    let installModal = null;
+
+
+    // ==========================================
     // REGISTRAR SERVICE WORKER
     // ==========================================
 
@@ -43,15 +56,6 @@
 
 
     // ==========================================
-    // INSTALACIÓN PWA
-    // ==========================================
-
-    let deferredPrompt = null;
-
-    let installModal = null;
-
-
-    // ==========================================
     // COMPROBAR SI YA ESTÁ INSTALADA
     // ==========================================
 
@@ -64,6 +68,58 @@
             ||
             window.navigator.standalone === true
         );
+
+    }
+
+
+    // ==========================================
+    // COMPROBAR SI YA MOSTRAMOS EL AVISO
+    // ==========================================
+
+    function avisoYaMostrado() {
+
+        try {
+
+            return (
+                sessionStorage.getItem(
+                    SESSION_KEY
+                )
+                ===
+                "1"
+            );
+
+        }
+        catch (error) {
+
+            return false;
+
+        }
+
+    }
+
+
+    // ==========================================
+    // MARCAR AVISO COMO MOSTRADO
+    // ==========================================
+
+    function marcarAvisoComoMostrado() {
+
+        try {
+
+            sessionStorage.setItem(
+                SESSION_KEY,
+                "1"
+            );
+
+        }
+        catch (error) {
+
+            console.warn(
+                "No se pudo guardar el estado del aviso PWA.",
+                error
+            );
+
+        }
 
     }
 
@@ -192,6 +248,7 @@
             .biggame-pwa-backdrop {
                 position: absolute;
                 inset: 0;
+
                 background:
                     rgba(
                         4,
@@ -199,6 +256,7 @@
                         18,
                         .72
                     );
+
                 backdrop-filter:
                     blur(4px);
             }
@@ -260,6 +318,7 @@
 
                 from {
                     opacity: 0;
+
                     transform:
                         translateY(22px)
                         scale(.97);
@@ -267,6 +326,7 @@
 
                 to {
                     opacity: 1;
+
                     transform:
                         translateY(0)
                         scale(1);
@@ -538,6 +598,9 @@
             "click",
             async function () {
 
+                marcarAvisoComoMostrado();
+
+
                 if (!deferredPrompt) {
 
                     cerrarVentana();
@@ -576,6 +639,9 @@
                         error
                     );
 
+
+                    cerrarVentana();
+
                 }
 
             }
@@ -584,13 +650,25 @@
 
         laterButton.addEventListener(
             "click",
-            cerrarVentana
+            function () {
+
+                marcarAvisoComoMostrado();
+
+                cerrarVentana();
+
+            }
         );
 
 
         closeButton.addEventListener(
             "click",
-            cerrarVentana
+            function () {
+
+                marcarAvisoComoMostrado();
+
+                cerrarVentana();
+
+            }
         );
 
 
@@ -614,8 +692,22 @@
         }
 
 
+        if (avisoYaMostrado()) {
+
+            console.log(
+                "El aviso PWA ya fue mostrado durante esta sesión."
+            );
+
+            return;
+
+        }
+
+
         const modal =
             crearVentanaInstalacion();
+
+
+        marcarAvisoComoMostrado();
 
 
         window.setTimeout(
@@ -651,7 +743,7 @@
 
 
     // ==========================================
-    // CHROME DICE QUE LA PWA ES INSTALABLE
+    // CHROME DETECTA QUE SE PUEDE INSTALAR
     // ==========================================
 
     window.addEventListener(
@@ -691,6 +783,9 @@
 
             deferredPrompt =
                 null;
+
+
+            marcarAvisoComoMostrado();
 
 
             cerrarVentana();
